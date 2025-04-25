@@ -270,6 +270,7 @@ pale-orange - #ff7742
   color: #e7ecef;
 }
 
+
 /*NAVIGATION*/
 .search-icon {
   position: absolute;
@@ -451,4 +452,13 @@ pale-orange - #ff7742
   width: 20px;
   height: 20px;
   margin: 0 0.25rem;
+}
+
+.rate-icon a {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.cta {
+  margin-top: 1.5rem;
 }

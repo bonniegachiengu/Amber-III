@@ -2,10 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
       content="Amber - A simple media management web application."
@@ -17,8 +14,11 @@
       href="{{ url_for('static', filename='img/favicon.ico') }}"
       type="image/x-icon"
     />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous" />
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
@@ -35,101 +35,168 @@
   </head>
   <body class="bg-dark-blue">
     <header class="p-3 mb-3">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-between">
-                <!-- Logo on the far left -->
-                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
-                    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Amber Logo" width="40" height="32" class="me-2">
-                </a>
-    
-                <!-- Navigation links aligned to the right -->
-                <ul class="nav ms-auto me-3 mb-lg-0">
-                    <li><a href="#" class="nav-link px-2">Home</a></li>
-                    <li><a href="#" class="nav-link px-2">Library</a></li>
-                    <li><a href="#" class="nav-link px-2">Watchlist</a></li>
-                    <li><a href="#" class="nav-link px-2">Film</a></li>
-                    <li><a href="#" class="nav-link px-2">People</a></li>
-                </ul>
-    
-                <!-- Search bar -->
-                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 position-relative" role="search">
-                    <i class="bi bi-search search-icon"></i>
-                    <input type="search" class="form-control ps-5" aria-label="Search">
-                </form>
-    
-                <!-- User dropdown menu -->
-                <div class="dropdown text-end">
-                    <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{{ url_for('static', filename='img/angela.jpg') }}" alt="mdo" width="32" height="32" class="rounded-circle">
-                    </a>
-                    <ul class="dropdown-menu text-small">
-                        <li><a class="dropdown-item" href="#">Portfolio</a></li>
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Sign out</a></li>
-                    </ul>
-                </div>
-            </div>
+      <div class="container">
+        <div
+          class="d-flex flex-wrap align-items-center justify-content-between"
+        >
+          <!-- Logo on the far left -->
+          <a
+            href="/"
+            class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none"
+          >
+            <img
+              src="{{ url_for('static', filename='img/logo.png') }}"
+              alt="Amber Logo"
+              width="40"
+              height="32"
+              class="me-2"
+            />
+          </a>
+
+          <!-- Navigation links aligned to the right -->
+          <ul class="nav ms-auto me-3 mb-lg-0">
+            <li><a href="#" class="nav-link px-2">Home</a></li>
+            <li><a href="#" class="nav-link px-2">Library</a></li>
+            <li><a href="#" class="nav-link px-2">Watchlist</a></li>
+            <li><a href="#" class="nav-link px-2">Film</a></li>
+            <li><a href="#" class="nav-link px-2">People</a></li>
+          </ul>
+
+          <!-- Search bar -->
+          <form
+            class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 position-relative"
+            role="search"
+          >
+            <i class="bi bi-search search-icon"></i>
+            <input
+              type="search"
+              class="form-control ps-5"
+              aria-label="Search"
+            />
+          </form>
+
+          <!-- User dropdown menu -->
+          <div class="dropdown text-end">
+            <a
+              href="#"
+              class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <img
+                src="{{ url_for('static', filename='img/angela.jpg') }}"
+                alt="mdo"
+                width="32"
+                height="32"
+                class="rounded-circle"
+              />
+            </a>
+            <ul class="dropdown-menu text-small">
+              <li><a class="dropdown-item" href="#">Portfolio</a></li>
+              <li><a class="dropdown-item" href="#">Settings</a></li>
+              <li><a class="dropdown-item" href="#">Profile</a></li>
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item" href="#">Sign out</a></li>
+            </ul>
+          </div>
         </div>
+      </div>
     </header>
     {% block content %} {% endblock %}
     <footer class="py-5 container mt-5">
-        <div class="row">
-          <div class="col-6 col-md-2 mb-3">
-            <h5>Amber Media</h5>
-            <ul class="nav flex-column">
-              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Home</a></li>
-              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Features</a></li>
-              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Patreon</a></li>
-              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">FAQs</a></li>
-              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">About</a></li>
-            </ul>
-          </div>
-    
-          <div class="col-6 col-md-2 mb-3">
-            <h5>Amber Partners</h5>
-            <ul class="nav flex-column">
-              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">OMDb</a></li>
-              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">TMDb</a></li>
-              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">IMDb</a></li>
-              <li class="nav-item mb-2"><a href="#" class="nav-link p-0">Trakt</a></li>
-            </ul>
-          </div>
-    
-          <div class="col-6 col-md-2 mb-3">
-            <h5>Amber Community</h5>
-            <ul class="nav flex-column">
-              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 graphite">AmberHub</a></li>
-              <li class="nav-item mb-2"><a href="#" class="nav-link p-0 graphite">Parlors</a></li>
-            </ul>
-          </div>
-    
-          <div class="col-md-5 offset-md-1 mb-3">
-            <form>
-              <h5>Subscribe to our newsletter</h5>
-              <p>Monthly digest of what's new and exciting from us.</p>
-              <div class="d-flex flex-column flex-sm-row w-100 gap-2">
-                <label for="newsletter1" class="visually-hidden">Email address</label>
-                <input id="newsletter1" type="email" class="form-control" placeholder="Email address">
-                <button class="btn btn-primary" type="button">Subscribe</button>
-              </div>
-            </form>
-          </div>
-        </div>
-    
-        <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
-          <p>© 2025 Amber Media, Inc. All rights reserved.</p>
-          <ul class="list-unstyled d-flex">
-            <li class="ms-3"><a class="link-body-emphasis" href="#" aria-label="Instagram"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"></use></svg></a></li>
-            <li class="ms-3"><a class="link-body-emphasis" href="#" aria-label="Facebook"><svg class="bi" width="24" height="24" aria-hidden="true"><use xlink:href="#facebook"></use></svg></a></li>
+      <div class="row">
+        <div class="col-6 col-md-2 mb-3">
+          <h5>Amber Media</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0">Home</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0">Features</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0">Patreon</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0">FAQs</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0">About</a>
+            </li>
           </ul>
         </div>
-      </footer>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
-      crossorigin="anonymous"
-    ></script>
+
+        <div class="col-6 col-md-2 mb-3">
+          <h5>Amber Partners</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0">OMDb</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0">TMDb</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0">IMDb</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0">Trakt</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-2 mb-3">
+          <h5>Amber Community</h5>
+          <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0 graphite">AmberHub</a>
+            </li>
+            <li class="nav-item mb-2">
+              <a href="#" class="nav-link p-0 graphite">Parlors</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-md-5 offset-md-1 mb-3">
+          <form>
+            <h5>Subscribe to our newsletter</h5>
+            <p>Monthly digest of what's new and exciting from us.</p>
+            <div class="d-flex flex-column flex-sm-row w-100 gap-2">
+              <label for="newsletter1" class="visually-hidden"
+                >Email address</label
+              >
+              <input
+                id="newsletter1"
+                type="email"
+                class="form-control"
+                placeholder="Email address"
+              />
+              <button class="btn btn-primary" type="button">Subscribe</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div
+        class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top"
+      >
+        <p>© 2025 Amber Media, Inc. All rights reserved.</p>
+        <ul class="list-unstyled d-flex">
+          <li class="ms-3">
+            <a class="link-body-emphasis" href="#" aria-label="Instagram"
+              ><svg class="bi" width="24" height="24">
+                <use xlink:href="#instagram"></use></svg
+            ></a>
+          </li>
+          <li class="ms-3">
+            <a class="link-body-emphasis" href="#" aria-label="Facebook"
+              ><svg class="bi" width="24" height="24" aria-hidden="true">
+                <use xlink:href="#facebook"></use></svg
+            ></a>
+          </li>
+        </ul>
+      </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
   </body>
 </html>
