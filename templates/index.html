@@ -52,21 +52,24 @@
               {{ movie.description }}
               <a href="#" class="read-more">Read More</a>
             </p>
-            <div class="avatar-group">
+            <div class="avatar-group gap-2">
               {% for actor in movie.cast %}
               <div>
-                <img
-                  src="../static/stars/{{ actor.image }}"
-                  alt="{{ actor.name }}"
-                />
+                <a href="#">
+                  <img
+                    src="../static/stars/{{ actor.image }}"
+                    alt="{{ actor.name }}"
+                  />
+                </a>
                 <strong>{{ actor.name }}</strong>
                 <small>{{ actor.role }}</small>
+
               </div>
               {% endfor %}
             </div>
             <div class="d-flex gap-2 cta">
-              <button class="btn btn-primary me-3">Continue Watching</button>
-              <button class="btn btn-outline-light">Watch Trailer</button>
+              <button class="btn btn-primary me-3"><a style="color: #e7ecef !important; font-weight: bold;" href="#">Continue Watching </a><i class="bi bi-play-fill"></i></button>
+              <button class="btn btn-outline-light"><a href="#">Watch Trailer</a></button>
             </div>
           </div>
           <div class="col-md-6">
@@ -91,15 +94,6 @@
 
   <!-- Controls -->
   <button
-    class="carousel-control-prev"
-    type="button"
-    data-bs-target="#movieCarousel"
-    data-bs-slide="prev"
-  >
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button
     class="carousel-control-next"
     type="button"
     data-bs-target="#movieCarousel"
@@ -114,33 +108,42 @@
 <!-- Movie List Section -->
 <div class="container mt-5">
   <div class="row mb-4">
-    <div class="col-12 d-flex justify-content-between align-items-center">
-      <h2>Continue Watching</h2>
-      <a href="#" class="btn btn-outline-primary">See All</a>
+    <div class="subtitle col-12 d-flex justify-content-between align-items-center">
+      <ul class="nav justify-content-between align-items-center">
+        <li><a href="#" class="lib-link"  style="color: #e7ecef !important;">Continue Watching</a></li>
+        <li><a href="#" class="lib-link">Active Watchlist</a></li>
+        <li><a href="#" class="lib-link">Recently Added</a></li>
+      </ul>
+      <a href="#" class="lib-link mb-0">See All <i class="bi bi-arrow-right"></i> </a>
     </div>
   </div>
-  <div class="row col-6 row-cols-md-3 g-4">
-    <div class="col">
+  <div class="row col-12 g-3">
+          <!-- Movie Card 1 -->
+          {% for movie in movies %}
+    <div class="card-group col">
       <div class="card bg-dark-blue-lighter">
-        <img src="../static/posters/_Spiderman_ Far from Home_ (2019).jpeg" class="card-img-top" alt="..." />
+        <img src="../static/posters/{{ movie.poster_main }}" class="card-img-top" alt="..." />
         <div class="card-body">
-          <p class="card-title">Spider-Man: Far From Home</p>
+          <p class="card-title text-truncate" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ movie.title }}</p>
+
             <div class="resume-card col-12 d-flex align-items-center justify-content-between">
                 <div class="progress-section d-flex align-items-center flex-grow-1">
-                  <div class="resume-card-percentage me-2"><small>70%</small></div>
+                  <div class="resume-card-percentage me-2"><small>{{ movie.watched }}%</small></div>
                 </div>
                 <a href="">
                   <img src="../static/img/play.png" alt="Play" class="resume-card-icon ms-3" />
                 </a>
             </div>
-            <div class="resume-card-progress flex-grow-1 mt-2">
+            <div class="flex-grow-1 mt-2">
               <div class="progress" style="height: 5px;">
-                <div class="progress-bar" role="progressbar" style="width: 70%;"></div>
+                <div class="progress-bar" role="progressbar" style="width: {{ movie.watched }}%;"></div>
               </div>
             </div>
+            
         </div>
       </div>
-    </div>
+    </div> <!-- End of Movie Card 1 -->
+    {% endfor %}
   </div>
 </div>
   {% endblock %}

@@ -6,7 +6,7 @@ movies = [
         "rotten_tomatoes_rating": 96,
         "year": 1991,
         "genres": ["Adventure", "Fantasy", "Action"],
-        "watched": "54",
+        "watched": 54,
         "description": "Jodie Foster stars as Clarice Starling, a top student at the FBI's training academy. "
                        "Jack Crawford (Scott Glenn) wants Clarice...",
         "poster_main": "silence.jpg",
@@ -26,7 +26,7 @@ movies = [
         "rotten_tomatoes_rating": 86,
         "year": 2009,
         "genres": ["Animation", "Family", "Comedy"],
-        "watched": "70",
+        "watched": 70,
         "description": "When hard times hit Swallow Falls, its townspeople can only afford to eat sardines. "
                        "Flint Lockwood, a failed inventor, thinks he has the answer to the town's crisis...",
         "poster_main": "cloudy.jpg",
@@ -46,7 +46,7 @@ movies = [
         "rotten_tomatoes_rating": 74,
         "year": 2022,
         "genres": ["Comedy", "Horror", "Adventure"],
-        "watched": "70",
+        "watched": 70,
         "description": "Doctor Strange teams up with a mysterious teenage girl from his dreams who can travel "
                        "across multiverses, to battle multiple threats...",
         "poster_main": "strange2.jpg",
@@ -66,7 +66,7 @@ movies = [
       "rotten_tomatoes_rating": 94,
       "year": 2019,
       "genres": ["Action", "Adventure", "Sci-Fi"],
-      "watched": "100",
+      "watched": 100,
       "description": "After the devastating events of Infinity War, the universe is in ruins. "
                      "With the help of remaining allies, the Avengers assemble once more in order to reverse "
                      "Thanos' actions and restore balance to the universe.",
@@ -87,7 +87,7 @@ movies = [
         "rotten_tomatoes_rating": 96,
         "year": 2018,
         "genres": ["Action", "Adventure", "Sci-Fi"],
-        "watched": "100",
+        "watched": 100,
         "description": "T'Challa, the King of Wakanda, must defend his nation from an old foe in a battle for the throne.",
         "poster_main": "panther.jpeg",
         "poster_stack": ["interstellar.jpg", "ralph"],
@@ -104,7 +104,7 @@ movies = [
         "rotten_tomatoes_rating": 79,
         "year": 2019,
         "genres": ["Action", "Adventure", "Sci-Fi"],
-        "watched": "100",
+        "watched": 100,
         "description": "Carol Danvers becomes one of the universe's most powerful heroes when Earth is caught in the middle of a galactic war between two alien races.",
         "poster_main": "marvel.jpeg",
         "poster_stack": ["moana2.jpg", "ultron.jpg"],
