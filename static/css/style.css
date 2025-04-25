@@ -472,7 +472,7 @@ pale-orange - #ff7742
   box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
   margin-bottom: 1rem;
   border-radius: none;
-  width: 100px;
+  width: 150px;
 }
 
 .card-img-top {
@@ -521,3 +521,47 @@ a.lib-link {
   padding: none !important;
   padding-right: 20px !important;
 }
+
+.watchlist-card {
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+  margin-bottom: 1rem;
+  border-radius: none;
+  width: 250px;
+}
+
+.watchlist-card .card-img-top {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: none;
+}
+
+.watchlist-card .card-title {
+  font-size: 0.65rem !important;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.poster-collage {
+  display: flex;
+  width: 100%;    /* Fixed collage width */
+  height: 250px;   /* Fixed collage height */
+  overflow: hidden;
+  gap: 0.1rem;     /* spacing between posters */
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.poster-crop {
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%; /* Show mid-region of the image */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.collage-1 { width: 100%; }
+.collage-2 { width: calc(50% - 0.05rem); }
+.collage-3 { width: calc(33.333% - 0.066rem); }
+.collage-4 { width: calc(25% - 0.075rem); }

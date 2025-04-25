@@ -9,7 +9,7 @@ from flask_ckeditor import CKEditor
 # from functools import wraps
 # from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-from data import movies
+from data import movies, watchlists
 import os
 
 load_dotenv()
@@ -22,7 +22,7 @@ Bootstrap5(app)
 
 @app.route("/")
 def home():
-    return render_template("index.html", movies=movies)
+    return render_template("index.html", movies=movies, watchlists=watchlists)
 
 
 if __name__ == "__main__":

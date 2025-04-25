@@ -1,5 +1,6 @@
 movies = [
     {
+        "id": 1,
         "title": "The Silence of the Lambs",
         "directors": ["Jonathan Demme"],
         "imdb_rating": 8.6,
@@ -20,6 +21,7 @@ movies = [
         ],
     },
     {
+        "id": 2,
         "title": "Cloudy with a Chance of Meatballs",
         "directors": ["Phil Lord, Chris Miller"],
         "imdb_rating": 7.0,
@@ -40,7 +42,8 @@ movies = [
         ],
     },
   {
-    "title": "Doctor Strange in the Multiverse of Madness",
+        "id": 3,
+        "title": "Doctor Strange in the Multiverse of Madness",
         "directors": ["Sam Raimi"],
         "imdb_rating": 7.4,
         "rotten_tomatoes_rating": 74,
@@ -60,6 +63,7 @@ movies = [
         ],
   },
   {
+        "id": 4,
       "title": "Avengers: Endgame",
       "directors": ["Anthony Russo", "Joe Russo"],
       "imdb_rating": 8.4,
@@ -81,6 +85,7 @@ movies = [
       ],
   },
   {
+      "id": 5,
       "title": "Black Panther",
       "directors": ["Ryan Coogler"],
         "imdb_rating": 7.3,
@@ -98,6 +103,7 @@ movies = [
         ],
   },
   {
+        "id": 6,
       "title": "Captain Marvel",
       "directors": ["Anna Boden", "Ryan Fleck"],
         "imdb_rating": 6.8,
@@ -112,6 +118,96 @@ movies = [
             {"name": "CHRISTOPHER NOLAN", "role": "Director", "image": "nolan.jpg"},
             {"name": "BRAD PITT", "role": "John Carter", "image": "pitt.jpeg"},
             {"name": "EMILY BLUNT", "role": "Sarah Frost", "image": "emily.jpeg"},
+        ],
+    },
+]
+
+
+
+watchlists = [
+    {
+        "id": 1,
+        "title": "All Island Animations",
+        "directors": ["Phil Lord, Chris Miller"],
+        "imdb_rating": 7.0,
+        "rotten_tomatoes_rating": 86,
+        "created": "2023-10-01",
+        "genres": ["Animation", "Family", "Comedy"],
+        "description": "All Island Animations is a collection of animated films that take place on various islands. "
+                       "From tropical paradises to frozen tundras, these films explore the adventures of characters "
+                       "living in unique island settings.",
+        "posters": ["angry2.jpg", "dogs.jpg", "moana2.jpg"],
+        "watched": 10,
+        "film_count": 16,
+        "cast": [
+            {"name": "CHRISTOPHER NOLAN", "role": "Director", "image": "nolan.jpg"},
+            {"name": "BRAD PITT", "role": "John Carter", "image": "pitt.jpeg"},
+            {"name": "EMILY BLUNT", "role": "Sarah Frost", "image": "emily.jpeg"},
+            {"name": "EMMA STONE", "role": "Lucy Blake", "image": "emma.jpeg"},
+            {"name": "DWAYNE JOHNSON", "role": "Max Thunder", "image": "rock.jpeg"},
+        ],
+    },
+    {
+        "id": 2,
+        "title": "All Marvel Movies",
+        "directors": ["Various"],
+        "imdb_rating": 8.0,
+        "rotten_tomatoes_rating": 85,
+        "created": "2023-10-01",
+        "genres": ["Action", "Adventure", "Sci-Fi"],
+        "description": "All Marvel Movies is a collection of films from the Marvel Cinematic Universe. These films feature superheroes, epic battles, and interconnected storylines that span across the universe.",   
+        "posters": ["avengers.jpg", "endgame.jpeg", "panther.jpeg", "marvel.jpeg"],
+        "watched": 100,
+        "film_count": 20,
+        "cast": [
+            {"name": "CHRISTOPHER NOLAN", "role": "Director", "image": "nolan.jpg"},
+            {"name": "BRAD PITT", "role": "John Carter", "image": "pitt.jpeg"},
+            {"name": "EMILY BLUNT", "role": "Sarah Frost", "image": "emily.jpeg"},
+            {"name": "EMMA STONE", "role": "Lucy Blake", "image": "emma.jpeg"},
+            {"name": "DWAYNE JOHNSON", "role": "Max Thunder", "image": "rock.jpeg"},
+        ],
+    },
+    {
+        "id": 3,
+        "title": " All Sci-Fi Animations",
+        "directors": ["Rich Moore", "Phil Johnston", "Byron Howard"],
+        "imdb_rating": 8.0,
+        "rotten_tomatoes_rating": 85,
+        "created": "2023-10-01",
+        "genres": ["Animation", "Adventure", "Sci-Fi"],
+        "description": "All Sci-Fi Animations is a collection of animated films that explore futuristic themes, "
+                       "advanced technology, and imaginative worlds. These films take viewers on thrilling adventures "
+                       "through space and time.",
+        "posters": ["ralph.jpg", "zoo.jpg"],
+        "watched": 10,
+        "film_count": 29,
+        "cast": [
+            {"name": "CHRISTOPHER NOLAN", "role": "Director", "image": "nolan.jpg"},
+            {"name": "BRAD PITT", "role": "John Carter", "image": "pitt.jpeg"},
+            {"name": "EMILY BLUNT", "role": "Sarah Frost", "image": "emily.jpeg"},
+            {"name": "EMMA STONE", "role": "Lucy Blake", "image": "emma.jpeg"},
+            {"name": "DWAYNE JOHNSON", "role": "Max Thunder", "image": "rock.jpeg"},
+        ],
+    },
+    {
+        "id": 4,
+        "title": "All Fanasy Animations",
+        "directors": ["Rich Moore", "Phil Johnston", "Byron Howard"],
+        "imdb_rating": 8.0,
+        "rotten_tomatoes_rating": 85,
+        "created": "2023-10-01",
+        "genres": ["Animation", "Adventure", "Fantasy"],
+        "description": "All Fantasy Animations is a collection of animated films that transport viewers to magical worlds, "
+                       "where anything is possible. These films feature fantastical creatures, epic quests, and enchanting stories.",
+        "posters": ["cloudy.jpg", "luck.jpg"],
+        "watched": 15,
+        "film_count": 20,
+        "cast": [
+            {"name": "CHRISTOPHER NOLAN", "role": "Director", "image": "nolan.jpg"},
+            {"name": "BRAD PITT", "role": "John Carter", "image": "pitt.jpeg"},
+            {"name": "EMILY BLUNT", "role": "Sarah Frost", "image": "emily.jpeg"},
+            {"name": "EMMA STONE", "role": "Lucy Blake", "image": "emma.jpeg"},
+            {"name": "DWAYNE JOHNSON", "role": "Max Thunder", "image": "rock.jpeg"},
         ],
     },
 ]
