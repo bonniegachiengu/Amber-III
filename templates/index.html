@@ -1,167 +1,111 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} 
-{% block content%}
-
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+%}
+<header></header>
 <div id="movieCarousel" class="carousel slide" data-bs-ride="carousel">
   <div class="carousel-indicators">
+    {% for movie in movies %}
     <button
       type="button"
       data-bs-target="#movieCarousel"
-      data-bs-slide-to="0"
-      class="active"
+      data-bs-slide-to="{{ loop.index0 }}"
+      class="{% if loop.first %}active{% endif %}"
+      aria-current="{% if loop.first %}true{% endif %}"
+      aria-label="Slide {{ loop.index }}"
     ></button>
-    <button
-      type="button"
-      data-bs-target="#movieCarousel"
-      data-bs-slide-to="1"
-    ></button>
-    <button
-      type="button"
-      data-bs-target="#movieCarousel"
-      data-bs-slide-to="2"
-    ></button>
+    {% endfor %}
   </div>
 
-  <div class="container carousel-inner">
-    <!-- First slide -->
-    <div class="carousel-item active">
+  <div class="carousel-inner">
+    {% for movie in movies %}
+    <div class="carousel-item {% if loop.first %}active{% endif %}">
       <div class="container">
         <div class="row">
           <div class="col-md-6 movie-info">
-            <h1 class="movie-title">The Silence of the Lambs</h1>
+            <h1 class="movie-title">{{ movie.title }}</h1>
             <div class="movie-meta d-flex align-items-center gap-2 flex-wrap">
-              <div class="d-flex align-items-center gap-2">
-                <h5 class="movie-meta-info" class="mb-0">2018</h5>
-                <a class="mb-2" href="#">Adventure</a>
-                <span class="mb-2 blue">&middot;</span>
-                <a class="mb-2" href="#">Fantasy</a>
-                <span class="mb-2 blue">&middot;</span>
-                <a class="mb-2 movie-meta-info" href="#">Action</a>
-                <p class="mb-2">54% watched</p>
-              </div>
+              <h5 class="movie-meta-info">{{ movie.year }}</h5>
+              {% for genre in movie.genres %}
+              <a href="#">{{ genre }}</a>
+              {% if not loop.last %}
+              <span class="blue">&middot;</span>
+              {% endif %} {% endfor %}
+              <p>{{ movie.watched }}% watched</p>
             </div>
-            <div
-              class="movie-rating d-flex align-items-center gap-2 flex-wrap mt-0"
-            >
-              <a href="#" class="mb-0 movie-meta-director">Christopher Nolan</a>
+            <div class="movie-rating d-flex align-items-center gap-2">
+              {% for director in movie.directors %}
+              <a href="#" class="movie-meta-director">{{ director }}</a>
+              {% if not loop.last %}
+              <span class="blue">&middot;</span>
+              {% endif %} {% endfor %}
               <div class="rate-icon">
-                <img
-                  src="../static/img/imdb.png"
-                  alt="imdb logo"
-                  class="mb-0"
-                  style="width: 30px; height: auto"
-                />
-                <a href="#" class="mb-2">7.7</a>
+                <img src="../static/img/imdb.png" alt="IMDb" />
+                <a href="#">{{ movie.imdb_rating }}</a>
               </div>
               <div class="rate-icon">
-                <img
-                  src="../static/img/rotten.png"
-                  alt="rotten tomatoes logo"
-                  class="mb-2"
-                />
-                <a href="#" class="mb-2">65%</a>
+                <img src="../static/img/rotten.png" alt="Rotten Tomatoes" />
+                <a href="#">{{ movie.rotten_tomatoes_rating }}%</a>
               </div>
             </div>
             <p class="movie-description">
-              Jodie Foster stars as Clarice Starling, a top student at the FBI's
-              training academy. Jack Crawford (Scott Glenn) wants Clarice
-              to...<a
-                href="#"
-                class="read-more"
-                style="color: #e7ecef !important"
-                >Read More</a
-              >
+              {{ movie.description }}
+              <a href="#" class="read-more">Read More</a>
             </p>
-            <div
-              class="avatar-group d-flex mt-2 mb-3 gap-3 flex-wrap text-center"
-            >
+            <div class="avatar-group">
+              {% for actor in movie.cast %}
               <div>
-                <a href="">
-                  <img src="../static/stars/nolan.jpg" alt="Director" />
-                </a>
-                <div class="mt-1">
-                  <strong class="d-block text-uppercase"
-                    >CHRISTOPHER NOLAN</strong
-                  >
-                  <small class="text-uppercase">Director</small>
-                </div>
+                <img
+                  src="../static/stars/{{ actor.image }}"
+                  alt="{{ actor.name }}"
+                />
+                <strong>{{ actor.name }}</strong>
+                <small>{{ actor.role }}</small>
               </div>
-              <div>
-                <a href="">
-                  <img src="../static/stars/pitt.jpeg" alt="Director" />
-                </a>
-                <div class="mt-1">
-                  <strong class="d-block text-uppercase">BRAD PITT</strong>
-                  <small class="text-uppercase">John Carter</small>
-                </div>
-              </div>
-              <div>
-                <a href="">
-                  <img src="../static/stars/emily.jpeg" alt="Director" />
-                </a>
-                <div class="mt-1">
-                  <strong class="d-block text-uppercase">EMILY BLUNT</strong>
-                  <small class="text-uppercase">Sarah Frost</small>
-                </div>
-              </div>
-              <div>
-                <a href="">
-                  <img src="../static/stars/emma.jpeg" alt="Director" />
-                </a>
-                <div class="mt-1">
-                  <strong class="d-block text-uppercase">EMMA STONE</strong>
-                  <small class="text-uppercase">Lucy Blake</small>
-                </div>
-              </div>
-              <div>
-                <a href="">
-                  <img src="../static/stars/rock.jpeg" alt="Director" />
-                </a>
-                <div class="mt-1">
-                  <strong class="d-block text-uppercase">DWAYNE JOHNSON</strong>
-                  <small class="text-uppercase">Max Thunder</small>
-                </div>
-              </div>
+              {% endfor %}
             </div>
-            <div class="d-flex gap-2 flex-wrap mt-5">
-              <button class="btn btn-primary me-2">Continue Watching</button>
-              <button class="btn btn-outline-light border">
-                Watch Trailer
-              </button>
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary">Continue Watching</button>
+              <button class="btn btn-outline-light">Watch Trailer</button>
             </div>
           </div>
-          <div class="poster-ride col-md-6 text-left">
+          <div class="col-md-6">
             <img
-              src="../static/posters/silence.jpg"
+              src="../static/posters/{{ movie.poster_main }}"
               class="poster-main"
-              alt="Poster 1"
+              alt="Main Poster"
             />
+            {% for poster in movie.poster_stack %}
             <img
-              src="../static/posters/cloudy.jpg"
-              class="poster-1 poster-stack"
-              alt="Poster 2"
+              src="../static/posters/{{ poster }}"
+              class="poster-stack"
+              alt="Poster Stack"
             />
-            <img
-              src="../static/posters/strange2.jpg"
-              class="poster-2 poster-stack"
-              alt="Poster 3"
-            />
+            {% endfor %}
           </div>
         </div>
       </div>
     </div>
+    {% endfor %}
   </div>
-    <!-- Second slide -->
 
-  <!-- Controls -->
+  <button
+    class="carousel-control-prev"
+    type="button"
+    data-bs-target="#movieCarousel"
+    data-bs-slide="prev"
+  >
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
   <button
     class="carousel-control-next"
     type="button"
     data-bs-target="#movieCarousel"
     data-bs-slide="next"
   >
-    <span class="carousel-control-next-icon"></span>
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
   </button>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 
 {% endblock %}

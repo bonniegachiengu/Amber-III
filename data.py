@@ -1,9 +1,12 @@
 movies = [
     {
         "title": "The Silence of the Lambs",
+        "directors": ["Jonathan Demme"],
+        "imdb_rating": 8.6,
+        "rotten_tomatoes_rating": 96,
         "year": 1991,
         "genres": ["Adventure", "Fantasy", "Action"],
-        "watched": "54%",
+        "watched": "54",
         "description": "Jodie Foster stars as Clarice Starling, a top student at the FBI's training academy. "
                        "Jack Crawford (Scott Glenn) wants Clarice...",
         "poster_main": "silence.jpg",
@@ -18,9 +21,12 @@ movies = [
     },
     {
         "title": "Cloudy with a Chance of Meatballs",
+        "directors": ["Phil Lord, Chris Miller"],
+        "imdb_rating": 7.0,
+        "rotten_tomatoes_rating": 86,
         "year": 2009,
         "genres": ["Animation", "Family", "Comedy"],
-        "watched": "70%",
+        "watched": "70",
         "description": "When hard times hit Swallow Falls, its townspeople can only afford to eat sardines. "
                        "Flint Lockwood, a failed inventor, thinks he has the answer to the town's crisis...",
         "poster_main": "cloudy.jpg",
@@ -35,9 +41,12 @@ movies = [
     },
   {
     "title": "Doctor Strange in the Multiverse of Madness",
+        "directors": ["Sam Raimi"],
+        "imdb_rating": 7.4,
+        "rotten_tomatoes_rating": 74,
         "year": 2022,
         "genres": ["Comedy", "Horror", "Adventure"],
-        "watched": "70%",
+        "watched": "70",
         "description": "Doctor Strange teams up with a mysterious teenage girl from his dreams who can travel "
                        "across multiverses, to battle multiple threats...",
         "poster_main": "strange2.jpg",
