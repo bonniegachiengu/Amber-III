@@ -1,10 +1,14 @@
 from data import movies, watchlists
 
 
-# rank movie directors based on the ranks of their movies
-# since directors is a list of director names in each movie, we need to flatten it
-# and then rank the directors based on the ranks of their movies as per stated in ranking key in the movie dict
-def rank_directors(movies):
+def rank_directors(movies: list) -> list[tuple[str, int]]:
+    """
+    Rank movie directors based on the ranks of their movies
+    
+    :param movies: list of movies
+    
+    :return: list of tuples (director, average_rank) sorted by average rank in descending order
+    """
     directors = {}
     for movie in movies:
         for director in movie["directors"]:
