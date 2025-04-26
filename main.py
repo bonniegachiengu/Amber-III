@@ -9,7 +9,7 @@ from flask_ckeditor import CKEditor
 # from functools import wraps
 # from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-from data import movies, watchlists
+from data import movies, watchlists, genres
 import tools
 import os
 
@@ -40,7 +40,8 @@ def library():
         directors_dict=dict(directors), 
         num_of_movies=num_of_movies, 
         num_of_watchlists=num_of_watchlists,
-        num_of_directors=num_of_directors
+        num_of_directors=num_of_directors,
+        genres=genres,
     )
 
 @app.route("/player")

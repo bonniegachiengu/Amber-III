@@ -1,3 +1,15 @@
+genres = [
+        ("Action", "target.png"),
+        ("Adventure", "steering-wheel.png"),
+        ("Animation", "bear.png"),
+        ("Fantasy", "magic-wand.png"),
+        ("Sci-Fi", "ufo.png"),
+        ("Documentary", "documentary.png"),
+        ("History", "pillar.png"),
+        ("Comedy", "masks.png"),
+        ("Family", "sofa.png"),
+      ]
+
 movies = [
     {
         "id": 1,

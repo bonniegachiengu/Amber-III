@@ -366,160 +366,293 @@ content%}
   </div>
 </div>
 
-<!--  -->
+<!-- Tabs -->
 
-<div class="container px-4 py-4">
-  <div class="">
-    <div class="list-group d-flex flex-column align-items-stretch">
-        {% for movie in movies %}
-      <a
-        href="#"
-        class="list-group-item list-group-item-action d-flex flex-fill align-items-center gap-3 py-3"
-        aria-current="true"
-        style="border-radius: none !important"
+<!-- Genres Tab -->
+<div class="container pt-3 mt-5">
+  <ul
+    class="nav navbar nav-pills d-flex gap-2 justify-content-center"
+    id="genre-tabs"
+    role="tablist"
+  >
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link active"
+        id="all-tab"
+        data-bs-toggle="pill"
+        type="button"
+        role="tab"
       >
-        <!-- Checkbox -->
-        <input class="form-check-input flex-shrink-0" type="checkbox" value=""
-        id="flexCheckDefault" style="width: 0.75rem !important; height: 0.75rem
-        !important; margin-right: 0.5rem !important; border-radius: 25%; background-color:#506e9a; border: none !important;"/>
-        <!-- Poster -->
+        All
+      </button>
+    </li>
+    {% for genre, icon in genres %}
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="{{ genre|lower }}-tab"
+        data-bs-toggle="pill"
+        type="button"
+        role="tab"
+      >
         <img
-          src="../static/posters/{{ movie.poster_main }}"
-          alt=""
-          width="32"
-          height="50"
-          class="flex-shrink-0"
+          src="../static/img/{{ icon }}"
+          alt="{{ genre }} icon"
+          style="width: 20px; height: 20px; margin-right: 5px"
         />
+        {{ genre }}
+      </button>
+    </li>
+    {% endfor %}
+    <!-- Add more genres if you want -->
+  </ul>
+</div>
 
-        <!-- Full row content -->
-        <div class="align-items-center">
-          <!-- Title + Details (only this grows and truncates) -->
-          <div class="overflow-hidden gap-4">
-            <h6 class="mb-0 text-truncate" style="color: #e7ecef !important; font-weight: bold;">
-              {{ movie.title }}
-            </h6>
-            <small class="mb-0 opacity-75 text-muted d-block mt-1 text-truncate" style="color: #7e7f83 !important; font-weight: bold; font-size: 0.75rem !important"
-              >{{ movie.year }} • {{ movie.genres[0] }} • {{ movie.runtime }}</small
-            >
-          </div>
+<div class="container px-4">
+  <div class="d-flex flex-column align-items-stretch">
+    <div class="d-flex flex-fill align-items-center gap-4 py-3 mx-4">
+      <div class="align-items-center">
+        <img
+          src="../static/img/filter.png"
+          alt="Filter"
+          style="width: 20px; height: 20px"
+        />
+        <img
+          src="../static/img/sort-arrows-couple-pointing-up-and-down.png"
+          alt="Sort"
+          style="width: 20px; height: 20px"
+        />
+      </div>
+      <p class="mb-0" style="font-size: 0.75rem !important;">SCI-FI, ANIMATION (6)</p>
 
-          <div class="overflow-hidden px-4 gap-4">
-            <div class="px-3 gap-2">
-              <img
-                class="mb-0"
-                src="../static/img/imdb.png"
-                style="height: 1rem"
-                alt="IMDb"
-              />
-              <small style="font-weight: bold; color: #7e7f83; font-size: 0.75rem;">{{ movie.imdb_rating }}</small>
-            </div>
-            <div class="px-3 gap-2">
-              <img
-                class="mb-0"
-                src="../static/img/rotten.png"
-                style="height: 1rem"
-                alt="Rotten Tomatoes"
-              />
-              <small style="font-weight: bold; color: #7e7f83; font-size: 0.75rem;">{{ movie.rotten_tomatoes_rating }}%</small>
-            </div>
-          </div>
-          <div class="overflow-hidden px-4 gap-4">
-            <h6 class="mb-0 text-truncate" style="color: #ff7742 !important; font-weight: bold; font-size: 0.75rem !important;">
-              {{ movie.watched }}x
-            </h6>
-            <small class="mb-0 opacity-75 text-muted d-block mt-1 text-truncate" style="color: #506e9a !important; font-weight: bold; font-size: 0.75rem !important;"
-              >Rank: <b style="color: #e7ecef !important; font-weight: bold;">{{ movie.ranking }}</b>/{{ num_of_movies }}</small
-            >
-          </div>
-
-          <div class="overflow-hidden px-4 gap-4">
-            <h6 class="mb-0 text-truncate" style="color: #7e7f83 !important; font-weight: bold; font-size: 0.75rem !important;">
-              {{ movie.directors | join(', ') }}
-            </h6>
-            <small class="mb-0 opacity-75 text-muted d-block mt-1 text-truncate" style="color: #506e9a !important; font-weight: bold; font-size: 0.75rem !important;"
-              >Rank: <b style="color: #e7ecef !important; font-weight: bold;">{{ directors_dict.get(movie.directors[0], 'N/A') }}</b>/{{ num_of_directors }}</small>
-          </div>
-
-          <div class="px-4 gap-4" style="margin-left: auto">
-            <div class="">
-              <img
-                class="mb-0"
-                src="../static/img/edit-button.png"
-                style="height: 0.85rem; margin: 0.2rem"
-                alt="Edit"
-              />
-              <img
-                class="mb-0"
-                src="../static/img/more.png"
-                style="height: 0.85rem; margin: 0.2rem"
-                alt="More"
-              />
-            </div>
-          </div>
-        </div>
-      </a>
-        {% endfor %}
+      <div class="align-items-center" style="margin-left: auto">
+        <img
+          src="../static/img/grid.png"
+          alt="Grid"
+          style="width: 20px; height: 20px"
+        />
+        <img
+          src="../static/img/view.png"
+          alt="View"
+          style="width: 20px; height: 20px"
+        />
+      </div>
     </div>
   </div>
-</div>
-<!-- Extra details below title -->
 
-<!-- <small class="text-muted d-block mt-1">2024 • Action • 2h 15min</small> -->
+  <div class="container px-4 py-4">
+    <div class="">
+      <div class="list-group d-flex flex-column align-items-stretch">
+        {% for movie in movies %}
+        <a
+          href="#"
+          class="list-group-item list-group-item-action d-flex flex-fill align-items-center gap-3 py-3"
+          aria-current="true"
+          style="border-radius: none !important"
+        >
+          <!-- Checkbox -->
+          <input
+            class="form-check-input flex-shrink-0"
+            type="checkbox"
+            value=""
+            id="flexCheckDefault"
+            style="
+              width: 0.75rem !important;
+              height: 0.75rem !important;
+              margin-right: 0.5rem !important;
+              border-radius: 25%;
+              background-color: #506e9a;
+              border: none !important;
+            "
+          />
+          <!-- Poster -->
+          <img
+            src="../static/posters/{{ movie.poster_main }}"
+            alt=""
+            width="32"
+            height="50"
+            class="flex-shrink-0"
+          />
 
-<!--  -->
+          <!-- Full row content -->
+          <div class="align-items-center">
+            <!-- Title + Details (only this grows and truncates) -->
+            <div class="overflow-hidden gap-4">
+              <h6
+                class="mb-0 text-truncate"
+                style="color: #e7ecef !important; font-weight: bold"
+              >
+                {{ movie.title }}
+              </h6>
+              <small
+                class="mb-0 opacity-75 text-muted d-block mt-1 text-truncate"
+                style="
+                  color: #7e7f83 !important;
+                  font-weight: bold;
+                  font-size: 0.75rem !important;
+                "
+                >{{ movie.year }} • {{ movie.genres[0] }} • {{ movie.runtime
+                }}</small
+              >
+            </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  const ctx = document.getElementById("pieChart").getContext("2d");
-  new Chart(ctx, {
-    type: "pie",
-    data: {
-      labels: [
-        "Action",
-        "Adventure",
-        "Animation",
-        "Fantasy",
-        "Sci-Fi",
-        "Documentary",
-        "History",
-        "Comedy",
-      ],
-      datasets: [
-        {
-          label: "Films by Genre",
-          data: [156, 140, 123, 113, 81, 55, 17, 13],
-          backgroundColor: [
-            "#799aa7",
-            "#506e9a",
-            "#7e468a",
-            "#942270",
-            "#c12862",
-            "#eb4e57",
-            "#ff4217",
-            "#ff7742",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: "bottom",
-          align: "start", // left-align
-          labels: {
-            color: "#799aa7", // change legend font color
-            font: {
-              size: 14,
-              family: "Arial",
+            <div class="overflow-hidden px-4 gap-4">
+              <div class="px-3 gap-2">
+                <img
+                  class="mb-0"
+                  src="../static/img/imdb.png"
+                  style="height: 1rem"
+                  alt="IMDb"
+                />
+                <small
+                  style="font-weight: bold; color: #7e7f83; font-size: 0.75rem"
+                  >{{ movie.imdb_rating }}</small
+                >
+              </div>
+              <div class="px-3 gap-2">
+                <img
+                  class="mb-0"
+                  src="../static/img/rotten.png"
+                  style="height: 1rem"
+                  alt="Rotten Tomatoes"
+                />
+                <small
+                  style="font-weight: bold; color: #7e7f83; font-size: 0.75rem"
+                  >{{ movie.rotten_tomatoes_rating }}%</small
+                >
+              </div>
+            </div>
+            <div class="overflow-hidden px-4 gap-4">
+              <h6
+                class="mb-0 text-truncate"
+                style="
+                  color: #ff7742 !important;
+                  font-weight: bold;
+                  font-size: 0.75rem !important;
+                "
+              >
+                {{ movie.watched }}x
+              </h6>
+              <small
+                class="mb-0 opacity-75 text-muted d-block mt-1 text-truncate"
+                style="
+                  color: #506e9a !important;
+                  font-weight: bold;
+                  font-size: 0.75rem !important;
+                "
+                >Rank:
+                <b style="color: #e7ecef !important; font-weight: bold"
+                  >{{ movie.ranking }}</b
+                >/{{ num_of_movies }}</small
+              >
+            </div>
+
+            <div class="overflow-hidden px-4 gap-4">
+              <h6
+                class="mb-0 text-truncate"
+                style="
+                  color: #7e7f83 !important;
+                  font-weight: bold;
+                  font-size: 0.75rem !important;
+                "
+              >
+                {{ movie.directors | join(', ') }}
+              </h6>
+              <small
+                class="mb-0 opacity-75 text-muted d-block mt-1 text-truncate"
+                style="
+                  color: #506e9a !important;
+                  font-weight: bold;
+                  font-size: 0.75rem !important;
+                "
+                >Rank:
+                <b style="color: #e7ecef !important; font-weight: bold"
+                  >{{ directors_dict.get(movie.directors[0], 'N/A') }}</b
+                >/{{ num_of_directors }}</small
+              >
+            </div>
+
+            <div class="px-4 gap-4" style="margin-left: auto">
+              <div class="">
+                <img
+                  class="mb-0"
+                  src="../static/img/edit-button.png"
+                  style="height: 0.85rem; margin: 0.2rem"
+                  alt="Edit"
+                />
+                <img
+                  class="mb-0"
+                  src="../static/img/more.png"
+                  style="height: 0.85rem; margin: 0.2rem"
+                  alt="More"
+                />
+              </div>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <!-- Extra details below title -->
+
+  <!-- <small class="text-muted d-block mt-1">2024 • Action • 2h 15min</small> -->
+
+  <!--  -->
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById("pieChart").getContext("2d");
+    new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: [
+          "Action",
+          "Adventure",
+          "Animation",
+          "Fantasy",
+          "Sci-Fi",
+          "Documentary",
+          "History",
+          "Comedy",
+        ],
+        datasets: [
+          {
+            label: "Films by Genre",
+            data: [156, 140, 123, 113, 81, 55, 17, 13],
+            backgroundColor: [
+              "#799aa7",
+              "#506e9a",
+              "#7e468a",
+              "#942270",
+              "#c12862",
+              "#eb4e57",
+              "#ff4217",
+              "#ff7742",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "bottom",
+            align: "start", // left-align
+            labels: {
+              color: "#799aa7", // change legend font color
+              font: {
+                size: 14,
+                family: "Arial",
+              },
+              padding: 20,
             },
-            padding: 20,
           },
         },
       },
-    },
-  });
-</script>
+    });
+  </script>
 
-{% endblock %}
+  {% endblock %}
+</div>

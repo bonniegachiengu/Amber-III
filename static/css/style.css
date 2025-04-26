@@ -661,3 +661,22 @@ a.lib-link {
   overflow: hidden;
   align-items: center;
 }
+
+#genre-tabs .nav-link {
+  border-radius: 1%;
+  background-color: #022248;
+  color: #506e9a;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#genre-tabs .nav-link:hover {
+  background-color: #506e9a;
+  color: #e7ecef;
+}
+
+#genre-tabs .nav-link.active {
+  background-color: #506e9a;
+  color: #022248;
+}
