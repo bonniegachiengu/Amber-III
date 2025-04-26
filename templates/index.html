@@ -1,244 +1,242 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content%}
-<div id="movieCarousel" class="carousel slide" data-bs-ride="carousel">
-  <!-- Indicators -->
-  <!-- <div class="carousel-indicators">
-    {% for movie in movies %}
-    <button
-      type="button"
-      data-bs-target="#movieCarousel"
-      data-bs-slide-to="{{ loop.index0 }}"
-      class="{% if loop.first %}active{% endif %}"
-      aria-current="{% if loop.first %}true{% endif %}"
-      aria-label="Slide {{ loop.index }}"
-    ></button>
-    {% endfor %}
-  </div> -->
-
-  <!-- Carousel Items -->
-  <div class="carousel-inner">
-    {% for movie in movies %}
-    <div class="carousel-item {% if loop.first %}active{% endif %}">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6 movie-info">
-            <h1 class="movie-title">{{ movie.title }}</h1>
-            <div class="movie-meta d-flex align-items-center gap-2 flex-wrap">
-              <h5 class="movie-meta-info mb-0">{{ movie.year }}</h5>
-              {% for genre in movie.genres %}
-              <a href="#">{{ genre }}</a>
-              {% if not loop.last %}
-              <span class="blue">&middot;</span>
-              {% endif %} {% endfor %}
-              <p>{{ movie.watched }}% watched</p>
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+  %}
+  <div id="movieCarousel" class="carousel slide" data-bs-ride="carousel">
+    <!-- Indicators -->
+    <div class="carousel-indicators">
+      {% for movie in movies %}
+      <button
+        type="button"
+        data-bs-target="#movieCarousel"
+        data-bs-slide-to="{{ loop.index0 }}"
+        class="{% if loop.first %}active{% endif %}"
+        aria-current="{% if loop.first %}true{% endif %}"
+        aria-label="Slide {{ loop.index }}"
+      ></button>
+      {% endfor %}
+    </div>
+  
+    <!-- Carousel Items -->
+    <div class="carousel-inner">
+      {% for movie in movies %}
+      <div class="carousel-item {% if loop.first %}active{% endif %}">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 movie-info">
+              <h1 class="movie-title">{{ movie.title }}</h1>
+              <div class="movie-meta d-flex align-items-center gap-2 flex-wrap">
+                <h5 class="movie-meta-info mb-0">{{ movie.year }}</h5>
+                {% for genre in movie.genres %}
+                <a href="#">{{ genre }}</a>
+                {% if not loop.last %}
+                <span class="blue">&middot;</span>
+                {% endif %} {% endfor %}
+                <p>{{ movie.watched }}% watched</p>
+              </div>
+              <div class="movie-rating d-flex align-items-center mt-2 gap-2">
+                {% for director in movie.directors %}
+                <a href="#" class="movie-meta-director">{{ director }}</a>
+                {% if not loop.last %}
+                <span class="blue">&middot;</span>
+                {% endif %} {% endfor %}
+                <div class="rate-icon">
+                  <img src="../static/img/imdb.png" alt="IMDb" />
+                  <a href="#">{{ movie.imdb_rating }}</a>
+                </div>
+                <div class="rate-icon">
+                  <img src="../static/img/rotten.png" alt="Rotten Tomatoes" />
+                  <a href="#">{{ movie.rotten_tomatoes_rating }}%</a>
+                </div>
+              </div>
+              <p class="movie-description">
+                {{ movie.description }}
+                <a href="#" class="read-more">Read More</a>
+              </p>
+              <div class="avatar-group gap-2">
+                {% for actor in movie.cast %}
+                <div>
+                  <a href="#">
+                    <img
+                      src="../static/stars/{{ actor.image }}"
+                      alt="{{ actor.name }}"
+                    />
+                  </a>
+                  <strong>{{ actor.name }}</strong>
+                  <small>{{ actor.role }}</small>
+  
+                </div>
+                {% endfor %}
+              </div>
+              <div class="d-flex gap-2 cta">
+                <button class="btn btn-primary me-3"><a style="color: #e7ecef !important; font-weight: bold;" href="#">Continue Watching </a><i class="bi bi-play-fill"></i></button>
+                <button class="btn btn-outline-light"><a href="#">Watch Trailer</a></button>
+              </div>
             </div>
-            <div class="movie-rating d-flex align-items-center mt-2 gap-2">
-              {% for director in movie.directors %}
-              <a href="#" class="movie-meta-director">{{ director }}</a>
-              {% if not loop.last %}
-              <span class="blue">&middot;</span>
-              {% endif %} {% endfor %}
-              <div class="rate-icon">
-                <img src="../static/img/imdb.png" alt="IMDb" />
-                <a href="#">{{ movie.imdb_rating }}</a>
-              </div>
-              <div class="rate-icon">
-                <img src="../static/img/rotten.png" alt="Rotten Tomatoes" />
-                <a href="#">{{ movie.rotten_tomatoes_rating }}%</a>
-              </div>
-            </div>
-            <p class="movie-description">
-              {{ movie.description }}
-              <a href="#" class="read-more">Read More</a>
-            </p>
-            <div class="avatar-group gap-2">
-              {% for actor in movie.cast %}
-              <div>
-                <a href="#">
-                  <img
-                    src="../static/stars/{{ actor.image }}"
-                    alt="{{ actor.name }}"
-                  />
-                </a>
-                <strong>{{ actor.name }}</strong>
-                <small>{{ actor.role }}</small>
-
-              </div>
+            <div class="col-md-6">
+              <img
+                src="../static/posters/{{ movie.poster_main }}"
+                class="poster-main"
+                alt="Main Poster"
+              />
+              {% for poster in movie.poster_stack %}
+              <img
+                src="../static/posters/{{ poster }}"
+                class="poster-stack"
+                alt="Poster Stack"
+              />
               {% endfor %}
             </div>
-            <div class="d-flex gap-2 cta">
-              <button class="btn btn-primary me-3"><a style="color: #e7ecef !important; font-weight: bold;" href="#">Continue Watching </a><i class="bi bi-play-fill"></i></button>
-              <button class="btn btn-outline-light"><a href="#">Watch Trailer</a></button>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <img
-              src="../static/posters/{{ movie.poster_main }}"
-              class="poster-main"
-              alt="Main Poster"
-            />
-            {% for poster in movie.poster_stack %}
-            <img
-              src="../static/posters/{{ poster }}"
-              class="poster-stack"
-              alt="Poster Stack"
-            />
-            {% endfor %}
           </div>
         </div>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
+  
+    <!-- Controls -->
+    <button
+      class="carousel-control-next"
+      type="button"
+      data-bs-target="#movieCarousel"
+      data-bs-slide="next"
+    >
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
   </div>
-
-  <!-- Controls -->
-  <button
-    class="carousel-control-next"
-    type="button"
-    data-bs-target="#movieCarousel"
-    data-bs-slide="next"
-  >
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-</div>
-<!-- End of Carousel -->
-
-<!-- Movie List Section -->
-<div class="container mt-5">
-  <div class="row mb-4">
-    <div class="subtitle col-12 d-flex justify-content-between align-items-center">
-      <ul class="nav justify-content-between align-items-center">
-        <li><a href="#" class="lib-link"  style="color: #e7ecef !important;">Continue Watching</a></li>
-        <li><a href="#" class="lib-link">Active Watchlist</a></li>
-        <li><a href="#" class="lib-link">Recently Added</a></li>
-      </ul>
-      <a href="#" class="lib-link mb-0">See All <i class="bi bi-arrow-right"></i> </a>
+  <!-- End of Carousel -->
+  
+  <!-- Movie List Section -->
+  <div class="container mt-5">
+    <div class="row mb-4">
+      <div class="subtitle col-12 d-flex justify-content-between align-items-center">
+        <ul class="nav justify-content-between align-items-center">
+          <li><a href="#" class="lib-link"  style="color: #e7ecef !important;">Continue Watching</a></li>
+          <li><a href="#" class="lib-link">Active Watchlist</a></li>
+          <li><a href="#" class="lib-link">Recently Added</a></li>
+        </ul>
+        <a href="#" class="lib-link mb-0">See All <i class="bi bi-arrow-right"></i> </a>
+      </div>
     </div>
-  </div>
-  <div class="row col-12 g-3">
-          <!-- Movie Card -->
-    {% for movie in movies %}
-    <div class="card-group col">
-      <div class="card bg-dark-blue-lighter">
-        <img src="../static/posters/{{ movie.poster_main }}" class="card-img-top" alt="..." />
-        <div class="card-body">
-          <p class="card-title text-truncate" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ movie.title }}</p>
-
-            <div class="resume-card col-12 d-flex align-items-center justify-content-between">
-                <div class="progress-section d-flex align-items-center flex-grow-1">
-                  <div class="resume-card-percentage me-2"><small>{{ movie.watched }}%</small></div>
-                </div>
-                <a href="">
-                  <img src="../static/img/play.png" alt="Play" class="resume-card-icon ms-3" />
-                </a>
-            </div>
-            <div class="flex-grow-1 mt-2">
-              <div class="progress" style="height: 5px;">
-                <div class="progress-bar" role="progressbar" style="width: {{ movie.watched }}%;"></div>
+    <div class="row col-12 g-3">
+            <!-- Movie Card -->
+      {% for movie in movies %}
+      <div class="card-group col">
+        <div class="card bg-dark-blue-lighter">
+          <img src="../static/posters/{{ movie.poster_main }}" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <p class="card-title text-truncate" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ movie.title }}</p>
+  
+              <div class="resume-card col-12 d-flex align-items-center justify-content-between">
+                  <div class="progress-section d-flex align-items-center flex-grow-1">
+                    <div class="resume-card-percentage me-2"><small>{{ movie.watched }}%</small></div>
+                  </div>
+                  <a href="">
+                    <img src="../static/img/play.png" alt="Play" class="resume-card-icon ms-3" />
+                  </a>
               </div>
-            </div>
-            
-        </div>
-      </div>
-    </div> <!-- End of Movie Card -->
-    {% endfor %}
-  </div>
-</div> <!-- End of Movie List Section -->
-
-<!-- Movie List Section -->
-<div class="container mt-5" style="padding-top: 40px !important;">
-  <div class="row mb-4">
-    <div class="subtitle col-12 d-flex justify-content-between align-items-center">
-      <ul class="nav justify-content-between align-items-center">
-        <li><a href="#" class="lib-link"  style="color: #e7ecef !important;">Popular</a></li>
-        <li><a href="#" class="lib-link">Recently Watched</a></li>
-        <li><a href="#" class="lib-link">New Watchlists</a></li>
-      </ul>
-      <a href="#" class="lib-link mb-0">See All <i class="bi bi-arrow-right"></i> </a>
-    </div>
-  </div>
-  <div class="row col-12 g-3">
-          <!-- Movie Card -->
-    {% for movie in movies %}
-    <div class="card-group col">
-      <div class="card bg-dark-blue-lighter">
-        <img src="../static/posters/{{ movie.poster_main }}" class="card-img-top" alt="..." />
-        <div class="card-body">
-          <p class="card-title text-truncate" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ movie.title }}</p>
-
-            <div class="resume-card col-12 d-flex align-items-center justify-content-between">
-                <div class="progress-section d-flex align-items-center flex-grow-1">
-                  <p class="mb-0" style="font-weight: bold; font-size: 0.75rem; color: #7e7f83">{{ movie.year }}</p>
-                  <span style="color: #7e7f83" class="mx-2">|</span>
-                  <div>
-                    <img style="height: 20px;" src="../static/img/imdb.png" alt="imdb logo">
-                    <a href="#" style="font-size: 0.75rem; font-weight: bold; color: #ff7742 !important">{{ movie.imdb_rating }}</a>
-                  </div>
+              <div class="flex-grow-1 mt-2">
+                <div class="progress" style="height: 5px;">
+                  <div class="progress-bar" role="progressbar" style="width: {{ movie.watched }}%;"></div>
                 </div>
-                <a href="">
-                  <img src="../static/img/play.png" alt="Play" class="resume-card-icon ms-3" />
-                </a>
-            </div>
-            
-        </div>
-      </div>
-    </div> <!-- End of Movie Card -->
-    {% endfor %}
-  </div>
-</div> <!-- End of Movie List Section -->
-
-<!-- Watchlist Section -->
-<div class="container mt-5" style="padding-top: 40px !important;">
-  <div class="row mb-4">
-    <div class="subtitle col-12 d-flex justify-content-between align-items-center">
-      <ul class="nav justify-content-between align-items-center">
-        <li><a href="#" class="lib-link"  style="color: #e7ecef !important;">Marathons</a></li>
-        <li><a href="#" class="lib-link">Franchises</a></li>
-        <li><a href="#" class="lib-link">Studios</a></li>
-        <li><a href="#" class="lib-link">TV Shows</a></li>
-      </ul>
-      <a href="#" class="lib-link mb-0">See All <i class="bi bi-arrow-right"></i> </a>
-    </div>
-  </div>
-  <div class="row col-12 g-3">
-          <!-- Watchlist Card -->
-    {% for watchlist in watchlists %}
-    <div class="card-group col">
-      <div class="card watchlist-card bg-dark-blue-lighter">
-
-          <div class="poster-collage">
-            {% for poster in watchlist.posters[:4] %}
-              <img src="../static/posters/{{ poster }}" alt="Poster" class="poster-crop collage-{{ watchlist.posters|length }}" />
-            {% endfor %}
-          </div>
-
-        <div class="card-body">
-          <p class="card-title text-truncate" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ watchlist.title }}</p>
-            <div class="resume-card col-12 d-flex align-items-center justify-content-between">
-                <div class="progress-section d-flex align-items-center flex-grow-1">
-                  <div>
-                    <p class="mb-0" style="font-weight: bold; font-size: 0.95rem; color: #7e7f83">{{ watchlist.film_count }}</p>
-                    <p class="mb-0" style="color: #7e7f83; font-size: 10px; padding-top: none !important;">films</p>
-                  </div>
-                  <span style="color: #7e7f83" class="mx-2">|</span>
-                  <div class="resume-card-percentage me-2 mb-0">
-                    <p class="mb-0" style="font-weight: bold; font-size: 0.75rem;">{{ watchlist.watched }}%</p>
-                    <p class="mb-0" style="font-size: 10px;">watched</p>
-                  </div>
-                </div>
-                <a href="">
-                  <img src="../static/img/play.png" alt="Play" class="resume-card-icon ms-3" />
-                </a>
-            </div>
-            <div class="flex-grow-1 mt-2">
-              <div class="progress" style="height: 5px;">
-                <div class="progress-bar" role="progressbar" style="width: {{ watchlist.watched }}%;"></div>
               </div>
-            </div>
+              
+          </div>
         </div>
+      </div> <!-- End of Movie Card -->
+      {% endfor %}
+    </div>
+  </div> <!-- End of Movie List Section -->
+  
+  <!-- Movie List Section -->
+  <div class="container mt-5" style="padding-top: 40px !important;">
+    <div class="row mb-4">
+      <div class="subtitle col-12 d-flex justify-content-between align-items-center">
+        <ul class="nav justify-content-between align-items-center">
+          <li><a href="#" class="lib-link"  style="color: #e7ecef !important;">Popular</a></li>
+          <li><a href="#" class="lib-link">Recently Watched</a></li>
+          <li><a href="#" class="lib-link">New Watchlists</a></li>
+        </ul>
+        <a href="#" class="lib-link mb-0">See All <i class="bi bi-arrow-right"></i> </a>
       </div>
-    </div> <!-- End of Watchlist Card -->
-    {% endfor %}
-  </div>
-</div> <!-- End of Watchlist Section -->
-{% endblock %}
+    </div>
+    <div class="row col-12 g-3">
+            <!-- Movie Card -->
+      {% for movie in movies %}
+      <div class="card-group col">
+        <div class="card bg-dark-blue-lighter">
+          <img src="../static/posters/{{ movie.poster_main }}" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <p class="card-title text-truncate" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ movie.title }}</p>
+  
+              <div class="resume-card col-12 d-flex align-items-center justify-content-between">
+                  <div class="progress-section d-flex align-items-center flex-grow-1">
+                    <p class="mb-0" style="font-weight: bold; font-size: 0.75rem; color: #7e7f83">{{ movie.year }}</p>
+                    <span style="color: #7e7f83" class="mx-2">|</span>
+                    <div>
+                      <img style="height: 20px;" src="../static/img/imdb.png" alt="imdb logo">
+                      <a href="#" style="font-size: 0.75rem; font-weight: bold; color: #ff7742 !important">{{ movie.imdb_rating }}</a>
+                    </div>
+                  </div>
+                  <a href="">
+                    <img src="../static/img/play.png" alt="Play" class="resume-card-icon ms-3" />
+                  </a>
+              </div>
+              
+          </div>
+        </div>
+      </div> <!-- End of Movie Card -->
+      {% endfor %}
+    </div>
+  </div> <!-- End of Movie List Section -->
+  
+  <!-- Watchlist Section -->
+  <div class="container mt-5" style="padding-top: 40px !important;">
+    <div class="row mb-4">
+      <div class="subtitle col-12 d-flex justify-content-between align-items-center">
+        <ul class="nav justify-content-between align-items-center">
+          <li><a href="#" class="lib-link"  style="color: #e7ecef !important;">Marathons</a></li>
+          <li><a href="#" class="lib-link">Franchises</a></li>
+          <li><a href="#" class="lib-link">Studios</a></li>
+          <li><a href="#" class="lib-link">TV Shows</a></li>
+        </ul>
+        <a href="#" class="lib-link mb-0">See All <i class="bi bi-arrow-right"></i> </a>
+      </div>
+    </div>
+    <div class="row col-12 g-3">
+            <!-- Watchlist Card -->
+      {% for watchlist in watchlists %}
+      <div class="card-group col">
+        <div class="card watchlist-card bg-dark-blue-lighter">
+  
+            <div class="poster-collage">
+              {% for poster in watchlist.posters[:4] %}
+                <img src="../static/posters/{{ poster }}" alt="Poster" class="poster-crop collage-{{ watchlist.posters|length }}" />
+              {% endfor %}
+            </div>
+  
+          <div class="card-body">
+            <p class="card-title text-truncate" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ watchlist.title }}</p>
+              <div class="resume-card col-12 d-flex align-items-center justify-content-between">
+                  <div class="progress-section d-flex align-items-center flex-grow-1">
+                    <div>
+                      <p class="mb-0" style="font-weight: bold; font-size: 0.95rem; color: #7e7f83">{{ watchlist.film_count }}</p>
+                      <p class="mb-0" style="color: #7e7f83; font-size: 10px; padding-top: none !important;">films</p>
+                    </div>
+                    <span style="color: #7e7f83" class="mx-2">|</span>
+                    <div class="resume-card-percentage me-2"><small>{{ watchlist.watched }}%</small></div>
+                  </div>
+                  <a href="">
+                    <img src="../static/img/play.png" alt="Play" class="resume-card-icon ms-3" />
+                  </a>
+              </div>
+              <div class="flex-grow-1 mt-2">
+                <div class="progress" style="height: 5px;">
+                  <div class="progress-bar" role="progressbar" style="width: {{ watchlist.watched }}%;"></div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div> <!-- End of Watchlist Card -->
+      {% endfor %}
+    </div>
+  </div> <!-- End of Watchlist Section -->
+  {% endblock %}

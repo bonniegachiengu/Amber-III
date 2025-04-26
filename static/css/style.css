@@ -270,6 +270,7 @@ pale-orange - #ff7742
   color: #e7ecef;
 }
 
+
 /*NAVIGATION*/
 .search-icon {
   position: absolute;
@@ -488,7 +489,7 @@ pale-orange - #ff7742
   /* text-transform: uppercase; */
 }
 
-.card-footer {
+.card-footer{
   background-color: #011936;
   border-top: none;
   margin: none;
@@ -508,7 +509,7 @@ pale-orange - #ff7742
 
 .progress-bar {
   background-color: #ff7742;
-}
+} 
 
 .subtitle a {
   font-size: 1rem;
@@ -544,10 +545,10 @@ a.lib-link {
 
 .poster-collage {
   display: flex;
-  width: 100%; /* Fixed collage width */
-  height: 250px; /* Fixed collage height */
+  width: 100%;    /* Fixed collage width */
+  height: 250px;   /* Fixed collage height */
   overflow: hidden;
-  gap: 0.1rem; /* spacing between posters */
+  gap: 0.1rem;     /* spacing between posters */
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -560,18 +561,10 @@ a.lib-link {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.collage-1 {
-  width: 100%;
-}
-.collage-2 {
-  width: calc(50% - 0.05rem);
-}
-.collage-3 {
-  width: calc(33.333% - 0.066rem);
-}
-.collage-4 {
-  width: calc(25% - 0.075rem);
-}
+.collage-1 { width: 100%; }
+.collage-2 { width: calc(50% - 0.05rem); }
+.collage-3 { width: calc(33.333% - 0.066rem); }
+.collage-4 { width: calc(25% - 0.075rem); }
 
 /*LIBRARY PAGE*/
 .feature-icon {
@@ -672,11 +665,11 @@ a.lib-link {
 }
 
 #genre-tabs .nav-link:hover {
-  background-color: #506e9a;
+  background-color: #433742;
   color: #e7ecef;
 }
 
 #genre-tabs .nav-link.active {
-  background-color: #506e9a;
-  color: #022248;
+  background-color: #433742;
+  color: #e7ecef;
 }

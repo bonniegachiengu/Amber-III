@@ -33,8 +33,8 @@ content%}
             directories or rescan them for newly added movies.
           </p>
         </div>
-        <div class="gap-2 cta" style="margin-top: 1rem">
-          <button class="btn btn-primary me-3">
+        <div class="gap-2">
+          <button class="btn btn-primary me-3 mt-2">
             <a
               style="
                 font-weight: bold;
@@ -54,7 +54,7 @@ content%}
             ></i>
           </button>
           <button
-            class="btn btn-outline-light"
+            class="btn btn-outline-light mt-2"
             style="border: 1px solid #7e7f83 !important"
           >
             <a
@@ -205,8 +205,8 @@ content%}
             generated and custom. You can add or rescan directories.
           </p>
         </div>
-        <div class="gap-2 cta" style="margin-top: 1rem">
-          <button class="btn btn-primary me-3">
+        <div class="gap-2">
+          <button class="btn btn-primary me-3 mt-2">
             <a
               style="
                 font-weight: bold;
@@ -226,7 +226,7 @@ content%}
             ></i>
           </button>
           <button
-            class="btn btn-outline-light"
+            class="btn btn-outline-light mt-2"
             style="border: 1px solid #7e7f83 !important"
           >
             <a
@@ -423,7 +423,7 @@ content%}
           style="width: 20px; height: 20px"
         />
       </div>
-      <p class="mb-0" style="font-size: 0.75rem !important;">SCI-FI, ANIMATION (6)</p>
+      <p class="mb-0" style="font-size: 0.75rem !important;">MOVIES, RECENTLY ADDED, SCI-FI, ANIMATION (6)</p>
 
       <div class="align-items-center" style="margin-left: auto">
         <img
@@ -439,6 +439,9 @@ content%}
       </div>
     </div>
   </div>
+</div>
+
+
 
   <div class="container px-4 py-4">
     <div class="">
@@ -596,7 +599,230 @@ content%}
   </div>
   <!-- Extra details below title -->
 
-  <!-- <small class="text-muted d-block mt-1">2024 • Action • 2h 15min</small> -->
+
+<!-- Genres Tab -->
+<div class="container pt-3 mt-5">
+  <ul
+    class="nav navbar nav-pills d-flex gap-2 justify-content-center"
+    id="genre-tabs"
+    role="tablist"
+  >
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link active"
+        id="all-tab"
+        data-bs-toggle="pill"
+        type="button"
+        role="tab"
+      >
+        All
+      </button>
+    </li>
+    {% for genre, icon in genres %}
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="{{ genre|lower }}-tab"
+        data-bs-toggle="pill"
+        type="button"
+        role="tab"
+      >
+        <img
+          src="../static/img/{{ icon }}"
+          alt="{{ genre }} icon"
+          style="width: 20px; height: 20px; margin-right: 5px"
+        />
+        {{ genre }}
+      </button>
+    </li>
+    {% endfor %}
+    <!-- Add more genres if you want -->
+  </ul>
+</div>
+
+<div class="container px-4">
+  <div class="d-flex flex-column align-items-stretch">
+    <div class="d-flex flex-fill align-items-center gap-4 py-3 mx-4">
+      <div class="align-items-center">
+        <img
+          src="../static/img/filter.png"
+          alt="Filter"
+          style="width: 20px; height: 20px"
+        />
+        <img
+          src="../static/img/sort-arrows-couple-pointing-up-and-down.png"
+          alt="Sort"
+          style="width: 20px; height: 20px"
+        />
+      </div>
+      <p class="mb-0" style="font-size: 0.75rem !important;">MOVIES, POPULAR, SCI-FI, ANIMATION (6)</p>
+
+      <div class="align-items-center" style="margin-left: auto">
+        <img
+          src="../static/img/grid.png"
+          alt="Grid"
+          style="width: 20px; height: 20px"
+        />
+        <img
+          src="../static/img/view.png"
+          alt="View"
+          style="width: 20px; height: 20px"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Movie List Section -->
+<div class="container mt-3 px-4">
+    <div class="row col-12 g-3">
+            <!-- Movie Card -->
+      {% for movie in movies %}
+      <div class="card-group col">
+        <div class="card bg-dark-blue-lighter">
+          <img src="../static/posters/{{ movie.poster_main }}" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <p class="card-title text-truncate" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ movie.title }}</p>
+  
+              <div class="resume-card col-12 d-flex align-items-center justify-content-between">
+                  <div class="progress-section d-flex align-items-center flex-grow-1">
+                    <p class="mb-0" style="font-weight: bold; font-size: 0.75rem; color: #7e7f83">{{ movie.year }}</p>
+                    <span style="color: #7e7f83" class="mx-2">|</span>
+                    <div>
+                      <img style="height: 20px;" src="../static/img/imdb.png" alt="imdb logo">
+                      <a href="#" style="font-size: 0.75rem; font-weight: bold; color: #ff7742 !important">{{ movie.imdb_rating }}</a>
+                    </div>
+                  </div>
+                  <a href="">
+                    <img src="../static/img/play.png" alt="Play" class="resume-card-icon ms-3" />
+                  </a>
+              </div>
+              
+          </div>
+        </div>
+      </div> <!-- End of Movie Card -->
+      {% endfor %}
+    </div>
+  </div> <!-- End of Movie List Section -->
+
+
+<!-- Genres Tab -->
+<div class="container pt-3 mt-5">
+    <ul
+      class="nav navbar nav-pills d-flex gap-2 justify-content-center"
+      id="genre-tabs"
+      role="tablist"
+    >
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link active"
+          id="all-tab"
+          data-bs-toggle="pill"
+          type="button"
+          role="tab"
+        >
+          All
+        </button>
+      </li>
+      {% for genre, icon in genres %}
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="{{ genre|lower }}-tab"
+          data-bs-toggle="pill"
+          type="button"
+          role="tab"
+        >
+          <img
+            src="../static/img/{{ icon }}"
+            alt="{{ genre }} icon"
+            style="width: 20px; height: 20px; margin-right: 5px"
+          />
+          {{ genre }}
+        </button>
+      </li>
+      {% endfor %}
+      <!-- Add more genres if you want -->
+    </ul>
+  </div>
+  
+  <div class="container px-4">
+    <div class="d-flex flex-column align-items-stretch">
+      <div class="d-flex flex-fill align-items-center gap-4 py-3 mx-4">
+        <div class="align-items-center">
+          <img
+            src="../static/img/filter.png"
+            alt="Filter"
+            style="width: 20px; height: 20px"
+          />
+          <img
+            src="../static/img/sort-arrows-couple-pointing-up-and-down.png"
+            alt="Sort"
+            style="width: 20px; height: 20px"
+          />
+        </div>
+        <p class="mb-0" style="font-size: 0.75rem !important;">WATCHLISTS, ALL TYPES, ALL GENRES (6)</p>
+  
+        <div class="align-items-center" style="margin-left: auto">
+          <img
+            src="../static/img/grid.png"
+            alt="Grid"
+            style="width: 20px; height: 20px"
+          />
+          <img
+            src="../static/img/view.png"
+            alt="View"
+            style="width: 20px; height: 20px"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Watchlist Section -->
+  <div class="container mt-3 px-4">
+    <div class="row col-12 g-3">
+            <!-- Watchlist Card -->
+      {% for watchlist in watchlists %}
+      <div class="card-group col">
+        <div class="card watchlist-card bg-dark-blue-lighter">
+  
+            <div class="poster-collage">
+              {% for poster in watchlist.posters[:4] %}
+                <img src="../static/posters/{{ poster }}" alt="Poster" class="poster-crop collage-{{ watchlist.posters|length }}" />
+              {% endfor %}
+            </div>
+  
+          <div class="card-body">
+            <p class="card-title text-truncate" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ watchlist.title }}</p>
+              <div class="resume-card col-12 d-flex align-items-center justify-content-between">
+                  <div class="progress-section d-flex align-items-center flex-grow-1">
+                    <div>
+                      <p class="mb-0" style="font-weight: bold; font-size: 0.95rem; color: #7e7f83">{{ watchlist.film_count }}</p>
+                      <p class="mb-0" style="color: #7e7f83; font-size: 10px; padding-top: none !important;">films</p>
+                    </div>
+                    <span style="color: #7e7f83" class="mx-2">|</span>
+                    <div class="resume-card-percentage me-2 mb-0">
+                      <p class="mb-0" style="font-weight: bold; font-size: 0.75rem;">{{ watchlist.watched }}%</p>
+                      <p class="mb-0" style="font-size: 10px;">watched</p>
+                    </div>
+                  </div>
+                  <a href="">
+                    <img src="../static/img/play.png" alt="Play" class="resume-card-icon ms-3" />
+                  </a>
+              </div>
+              <div class="flex-grow-1 mt-2">
+                <div class="progress" style="height: 5px;">
+                  <div class="progress-bar" role="progressbar" style="width: {{ watchlist.watched }}%;"></div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div> <!-- End of Watchlist Card -->
+      {% endfor %}
+    </div>
+  </div> <!-- End of Watchlist Section -->
 
   <!--  -->
 
