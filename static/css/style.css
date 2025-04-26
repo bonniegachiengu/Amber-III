@@ -584,7 +584,7 @@ a.lib-link {
   background-color: #022248 !important;
   box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
   border-radius: 1%;
-  padding: 1rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
 }

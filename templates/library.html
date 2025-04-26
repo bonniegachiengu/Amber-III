@@ -3,8 +3,9 @@ content%}
 <!--  -->
 
 <div class="container px-4 py-4">
-  <div class="row row-cols-1 row-cols-lg-3 gap-2">
-    <div class="col stats pb-4">
+  <div class="row g-4">
+    <div class="col-12 col-md-6 col-lg-4 d-flex">
+      <div class="stats pb-4 h-100 w-100 d-flex flex-column">
         <h3
           class="fs-2 lib-link"
           style="
@@ -13,33 +14,33 @@ content%}
             font-weight: bold;
           "
         >
-          Total / Watched Films
+          Film Totals / Watchtime
         </h3>
         <div>
           <h1 class="pricing-card-title" style="font-size: 2.5rem">
-            21<small
+            681<small
               class="text-body-secondary fw-light"
               style="color: #7e7f83 !important; font-size: 20px"
-              >/watchlists</small
+            >
+              /56hrs 34mins</small
             >
           </h1>
-          <p>
-            <small
-              class="text-body-secondary fw-light"
-              style="color: #7e7f83 !important"
-              >Watchlists are a great way to keep track of what you want to watch
-              next.</small
-            >
+          <p
+            class="text-body-secondary fw-light"
+            style="color: #7e7f83 !important; font-size: 0.75rem !important"
+          >
+            These are the movies you have in your library. You can add or remove
+            directories or rescan them for newly added movies.
           </p>
         </div>
-        <div class="d-flex gap-2 cta">
+        <div class="d-flex gap-2 cta" style="margin-top: 1rem">
           <button class="btn btn-primary me-3">
             <a
               style="
                 font-weight: bold;
                 font-size: 0.75rem;
-                padding: 0.5rem 0.2rem !important;
-                color:#e7ecef !important;
+                padding: 0.4rem 0.2rem !important;
+                color: #e7ecef !important;
               "
               href="#"
               >Scan Directories </a
@@ -60,14 +61,14 @@ content%}
               style="
                 font-weight: bold;
                 font-size: 0.75rem;
-                padding: 0.5rem 0.2rem !important;
+                padding: 0.4rem 0.2rem !important;
               "
               href="#"
               >Add Directory</a
             >
           </button>
         </div>
-        <div class="watch-bars mt-5">
+        <div class="watch-bars mt-4">
           <ul class="nav nav-pills">
             <li
               class=""
@@ -84,6 +85,7 @@ content%}
                   margin: none !important;
                   color: #799aa7 !important;
                   font-weight: bold;
+                  font-size: 0.75rem;
                 "
                 aria-current="page"
                 href="#"
@@ -97,6 +99,180 @@ content%}
                   padding: none !important;
                   margin: none !important;
                   font-weight: bold;
+                  font-size: 0.75rem;
+                  color: #506e9a !important;
+                "
+                href="#"
+                >By genre</a
+              >
+            </li>
+          </ul>
+          <div class="breakdown mt-3">
+            <p
+              style="
+                font-size: 0.75rem !important;
+                color: #7e7f83;
+                margin-bottom: 0.5rem;
+              "
+            >
+              Sequels:
+              <bold style="font-weight: bold; font-size: 0.8rem; color: #799aa7"
+                >192</bold
+              >
+              films
+            </p>
+            <div class="progress" style="height: 5px">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                style="width: 29%"
+              ></div>
+            </div>
+          </div>
+          <div class="breakdown mt-3">
+            <p
+              style="
+                font-size: 0.75rem !important;
+                color: #7e7f83;
+                margin-bottom: 0.5rem;
+              "
+            >
+              Originals:
+              <bold style="font-weight: bold; font-size: 0.8rem; color: #799aa7"
+                >425</bold
+              >
+              films
+            </p>
+            <div class="progress" style="height: 5px">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                style="width: 62%"
+              ></div>
+            </div>
+          </div>
+          <div class="breakdown mt-3">
+            <p
+              style="
+                font-size: 0.75rem !important;
+                color: #7e7f83;
+                margin-bottom: 0.5rem;
+              "
+            >
+              Adaptations:
+              <bold style="font-weight: bold; font-size: 0.8rem; color: #799aa7"
+                >64</bold
+              >
+              films
+            </p>
+            <div class="progress" style="height: 5px">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                style="width: 9%"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-4 d-flex">
+      <div class="stats pb-4 h-100 w-100 d-flex flex-column">
+        <h3
+          class="fs-2 lib-link"
+          style="
+            color: #506e9a !important;
+            font-size: 15px !important;
+            font-weight: bold;
+          "
+        >
+          Watchlist Totals / Watchtime
+        </h3>
+        <div>
+          <h1 class="pricing-card-title" style="font-size: 2.5rem">
+            51<small
+              class="text-body-secondary fw-light"
+              style="color: #7e7f83 !important; font-size: 20px"
+            >
+              /26hrs 16mins</small
+            >
+          </h1>
+          <p
+            class="text-body-secondary fw-light"
+            style="color: #7e7f83 !important; font-size: 0.75rem !important"
+          >
+            These are the total watchlists in your library; both automatically
+            generated and custom. You can add or rescan directories.
+          </p>
+        </div>
+        <div class="d-flex gap-2 cta" style="margin-top: 1rem">
+          <button class="btn btn-primary me-3">
+            <a
+              style="
+                font-weight: bold;
+                font-size: 0.75rem;
+                padding: 0.4rem 0.2rem !important;
+                color: #e7ecef !important;
+              "
+              href="#"
+              >Scan Directories </a
+            ><i
+              class="bi bi-upc-scan"
+              style="
+                color: #e7ecef !important;
+                font-weight: bold;
+                font-size: 12px;
+              "
+            ></i>
+          </button>
+          <button
+            class="btn btn-outline-light"
+            style="border: 1px solid #7e7f83 !important"
+          >
+            <a
+              style="
+                font-weight: bold;
+                font-size: 0.75rem;
+                padding: 0.4rem 0.2rem !important;
+              "
+              href="#"
+              >Add Directory</a
+            >
+          </button>
+        </div>
+        <div class="watch-bars mt-4">
+          <ul class="nav nav-pills">
+            <li
+              class=""
+              style="
+                padding: none !important;
+                margin: none !important;
+                margin-right: 2rem;
+              "
+            >
+              <a
+                class=""
+                style="
+                  padding: none !important;
+                  margin: none !important;
+                  color: #799aa7 !important;
+                  font-weight: bold;
+                  font-size: 0.75rem;
+                "
+                aria-current="page"
+                href="#"
+                >By type</a
+              >
+            </li>
+            <li class="">
+              <a
+                class=""
+                style="
+                  padding: none !important;
+                  margin: none !important;
+                  font-weight: bold;
+                  font-size: 0.75rem;
+                  color: #506e9a !important;
                 "
                 href="#"
                 >By genre</a
@@ -115,224 +291,14 @@ content%}
               <bold style="font-weight: bold; font-size: 0.8rem; color: #799aa7"
                 >10</bold
               >
-              films
+              watchlists
             </p>
-            <div
-              style="height: 6px; background-color: #011936"
-              class="progress"
-              role="progressbar"
-              aria-label="Basic example"
-              aria-valuenow="50"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            >
-              <div class="progress-bar w-50"></div>
-            </div>
-          </div>
-          <div class="breakdown mt-3">
-              <p
-                style="
-                  font-size: 0.75rem !important;
-                  color: #7e7f83;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                Marathons:
-                <bold style="font-weight: bold; font-size: 0.8rem; color: #799aa7"
-                  >10</bold
-                >
-                films
-              </p>
+            <div class="progress" style="height: 5px">
               <div
-                style="height: 6px; background-color: #011936"
-                class="progress"
+                class="progress-bar"
                 role="progressbar"
-                aria-label="Basic example"
-                aria-valuenow="50"
-                aria-valuemin="0"
-                aria-valuemax="100"
-              >
-                <div class="progress-bar w-50"></div>
-              </div>
-            </div>
-            <div class="breakdown mt-3">
-              <p
-                style="
-                  font-size: 0.75rem !important;
-                  color: #7e7f83;
-                  margin-bottom: 0.5rem;
-                "
-              >
-                Marathons:
-                <bold style="font-weight: bold; font-size: 0.8rem; color: #799aa7"
-                  >10</bold
-                >
-                films
-              </p>
-              <div
-                style="height: 6px; background-color: #011936"
-                class="progress"
-                role="progressbar"
-                aria-label="Basic example"
-                aria-valuenow="50"
-                aria-valuemin="0"
-                aria-valuemax="100"
-              >
-                <div class="progress-bar w-50"></div>
-              </div>
-            </div>
-        </div>
-      </div>
-
-    <div class="col stats pb-4">
-      <h3
-        class="fs-2 lib-link"
-        style="
-          color: #506e9a !important;
-          font-size: 15px !important;
-          font-weight: bold;
-        "
-      >
-        Total / Watched Films
-      </h3>
-      <div>
-        <h1 class="pricing-card-title" style="font-size: 2.5rem">
-          21<small
-            class="text-body-secondary fw-light"
-            style="color: #7e7f83 !important; font-size: 20px"
-            >/watchlists</small
-          >
-        </h1>
-        <p>
-          <small
-            class="text-body-secondary fw-light"
-            style="color: #7e7f83 !important"
-            >Watchlists are a great way to keep track of what you want to watch
-            next.</small
-          >
-        </p>
-      </div>
-      <div class="d-flex gap-2 cta">
-        <button class="btn btn-primary me-3">
-          <a
-            style="
-              font-weight: bold;
-              font-size: 0.75rem;
-              padding: 0.5rem 0.2rem !important;
-              color:#e7ecef !important;
-            "
-            href="#"
-            >Scan Directories </a
-          ><i
-            class="bi bi-upc-scan"
-            style="
-              color: #e7ecef !important;
-              font-weight: bold;
-              font-size: 12px;
-            "
-          ></i>
-        </button>
-        <button
-          class="btn btn-outline-light"
-          style="border: 1px solid #7e7f83 !important"
-        >
-          <a
-            style="
-              font-weight: bold;
-              font-size: 0.75rem;
-              padding: 0.5rem 0.2rem !important;
-            "
-            href="#"
-            >Add Directory</a
-          >
-        </button>
-      </div>
-      <div class="watch-bars mt-5">
-        <ul class="nav nav-pills">
-          <li
-            class=""
-            style="
-              padding: none !important;
-              margin: none !important;
-              margin-right: 2rem;
-            "
-          >
-            <a
-              class=""
-              style="
-                padding: none !important;
-                margin: none !important;
-                color: #799aa7 !important;
-                font-weight: bold;
-              "
-              aria-current="page"
-              href="#"
-              >By type</a
-            >
-          </li>
-          <li class="">
-            <a
-              class=""
-              style="
-                padding: none !important;
-                margin: none !important;
-                font-weight: bold;
-              "
-              href="#"
-              >By genre</a
-            >
-          </li>
-        </ul>
-        <div class="breakdown mt-3">
-          <p
-            style="
-              font-size: 0.75rem !important;
-              color: #7e7f83;
-              margin-bottom: 0.5rem;
-            "
-          >
-            Marathons:
-            <bold style="font-weight: bold; font-size: 0.8rem; color: #799aa7"
-              >10</bold
-            >
-            films
-          </p>
-          <div
-            style="height: 6px; background-color: #011936"
-            class="progress"
-            role="progressbar"
-            aria-label="Basic example"
-            aria-valuenow="50"
-            aria-valuemin="0"
-            aria-valuemax="100"
-          >
-            <div class="progress-bar w-50"></div>
-          </div>
-        </div>
-        <div class="breakdown mt-3">
-            <p
-              style="
-                font-size: 0.75rem !important;
-                color: #7e7f83;
-                margin-bottom: 0.5rem;
-              "
-            >
-              Marathons:
-              <bold style="font-weight: bold; font-size: 0.8rem; color: #799aa7"
-                >10</bold
-              >
-              films
-            </p>
-            <div
-              style="height: 6px; background-color: #011936"
-              class="progress"
-              role="progressbar"
-              aria-label="Basic example"
-              aria-valuenow="50"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            >
-              <div class="progress-bar w-50"></div>
+                style="width: 20%"
+              ></div>
             </div>
           </div>
           <div class="breakdown mt-3">
@@ -343,35 +309,59 @@ content%}
                 margin-bottom: 0.5rem;
               "
             >
-              Marathons:
+              TV Shows:
               <bold style="font-weight: bold; font-size: 0.8rem; color: #799aa7"
-                >10</bold
+                >23</bold
               >
-              films
+              shows
             </p>
-            <div
-              style="height: 6px; background-color: #011936"
-              class="progress"
-              role="progressbar"
-              aria-label="Basic example"
-              aria-valuenow="50"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            >
-              <div class="progress-bar w-50"></div>
+            <div class="progress" style="height: 5px">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                style="width: 45%"
+              ></div>
             </div>
           </div>
+          <div class="breakdown mt-3">
+            <p
+              style="
+                font-size: 0.75rem !important;
+                color: #7e7f83;
+                margin-bottom: 0.5rem;
+              "
+            >
+              Franchises:
+              <bold style="font-weight: bold; font-size: 0.8rem; color: #799aa7"
+                >18</bold
+              >
+              watchlists
+            </p>
+            <div class="progress" style="height: 5px">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                style="width: 35%"
+              ></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="col stats pb-4">
-      <!-- <div
-        class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3"
-      >
-        <i class="bi bi-list-columns"></i>
-      </div> -->
-      <h3 class="fs-2 text-body-emphasis">Category Breakdown</h3>
-      <canvas id="pieChart" width="10" height="10"></canvas>
+    <div class="col-12 col-md-12 col-lg-4 d-flex">
+      <div class="stats pb-4 h-100 w-100 d-flex flex-column w-100">
+        <h3
+          class="fs-2 lib-link"
+          style="
+            color: #506e9a !important;
+            font-size: 15px !important;
+            font-weight: bold;
+          "
+        >
+          Films by Genre
+        </h3>
+        <canvas id="pieChart" width="10" height="10"></canvas>
+      </div>
     </div>
   </div>
 </div>
@@ -394,7 +384,7 @@ content%}
       datasets: [
         {
           label: "Films by Genre",
-          data: [12, 9, 14, 8, 6, 7, 5, 10],
+          data: [156, 140, 123, 113, 81, 55, 17, 13],
           backgroundColor: [
             "#799aa7",
             "#506e9a",
@@ -402,8 +392,8 @@ content%}
             "#942270",
             "#c12862",
             "#eb4e57",
-            "#ff7742",
             "#ff4217",
+            "#ff7742",
           ],
           borderWidth: 1,
         },
@@ -414,6 +404,15 @@ content%}
       plugins: {
         legend: {
           position: "bottom",
+          align: "start", // left-align
+          labels: {
+            color: "#799aa7", // change legend font color
+            font: {
+              size: 14,
+              family: "Arial",
+            },
+            padding: 20,
+          },
         },
       },
     },
