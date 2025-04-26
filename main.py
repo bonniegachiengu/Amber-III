@@ -10,6 +10,7 @@ from flask_ckeditor import CKEditor
 # from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from data import movies, watchlists
+import tools
 import os
 
 load_dotenv()
@@ -26,7 +27,21 @@ def home():
 
 @app.route("/library")
 def library():
-    return render_template("library.html", movies=movies, watchlists=watchlists)
+    # rank movie directors based on the ranks of their movies
+    directors = tools.rank_directors(movies)
+    num_of_movies = len(movies)
+    num_of_directors = len(directors)
+    num_of_watchlists = len(watchlists)
+    return render_template(
+        "library.html", 
+        movies=movies, 
+        watchlists=watchlists, 
+        directors=directors, 
+        directors_dict=dict(directors), 
+        num_of_movies=num_of_movies, 
+        num_of_watchlists=num_of_watchlists,
+        num_of_directors=num_of_directors
+    )
 
 @app.route("/player")
 def player():

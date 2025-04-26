@@ -371,6 +371,7 @@ content%}
 <div class="container px-4 py-4">
   <div class="">
     <div class="list-group d-flex flex-column align-items-stretch">
+        {% for movie in movies %}
       <a
         href="#"
         class="list-group-item list-group-item-action d-flex flex-fill align-items-center gap-3 py-3"
@@ -383,7 +384,7 @@ content%}
         !important; margin-right: 0.5rem !important; border-radius: 25%; background-color:#506e9a; border: none !important;"/>
         <!-- Poster -->
         <img
-          src="../static/posters/strange2.jpg"
+          src="../static/posters/{{ movie.poster_main }}"
           alt=""
           width="32"
           height="50"
@@ -395,10 +396,10 @@ content%}
           <!-- Title + Details (only this grows and truncates) -->
           <div class="overflow-hidden gap-4">
             <h6 class="mb-0 text-truncate" style="color: #e7ecef !important; font-weight: bold;">
-              Doctor Strange in the Multiverse of Madness
+              {{ movie.title }}
             </h6>
             <small class="mb-0 opacity-75 text-muted d-block mt-1 text-truncate" style="color: #7e7f83 !important; font-weight: bold; font-size: 0.75rem !important"
-              >2024 • Action • 2h 15min</small
+              >{{ movie.year }} • {{ movie.genres[0] }} • {{ movie.runtime }}</small
             >
           </div>
 
@@ -410,7 +411,7 @@ content%}
                 style="height: 1rem"
                 alt="IMDb"
               />
-              <small style="font-weight: bold; color: #7e7f83; font-size: 0.75rem;">6.9</small>
+              <small style="font-weight: bold; color: #7e7f83; font-size: 0.75rem;">{{ movie.imdb_rating }}</small>
             </div>
             <div class="px-3 gap-2">
               <img
@@ -419,25 +420,24 @@ content%}
                 style="height: 1rem"
                 alt="Rotten Tomatoes"
               />
-              <small style="font-weight: bold; color: #7e7f83; font-size: 0.75rem;">63%</small>
+              <small style="font-weight: bold; color: #7e7f83; font-size: 0.75rem;">{{ movie.rotten_tomatoes_rating }}%</small>
             </div>
           </div>
           <div class="overflow-hidden px-4 gap-4">
             <h6 class="mb-0 text-truncate" style="color: #ff7742 !important; font-weight: bold; font-size: 0.75rem !important;">
-              20.5x
+              {{ movie.watched }}x
             </h6>
             <small class="mb-0 opacity-75 text-muted d-block mt-1 text-truncate" style="color: #506e9a !important; font-weight: bold; font-size: 0.75rem !important;"
-              >Rank: <b style="color: #e7ecef !important; font-weight: bold;">20</b>/681</small
+              >Rank: <b style="color: #e7ecef !important; font-weight: bold;">{{ movie.ranking }}</b>/{{ num_of_movies }}</small
             >
           </div>
 
           <div class="overflow-hidden px-4 gap-4">
             <h6 class="mb-0 text-truncate" style="color: #7e7f83 !important; font-weight: bold; font-size: 0.75rem !important;">
-              Christopher Nolan, Sam Raimi, James Cameron
+              {{ movie.directors | join(', ') }}
             </h6>
             <small class="mb-0 opacity-75 text-muted d-block mt-1 text-truncate" style="color: #506e9a !important; font-weight: bold; font-size: 0.75rem !important;"
-              >Rank: <b style="color: #e7ecef !important; font-weight: bold;">20</b>/265</small
-            >
+              >Rank: <b style="color: #e7ecef !important; font-weight: bold;">{{ directors_dict.get(movie.directors[0], 'N/A') }}</b>/{{ num_of_directors }}</small>
           </div>
 
           <div class="px-4 gap-4" style="margin-left: auto">
@@ -458,6 +458,7 @@ content%}
           </div>
         </div>
       </a>
+        {% endfor %}
     </div>
   </div>
 </div>
