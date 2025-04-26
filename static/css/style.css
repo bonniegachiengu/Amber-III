@@ -468,11 +468,12 @@ pale-orange - #ff7742
 }
 
 /*CARDS*/
+
 .card {
   box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
   margin-bottom: 1rem;
   border-radius: none;
-  width: 150px;
+  width: 180px;
 }
 
 .card-img-top {
