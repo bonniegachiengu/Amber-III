@@ -55,10 +55,10 @@
 
           <!-- Navigation links aligned to the right -->
           <ul class="nav ms-auto me-3 mb-lg-0">
-            <li><a href="#" class="nav-link px-2" style="color: #e7ecef !important;">Home</a></li>
-            <li><a href="#" class="nav-link px-2">Library</a></li>
-            <li><a href="#" class="nav-link px-2">Watchlist</a></li>
-            <li><a href="#" class="nav-link px-2">People</a></li>
+            <li><a href="{{ url_for('home') }}" class="nav-link px-2" style="color: #e7ecef !important;">Home</a></li>
+            <li><a href="{{ url_for('library') }}" class="nav-link px-2">Library</a></li>
+            <li><a href="{{ url_for('player') }}" class="nav-link px-2">Player</a></li>
+            <li><a href="{{ url_for('people') }}" class="nav-link px-2">People</a></li>
           </ul>
 
           <!-- Search bar -->

@@ -24,6 +24,18 @@ Bootstrap5(app)
 def home():
     return render_template("index.html", movies=movies, watchlists=watchlists)
 
+@app.route("/library")
+def library():
+    return render_template("library.html", movies=movies, watchlists=watchlists)
+
+@app.route("/player")
+def player():
+    return render_template("player.html")
+
+@app.route("/people")
+def people():
+    return render_template("people.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

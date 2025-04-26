@@ -565,3 +565,26 @@ a.lib-link {
 .collage-2 { width: calc(50% - 0.05rem); }
 .collage-3 { width: calc(33.333% - 0.066rem); }
 .collage-4 { width: calc(25% - 0.075rem); }
+
+/*LIBRARY PAGE*/
+.feature-icon {
+  background-color: #022248 !important;
+  color: #022248 !important;
+}
+
+.feature-icon i {
+  font-size: 1rem;
+  color: #e7ecef;
+  padding: 0.5rem;
+  border-radius: 5%;
+  text-align: center;
+}
+
+.stats {
+  background-color: #022248 !important;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+  border-radius: 1%;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
