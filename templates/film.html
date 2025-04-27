@@ -1,74 +1,69 @@
-{% extends "base.html" %}{% block title %}Film Details{% endblock %} {% block
-content %}
+{% extends "base.html" %}
+{% block title %}Film Details{% endblock %}
+{% block content %}
 
 <!-- Background Banner -->
-<section
-  class="background-banner"
-  id="summary-wrapper"
-  style="background-image: url('../static/posters/zoo.jpg')"
+<section 
+  class="background-banner" 
+  id="summary-wrapper" 
+  style="background-image: url('../static/posters/zoo.jpg'); background-size: cover; background-position: center;"
 >
-  <div class="background-overlay movie">
-    <div class="container">
-        <div class="shadow-base"></div>
+  <div class="background-overlay">
+    <div class="container py-5">
+      <div class="row align-items-center">
+        
+        <!-- Poster and Buttons -->
+        <div class="col-lg-3 col-md-4 col-sm-12 text-center mb-4">
+          <div class="poster-card mb-3">
+            <img src="../static/posters/zoo.jpg" alt="Movie Poster" class="img-fluid rounded shadow" />
+          </div>
+          <div class="d-flex flex-column gap-2">
+            <a href="#" class="btn btn-primary w-100">
+              <i class="bi bi-play-fill"></i> Continue Watching
+            </a>
+            <a href="#" class="btn btn-outline-light w-100">
+              Watch Trailer
+            </a>
+          </div>
+        </div>
+
+        <!-- Movie Details -->
+        <div class="col-lg-9 col-md-8 col-sm-12">
+          <h2 class="text-danger" style="font-size: 0.95rem;"><em>{{ movie.franchise }}</em></h2>
+          <h1 class="text-white" style="font-size: 2rem;">{{ movie.title }}</h1>
+
+          <div class="movie-meta d-flex flex-wrap align-items-center gap-2 text-white mb-3">
+            <span>{{ movie.year }}</span>
+            {% for genre in movie.genres %}
+              <a href="#" class="text-decoration-none text-info">{{ genre }}</a>
+              {% if not loop.last %}<span class="mx-1">&middot;</span>{% endif %}
+            {% endfor %}
+            <span>{{ movie.watched }}% watched</span>
+          </div>
+
+          <div class="movie-rating d-flex flex-wrap align-items-center gap-3 mb-4">
+            {% for director in movie.directors %}
+              <a href="#" class="text-decoration-none text-warning">{{ director }}</a>
+              {% if not loop.last %}<span class="mx-1">&middot;</span>{% endif %}
+            {% endfor %}
+            <div class="d-flex align-items-center gap-1">
+              <img src="../static/img/imdb.png" alt="IMDb" style="height: 20px;" />
+              <span class="text-white">{{ movie.imdb_rating }}</span>
+            </div>
+            <div class="d-flex align-items-center gap-1">
+              <img src="../static/img/rotten.png" alt="Rotten Tomatoes" style="height: 20px;" />
+              <span class="text-white">{{ movie.rotten_tomatoes_rating }}%</span>
+            </div>
+          </div>
+
+          <p class="text-light" style="font-size: 1rem;">
+            {{ movie.description }}
+          </p>
+        </div>
+
       </div>
     </div>
   </div>
-
-  <div class="container summary">
-        <div class="row" id="summary-section">
-            <div class="mobile-poster posters col-md-2 col-sm-3 hidden-xs sticky-wrapper">
-                <div class="poster with-overflow poster-card" id="poster-frame">
-                    <img src="../static/posters/zoo.jpg" alt="Movie Poster" class="img-fluid" />
-                </div>
-                <div class="poster with-overflow poster-card">
-                    <button class="btn btn-primary me-3">
-                      <a style="color: #e7ecef !important; font-weight: bold" href="#"
-                        >Continue Watching </a
-                      ><i class="bi bi-play-fill"></i>
-                    </button>
-                    <button class="btn btn-outline-light">
-                      <a href="#">Watch Trailer</a>
-                    </button>
-                  </div>
-            </div>
-            <div class="col-md-10 col-md-offset-2 col-sm-9 col-sm-offset-3 mobile-title info-wrapper">
-                <h2 class="franchise-title" style="font-size: 0.85rem !important; color:#eb4e57"><em>{{ movie.franchise }}</em></h2>
-                <div class="col-md-6 movie-info">
-                    <h1 class="movie-title" style="font-size: 1.5rem;">{{ movie.title }}</h1>
-                    <div class="movie-meta d-flex align-items-center gap-2 flex-wrap">
-                      <h5 class="movie-meta-info mb-0">{{ movie.year }}</h5>
-                      {% for genre in movie.genres %}
-                      <a href="#">{{ genre }}</a>
-                      {% if not loop.last %}
-                      <span class="blue">&middot;</span>
-                      {% endif %} {% endfor %}
-                      <p>{{ movie.watched }}% watched</p>
-                    </div>
-                    <div class="movie-rating d-flex align-items-center mt-2 gap-2">
-                      {% for director in movie.directors %}
-                      <a href="#" class="movie-meta-director">{{ director }}</a>
-                      {% if not loop.last %}
-                      <span class="blue">&middot;</span>
-                      {% endif %} {% endfor %}
-                      <div class="rate-icon">
-                        <img src="../static/img/imdb.png" alt="IMDb" />
-                        <a href="#">{{ movie.imdb_rating }}</a>
-                      </div>
-                      <div class="rate-icon">
-                        <img src="../static/img/rotten.png" alt="Rotten Tomatoes" />
-                        <a href="#">{{ movie.rotten_tomatoes_rating }}%</a>
-                      </div>
-                    </div>
-                </div>
-                <div id="overview" class="col-md-10 col-sm-9 info">
-                    <!-- OVERVIEW -->
-                    <p class="movie-description">
-                        {{ movie.description }}
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
 </section>
 
 {% endblock %}
