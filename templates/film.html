@@ -1,69 +1,40 @@
 {% extends "base.html" %}
-{% block title %}Film Details{% endblock %}
+{% block title %}{{ movie.title }}{% endblock %}
 {% block content %}
 
-<!-- Background Banner -->
-<section 
-  class="background-banner" 
-  id="summary-wrapper" 
-  style="background-image: url('../static/posters/zoo.jpg'); background-size: cover; background-position: center;"
->
-  <div class="background-overlay">
-    <div class="container py-5">
-      <div class="row align-items-center">
-        
-        <!-- Poster and Buttons -->
-        <div class="col-lg-3 col-md-4 col-sm-12 text-center mb-4">
-          <div class="poster-card mb-3">
-            <img src="../static/posters/zoo.jpg" alt="Movie Poster" class="img-fluid rounded shadow" />
-          </div>
-          <div class="d-flex flex-column gap-2">
-            <a href="#" class="btn btn-primary w-100">
-              <i class="bi bi-play-fill"></i> Continue Watching
-            </a>
-            <a href="#" class="btn btn-outline-light w-100">
-              Watch Trailer
-            </a>
-          </div>
-        </div>
-
-        <!-- Movie Details -->
-        <div class="col-lg-9 col-md-8 col-sm-12">
-          <h2 class="text-danger" style="font-size: 0.95rem;"><em>{{ movie.franchise }}</em></h2>
-          <h1 class="text-white" style="font-size: 2rem;">{{ movie.title }}</h1>
-
-          <div class="movie-meta d-flex flex-wrap align-items-center gap-2 text-white mb-3">
-            <span>{{ movie.year }}</span>
-            {% for genre in movie.genres %}
-              <a href="#" class="text-decoration-none text-info">{{ genre }}</a>
-              {% if not loop.last %}<span class="mx-1">&middot;</span>{% endif %}
-            {% endfor %}
-            <span>{{ movie.watched }}% watched</span>
-          </div>
-
-          <div class="movie-rating d-flex flex-wrap align-items-center gap-3 mb-4">
-            {% for director in movie.directors %}
-              <a href="#" class="text-decoration-none text-warning">{{ director }}</a>
-              {% if not loop.last %}<span class="mx-1">&middot;</span>{% endif %}
-            {% endfor %}
-            <div class="d-flex align-items-center gap-1">
-              <img src="../static/img/imdb.png" alt="IMDb" style="height: 20px;" />
-              <span class="text-white">{{ movie.imdb_rating }}</span>
-            </div>
-            <div class="d-flex align-items-center gap-1">
-              <img src="../static/img/rotten.png" alt="Rotten Tomatoes" style="height: 20px;" />
-              <span class="text-white">{{ movie.rotten_tomatoes_rating }}%</span>
-            </div>
-          </div>
-
-          <p class="text-light" style="font-size: 1rem;">
-            {{ movie.description }}
-          </p>
-        </div>
-
+<section class="background-banner" style="background-image: url('../static/posters/zoo.jpg')">
+  <div class="overlay"></div>
+  <div class="container movie-header">
+    <div class="poster-wrapper">
+      <img src="../static/posters/zoo.jpg" alt="Movie Poster" class="poster">
+      <div class="button-group">
+        <a href="#" class="btn btn-primary">Continue Watching</a>
+        <a href="#" class="btn btn-outline-light">Watch Trailer</a>
+      </div>
+    </div>
+    <div class="info-wrapper">
+      <h2 class="franchise-title">{{ movie.franchise }}</h2>
+      <h1 class="movie-title">{{ movie.title }} <span class="year">({{ movie.year }})</span></h1>
+      <div class="meta">
+        {% for genre in movie.genres %}
+          <span>{{ genre }}</span>{% if not loop.last %} · {% endif %}
+        {% endfor %}
+      </div>
+      <div class="ratings">
+        <div><img src="../static/img/imdb.png" alt="IMDb"> {{ movie.imdb_rating }}</div>
+        <div><img src="../static/img/rotten.png" alt="Rotten Tomatoes"> {{ movie.rotten_tomatoes_rating }}%</div>
+      </div>
+      <div class="directors">
+        {% for director in movie.directors %}
+          <span>{{ director }}</span>{% if not loop.last %} · {% endif %}
+        {% endfor %}
       </div>
     </div>
   </div>
+</section>
+
+<section class="container description">
+  <p>{{ movie.description }}</p>
 </section>
 
 {% endblock %}

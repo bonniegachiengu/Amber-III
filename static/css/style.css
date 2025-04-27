@@ -696,6 +696,7 @@ a.lib-link {
   padding-top: 100px; /* To make space for the floating poster */
   margin-top: 20px;
 }
+
 #summary-wrapper {
   position: relative;
   background-size: cover;
@@ -739,5 +740,102 @@ a.lib-link {
     align-items: flex-start;
   }
 }
-;
+
+.background-banner {
+  position: relative;
+  height: 75vh;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
+}
+
+.movie-header {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding-top: 40vh;
+  gap: 2rem;
+}
+
+.poster-wrapper {
+  position: sticky;
+  top: 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.poster {
+  width: 200px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  transform: translateY(50%);
+}
+
+.button-group {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-wrapper {
+  color: white;
+  max-width: 700px;
+}
+
+.franchise-title {
+  font-size: 1rem;
+  color: #ff5c5c;
+  margin-bottom: 0.5rem;
+}
+
+.movie-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.year {
+  font-size: 1.5rem;
+  opacity: 0.7;
+}
+
+.meta, .ratings, .directors {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ratings img {
+  width: 20px;
+  margin-right: 5px;
+}
+
+.description {
+  margin-top: 4rem;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .movie-header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .poster {
+    transform: translateY(0);
+  }
+
+  .info-wrapper {
+    text-align: center;
+  }
 }
