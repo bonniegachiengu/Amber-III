@@ -15,7 +15,7 @@
             class="summary-inner d-flex flex-column flex-md-row align-items-start"
           >
             <!-- Poster and Buttons -->
-            <div class="col-lg-3 col-md-4 col-12 sticky-sidebar">
+            <div class="col-12">
               <div class="poster-wrapper mb-3">
                 <img
                   src="../static/posters/{{ movie.poster_main }}"
@@ -74,12 +74,14 @@
                 <p class="watched">{{ movie.watched }}% watched</p>
               </div>
   
-              <div class="rating-section d-flex flex-wrap align-items-center gap-3 mt-3">
-                {% for director in movie.directors %}
-                <a href="#" class="movie-meta-director">{{ director }}</a>
-                {% if not loop.last %}
-                <span class="blue">·</span>
-                {% endif %} {% endfor %}
+              <div
+                class="rating-section d-flex flex-wrap align-items-center gap-3 mt-3"
+              >
+              {% for director in movie.directors %}
+              <a href="#" class="movie-meta-director">{{ director }}</a>
+              {% if not loop.last %}
+              <span class="blue">·</span>
+              {% endif %} {% endfor %}
   
                 <div class="ratings-icons d-flex align-items-center gap-1">
                   <img src="../static/img/imdb.png" alt="IMDb" />

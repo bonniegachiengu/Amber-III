@@ -1,17 +1,19 @@
 {% extends "base.html" %} {% block title %}Film Details{% endblock %} {% block
 content %}
 <section
-  class="w-100"
+  class=""
   id="summary-wrapper"
   style="background-image: url('../static/posters/{{ movie.poster_main }}')"
-></section>
+>
+<div class="background-overlay"></div>
+</section>
 
 <!--  flex-column flex-md-row g-4" id="summary-container" -->
 <section
-  class="container col-12 d-flex flex-column flex-md-row g-4"
+  class="container summary-inner col-12 d-flex flex-column flex-md-row g-4"
   id="summary-container"
 >
-  <div class="sidebar col-3">
+  <div class="sidebar col-lg-3 col-12">
     <div class="poster-wrapper mb-3">
       <img
         src="../static//posters/{{ movie.poster_main }}"
