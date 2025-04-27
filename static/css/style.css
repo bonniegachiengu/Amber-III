@@ -675,37 +675,14 @@ a.lib-link {
   color: #e7ecef;
 }
 
-
-.background-banner {
-  position: relative;
-  background-size: cover;
-  background-position: center;
-  height: 300px; /* Adjust height as needed */
-}
-
-.poster-card {
-  position: sticky;
-  top: 0; /* Adjusted to stick to the top */
-  left: 30px;
-  width: 150px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-  overflow: hidden;
-}
-
-.content-section {
-  padding-top: 100px; /* To make space for the floating poster */
-  margin-top: 20px;
-}
-
 #summary-wrapper {
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
   padding: 6rem 0 3rem;
   position: relative;
-  color: white;
+  color: #e7ecef;
 }
-
 
 .background-overlay {
   position: absolute;
@@ -720,26 +697,64 @@ a.lib-link {
 .summary-container {
   position: relative;
   z-index: 2;
+  padding: 0 2rem;
 }
 
+.summary-inner {
+  display: flex;
+  gap: 2rem;
+  position: relative;
+  margin-top: 150px;
+}
+
+/* Sidebar */
 .sticky-sidebar {
-  position: sticky;
-  top: 100px;
+  flex-shrink: 0;
+  width: 200px;
+  margin-top: -120px; /* Dangle effect */
 }
 
 .poster-wrapper {
   overflow: hidden;
-  border: 1px solid white;
+  border: 1px solid #7e7e7e;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
 
 .poster-img {
   width: 100%;
   display: block;
-  border-radius: 0; /* No border radius */
+  border-radius: 0;
+}
+
+/* Buttons */
+.button-group {
+  margin-top: 1rem;
 }
 
 .button-group .btn {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border: none;
   font-weight: bold;
+  cursor: pointer;
+}
+
+#continue-watching {
+  background: #ff7742;
+  color: #e7ecef !important;
+  width: fit-content;
+}
+
+#continue-watching:hover {
+  background: #7e7f83;
+  color: #e7ecef !important;
+}
+
+/* Movie Info */
+.movie-info {
+  flex-grow: 1;
 }
 
 .franchise-title {
@@ -754,7 +769,7 @@ a.lib-link {
 
 .year {
   font-size: 1.2rem;
-  color: #ccc;
+  color: #e7ecef;
 }
 
 .movie-meta {
@@ -766,19 +781,12 @@ a.lib-link {
 }
 
 .genre, .director {
-  color: #ddd;
+  color: #7e7f83;
   font-weight: 500;
 }
 
 .divider {
-  color: #aaa;
-  margin: 0 0.5rem;
-}
-
-.ratings-icons {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+  color: #7e7f83;
 }
 
 .ratings-icons img {
@@ -786,16 +794,59 @@ a.lib-link {
   height: auto;
 }
 
+/* Description */
 .movie-description {
   margin-top: 3rem;
   font-size: 1rem;
-  color: #ccc;
+  color: #e7ecef;
 }
 
-/* Responsive Improvements */
+/* Responsive: Small screens */
 @media (max-width: 767px) {
+  .summary-inner {
+    flex-direction: column;
+    margin-top: 50px;
+  }
+
   .sticky-sidebar {
+    margin-top: 0;
+    width: 100%;
     position: static;
-    margin-bottom: 2rem;
+  }
+
+  .poster-wrapper {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .button-group .btn {
+    width: auto;
+    text-align: center;
+  }
+}
+
+@media (min-width: 768px) {
+  .summary-inner {
+    display: flex;
+    align-items: stretch; /* Make both poster and details equal height */
+    position: relative;
+    margin-top: 150px;
+  }
+
+  .sticky-sidebar {
+    position: absolute;
+    top: 200px;
+    left: 30px;
+    width: 200px;
+    z-index: 3;
+  }
+
+  .movie-details {
+    margin-left: 250px; /* Space for poster */
+    margin-top: 80px; /* Space for sticky sidebar */
+    flex: 1; /* Take remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* If needed, spread content nicely */
   }
 }

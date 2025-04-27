@@ -49,9 +49,11 @@ def library():
 def movie(movie_id):
     # find the movie with the given id
     movie = next((movie for movie in movies if movie["id"] == movie_id), None)
+    similar_movies = tools.similar_movies(movie["genres"], movies)
     if movie is None:
         abort(404)
-    return render_template("film.html", movie=movie)
+    return render_template("film.html", movie=movie, similar_movies=similar_movies[:6])
+
 
 
 @app.route("/player")

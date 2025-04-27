@@ -1,57 +1,148 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block title %}Film Details{% endblock %} {% block
+content %}
+<section
+  class="w-100"
+  id="summary-wrapper"
+  style="background-image: url('../static/posters/{{ movie.poster_main }}')"
+></section>
 
-{% block title %}Film Details{% endblock %}
-
-{% block content %}
-<section id="summary-wrapper" style="background-image: url('../static/posters/zoo.jpg');">
-  <div class="background-overlay"></div>
-
-  <div class="container summary-container">
-    <div class="row g-4 align-items-start">
-      
-      <!-- Poster & Buttons -->
-      <div class="col-lg-3 col-md-4 col-12 sticky-sidebar">
-        <div class="poster-wrapper">
-          <img src="../static/posters/zoo.jpg" alt="Movie Poster" class="poster-img" />
-        </div>
-        <div class="button-group mt-3">
-          <a href="#" class="btn btn-primary w-100 mb-2">Continue Watching <i class="bi bi-play-fill"></i></a>
-          <a href="#" class="btn btn-outline-light w-100">Watch Trailer</a>
-        </div>
-      </div>
-
-      <!-- Movie Info -->
-      <div class="col-lg-9 col-md-8 col-12">
-        <h2 class="franchise-title">{{ movie.franchise }}</h2>
-        <h1 class="movie-title">{{ movie.title }} <span class="year">({{ movie.year }})</span></h1>
-        <div class="movie-meta">
-          {% for genre in movie.genres %}
-            <a href="#" class="genre">{{ genre }}</a>{% if not loop.last %}<span class="divider">·</span>{% endif %}
-          {% endfor %}
-          <p class="watched">{{ movie.watched }}% watched</p>
-        </div>
-
-        <div class="rating-section d-flex gap-3 flex-wrap mt-3">
-          {% for director in movie.directors %}
-            <a href="#" class="director">{{ director }}</a>{% if not loop.last %}<span class="divider">·</span>{% endif %}
-          {% endfor %}
-          <div class="ratings-icons">
-            <img src="../static/img/imdb.png" alt="IMDb" />
-            <span>{{ movie.imdb_rating }}</span>
-          </div>
-          <div class="ratings-icons">
-            <img src="../static/img/rotten.png" alt="Rotten Tomatoes" />
-            <span>{{ movie.rotten_tomatoes_rating }}%</span>
-          </div>
-        </div>
-
-        <!-- Description separately -->
-        <div class="movie-description mt-4">
-          <p>{{ movie.description }}</p>
-        </div>
-      </div>
-
+<!--  flex-column flex-md-row g-4" id="summary-container" -->
+<section
+  class="container col-12 d-flex flex-column flex-md-row g-4"
+  id="summary-container"
+>
+  <div class="sidebar col-3">
+    <div class="poster-wrapper mb-3">
+      <img
+        src="../static//posters/{{ movie.poster_main }}"
+        alt="Movie Poster"
+        class="poster-img"
+      />
     </div>
+    <div class="button-group">
+      <a href="#" class="btn btn-primary w-100 mb-2" id="continue-watching">
+        Continue Watching <i class="bi bi-play-fill"></i>
+      </a>
+      <a href="#" class="btn btn-outline-light w-100">
+        Watch Trailer <i class="bi bi-film"></i>
+      </a>
+      <a href="#" class="btn btn-outline-light w-100">
+        Download <i class="bi bi-cloud-arrow-down-fill"></i>
+      </a>
+      <a href="#" class="btn btn-outline-light w-100">
+        Edit Details <i class="bi bi-pencil-fill"></i>
+      </a>
+      <a href="#" class="btn btn-outline-light w-100">
+        Add to Watchlist <i class="bi bi-plus-circle"></i>
+      </a>
+      <a href="#" class="btn btn-outline-light w-100">
+        Directory <i class="bi bi-geo-alt"></i>
+      </a>
+      <a href="#" class="btn btn-outline-light w-100">
+        Share <i class="bi bi-share-fill"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="content col-9">
+    <div class="head-titles">
+      <div class="titles">
+        <h2 class="franchise-title"><em>{{ movie.franchise }}</em></h2>
+        <h1 class="movie-title">
+          {{ movie.title }} <span class="year">({{ movie.year }})</span>
+        </h1>
+      </div>
+      <div
+        class="movie-stats movie-meta d-flex flex-wrap align-items-center gap-2"
+      >
+        <img
+          src="../static/img/pg.png"
+          alt="Age Rating"
+          class="age-rating"
+          style="margin-right: 1rem"
+        />
+        {% for genre in movie.genres %}
+        <a href="#" class="genre">{{ genre }}</a>{% if not loop.last %}
+        <span class="divider">·</span>
+        {% endif %} {% endfor %}
+        <p class="watched">{{ movie.watched }}% watched</p>
+      </div>
+    </div>
+    <div class="descriptions">
+      <div
+        class="rating-section d-flex flex-wrap align-items-center gap-3 mt-3"
+      >
+        {% for director in movie.directors %}
+        <a href="#" class="movie-meta-director">{{ director }}</a>
+        {% if not loop.last %}
+        <span class="blue">·</span>
+        {% endif %} {% endfor %}
+
+        <div class="ratings-icons d-flex align-items-center gap-1">
+          <img src="../static/img/imdb.png" alt="IMDb" />
+          <span>{{ movie.imdb_rating }}</span>
+        </div>
+        <div class="ratings-icons d-flex align-items-center gap-1">
+          <img src="../static/img/rotten.png" alt="Rotten Tomatoes" />
+          <span>{{ movie.rotten_tomatoes_rating }}%</span>
+        </div>
+      </div>
+
+      <div class="movie-description mt-4">
+        <p>{{ movie.description }}</p>
+      </div>
+    </div>
+
+    <div class="cast-section mt-4">
+        <h2 class="">Cast</h2>
+        <div class="avatar-group gap-2">
+            {% for actor in movie.cast %}
+            <div>
+              <a href="#">
+                <img
+                  src="../static/stars/{{ actor.image }}"
+                  alt="{{ actor.name }}"
+                />
+              </a>
+              <strong>{{ actor.name }}</strong>
+              <small>{{ actor.role }}</small>
+            </div>
+            {% endfor %}
+          </div>
+    </div>
+
+    <div class="similar-films">
+        <div class="row col-12 g-3">
+            <h2 class="">Similar Movies</h2>
+            <!-- Movie Card -->
+      {% for movie in similar_movies %}
+      <div class="card-group col">
+        <div class="card bg-dark-blue-lighter">
+          <img src="../static/posters/{{ movie.poster_main }}" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <p class="card-title text-truncate" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ movie.title }}</p>
+  
+              <div class="resume-card col-12 d-flex align-items-center justify-content-between">
+                  <div class="progress-section d-flex align-items-center flex-grow-1">
+                    <p class="mb-0" style="font-weight: bold; font-size: 0.75rem; color: #7e7f83">{{ movie.year }}</p>
+                    <span style="color: #7e7f83" class="mx-2">|</span>
+                    <div>
+                      <img style="height: 20px;" src="../static/img/imdb.png" alt="imdb logo">
+                      <a href="#" style="font-size: 0.75rem; font-weight: bold; color: #ff7742 !important">{{ movie.imdb_rating }}</a>
+                    </div>
+                  </div>
+                  <a href="">
+                    <img src="../static/img/play.png" alt="Play" class="resume-card-icon ms-3" />
+                  </a>
+              </div>
+              
+          </div>
+        </div>
+      </div> <!-- End of Movie Card -->
+      {% endfor %}
+    </div>
+    </div>
+
   </div>
 </section>
 {% endblock %}
