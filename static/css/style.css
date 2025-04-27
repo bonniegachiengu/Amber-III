@@ -676,12 +676,15 @@ a.lib-link {
 }
 
 #summary-wrapper {
+  min-height: calc(100vh - FOOTER_HEIGHTpx); /* adjust if needed */
   background-size: cover;
-  background-position: center top;
+  background-position: center center;
   background-repeat: no-repeat;
   padding: 6rem 0 3rem;
   position: relative;
   color: #e7ecef;
+  display: flex;
+  flex-direction: column;
 }
 
 .background-overlay {
@@ -694,17 +697,12 @@ a.lib-link {
   z-index: 1;
 }
 
-.summary-container {
-  position: relative;
-  z-index: 2;
-  padding: 0 2rem;
-}
 
 .summary-inner {
   display: flex;
   gap: 2rem;
   position: relative;
-  margin-top: 150px;
+  z-index: 2; 
 }
 
 /* Sidebar */
@@ -712,6 +710,7 @@ a.lib-link {
   flex-shrink: 0;
   width: 200px;
   margin-top: -120px; /* Dangle effect */
+  position: fixed;
 }
 
 .poster-wrapper {
@@ -728,13 +727,13 @@ a.lib-link {
 
 /* Buttons */
 .button-group {
-  margin-top: 1rem;
+  margin-top: 0.1rem;
 }
 
 .button-group .btn {
   display: block;
   width: 100%;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.1rem;
   padding: 0.5rem;
   border: none;
   font-weight: bold;
@@ -805,7 +804,7 @@ a.lib-link {
 @media (max-width: 767px) {
   .summary-inner {
     flex-direction: column;
-    margin-top: 50px;
+    margin: 0 1.5rem;
   }
 
   .sticky-sidebar {
@@ -829,24 +828,25 @@ a.lib-link {
   .summary-inner {
     display: flex;
     align-items: stretch; /* Make both poster and details equal height */
-    position: relative;
-    margin-top: 150px;
+    position: relative; /* Keep it relative for absolute positioning of sidebar */
   }
 
   .sticky-sidebar {
     position: absolute;
-    top: 200px;
-    left: 30px;
+    left: 100px;
     width: 200px;
     z-index: 3;
   }
 
   .movie-details {
     margin-left: 250px; /* Space for poster */
-    margin-top: 80px; /* Space for sticky sidebar */
     flex: 1; /* Take remaining space */
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* If needed, spread content nicely */
   }
 }
+
+
+
+
