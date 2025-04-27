@@ -674,3 +674,26 @@ a.lib-link {
   background-color: #433742;
   color: #e7ecef;
 }
+
+
+.background-banner {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  height: 300px; /* Adjust height as needed */
+}
+
+.poster-card {
+  position: sticky;
+  top: 0; /* Adjusted to stick to the top */
+  left: 30px;
+  width: 150px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.content-section {
+  padding-top: 100px; /* To make space for the floating poster */
+  margin-top: 20px;
+}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}{% block title %}Film Details{% endblock %} {% block
+content %}
+
+<!-- Background Banner -->
+<section
+  class="background-banner"
+  id="summary-wrapper"
+  style="background-image: url('../static/posters/zoo.jpg')"
+>
+  <div class="background-overlay">
+    <div class="container">
+      <div class="col-md-6 movie-info">
+        <h1 class="movie-title">{{ movie.title }}</h1>
+        <div class="movie-meta d-flex align-items-center gap-2 flex-wrap">
+          <h5 class="movie-meta-info mb-0">{{ movie.year }}</h5>
+          {% for genre in movie.genres %}
+          <a href="#">{{ genre }}</a>
+          {% if not loop.last %}
+          <span class="blue">&middot;</span>
+          {% endif %} {% endfor %}
+          <p>{{ movie.watched }}% watched</p>
+        </div>
+        <div class="movie-rating d-flex align-items-center mt-2 gap-2">
+          {% for director in movie.directors %}
+          <a href="#" class="movie-meta-director">{{ director }}</a>
+          {% if not loop.last %}
+          <span class="blue">&middot;</span>
+          {% endif %} {% endfor %}
+          <div class="rate-icon">
+            <img src="../static/img/imdb.png" alt="IMDb" />
+            <a href="#">{{ movie.imdb_rating }}</a>
+          </div>
+          <div class="rate-icon">
+            <img src="../static/img/rotten.png" alt="Rotten Tomatoes" />
+            <a href="#">{{ movie.rotten_tomatoes_rating }}%</a>
+          </div>
+        </div>
+
+        <div class="shadow-base"></div>
+        <!-- TODO: Update styling for shadow base -->
+      </div>
+    </div>
+  </div>
+  <div class="container summary">
+    <div class="container">
+        <div class="row">
+            <div class="mobile-poster posters">
+                <div class="poster with-overflow poster-card">
+                    <img src="../static/posters/zoo.jpg" alt="Movie Poster" class="img-fluid" />
+                </div>
+                <div class="poster with-overflow poster-card">
+                    <button class="btn btn-primary me-3">
+                      <a style="color: #e7ecef !important; font-weight: bold" href="#"
+                        >Continue Watching </a
+                      ><i class="bi bi-play-fill"></i>
+                    </button>
+                    <button class="btn btn-outline-light">
+                      <a href="#">Watch Trailer</a>
+                    </button>
+                  </div>
+            </div>
+            <div class="col-md-10 col-md-offset-2 col-sm-9 col-sm-offset-3 mobile-title">
+                <h2 class="franchise-title">{{ movie.franchise_title }}</h2>
+                <h1 class="movie-title">{{ movie.title }}</h1>
+            </div>
+        </div>
+    </div>
+  </div>
+</section>
+<!-- Fixed closing tag for section -->
+
+<section class="#info-wrapper">
+  <!-- <div class="poster-card">
+    <img src="../static/posters/zoo.jpg" alt="Movie Poster" class="img-fluid" />
+  </div> -->
+  <div class="container">
+    <div class="row sticky-wrapper-wrapper">
+        <!-- <div class="col-md-2 col-sm-3 hidden-xs sticky-wrapper">
+            <div class="sidebar sticky posters">
+                <div class="poster with-overflow">
+                    <img src="../static/posters/zoo.jpg" alt="Movie Poster" class="img-fluid" />
+                </div>
+                BUTTONS
+            </div>
+        </div> -->
+        <div id="overview" class="col-md-10 col-sm-9 info">
+            <!-- OVERVIEW -->
+            <p class="movie-description">
+                {{ movie.description }}
+            </p>
+        </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

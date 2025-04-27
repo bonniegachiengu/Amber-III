@@ -25,6 +25,7 @@ Bootstrap5(app)
 def home():
     return render_template("index.html", movies=movies, watchlists=watchlists)
 
+
 @app.route("/library")
 def library():
     # rank movie directors based on the ranks of their movies
@@ -32,21 +33,31 @@ def library():
     num_of_movies = len(movies)
     num_of_directors = len(directors)
     num_of_watchlists = len(watchlists)
-    return render_template(
-        "library.html", 
-        movies=movies, 
-        watchlists=watchlists, 
-        directors=directors, 
-        directors_dict=dict(directors), 
-        num_of_movies=num_of_movies, 
+    return render_template("library.html",
+        movies=movies,
+        watchlists=watchlists,
+        directors=directors,
+        directors_dict=dict(directors),
+        num_of_movies=num_of_movies,
         num_of_watchlists=num_of_watchlists,
         num_of_directors=num_of_directors,
         genres=genres,
     )
 
+
+@app.route("/movie/<int:movie_id>")
+def movie(movie_id):
+    # find the movie with the given id
+    movie = next((movie for movie in movies if movie["id"] == movie_id), None)
+    if movie is None:
+        abort(404)
+    return render_template("film.html", movie=movie)
+
+
 @app.route("/player")
 def player():
     return render_template("player.html")
+
 
 @app.route("/people")
 def people():

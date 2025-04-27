@@ -1,14 +1,14 @@
 genres = [
-        ("Action", "target.png"),
-        ("Adventure", "steering-wheel.png"),
-        ("Animation", "bear.png"),
-        ("Fantasy", "magic-wand.png"),
-        ("Sci-Fi", "ufo.png"),
-        ("Documentary", "documentary.png"),
-        ("History", "pillar.png"),
-        ("Comedy", "masks.png"),
-        ("Family", "sofa.png"),
-      ]
+    ("Action", "target.png"),
+    ("Adventure", "steering-wheel.png"),
+    ("Animation", "bear.png"),
+    ("Fantasy", "magic-wand.png"),
+    ("Sci-Fi", "ufo.png"),
+    ("Documentary", "documentary.png"),
+    ("History", "pillar.png"),
+    ("Comedy", "masks.png"),
+    ("Family", "sofa.png"),
+]
 
 movies = [
     {
@@ -59,7 +59,7 @@ movies = [
             {"name": "DWAYNE JOHNSON", "role": "Max Thunder", "image": "rock.jpeg"},
         ],
     },
-  {
+    {
         "id": 3,
         "title": "Doctor Strange in the Multiverse of Madness",
         "directors": ["Sam Raimi"],
@@ -82,8 +82,8 @@ movies = [
             {"name": "EMMA STONE", "role": "Lucy Blake", "image": "emma.jpeg"},
             {"name": "DWAYNE JOHNSON", "role": "Max Thunder", "image": "rock.jpeg"},
         ],
-  },
-  {
+    },
+    {
         "id": 4,
         "title": "Avengers: Endgame",
         "directors": ["Anthony Russo", "Joe Russo"],
@@ -96,19 +96,19 @@ movies = [
         "genres": ["Action", "Adventure", "Sci-Fi"],
         "watched": 15,
         "description": "After the devastating events of Infinity War, the universe is in ruins. "
-                        "With the help of remaining allies, the Avengers assemble once more in order to reverse "
-                        "Thanos' actions and restore balance to the universe.",
+                       "With the help of remaining allies, the Avengers assemble once more in order to reverse "
+                       "Thanos' actions and restore balance to the universe.",
         "poster_main": "endgame.jpeg",
         "poster_stack": ["avengers.jpg", "angry2.jpg"],
         "cast": [
-                {"name": "CHRISTOPHER NOLAN", "role": "Director", "image": "nolan.jpg"},
-                {"name": "BRAD PITT", "role": "John Carter", "image": "pitt.jpeg"},
-                {"name": "EMILY BLUNT", "role": "Sarah Frost", "image": "emily.jpeg"},
-                {"name": "EMMA STONE", "role": "Lucy Blake", "image": "emma.jpeg"},
-                {"name": "DWAYNE JOHNSON", "role": "Max Thunder", "image": "rock.jpeg"},
-      ],
-  },
-  {
+            {"name": "CHRISTOPHER NOLAN", "role": "Director", "image": "nolan.jpg"},
+            {"name": "BRAD PITT", "role": "John Carter", "image": "pitt.jpeg"},
+            {"name": "EMILY BLUNT", "role": "Sarah Frost", "image": "emily.jpeg"},
+            {"name": "EMMA STONE", "role": "Lucy Blake", "image": "emma.jpeg"},
+            {"name": "DWAYNE JOHNSON", "role": "Max Thunder", "image": "rock.jpeg"},
+        ],
+    },
+    {
         "id": 5,
         "title": "Black Panther",
         "directors": ["Ryan Coogler"],
@@ -128,11 +128,11 @@ movies = [
             {"name": "BRAD PITT", "role": "John Carter", "image": "pitt.jpeg"},
             {"name": "EMILY BLUNT", "role": "Sarah Frost", "image": "emily.jpeg"},
         ],
-  },
-  {
+    },
+    {
         "id": 6,
-      "title": "Captain Marvel",
-      "directors": ["Anna Boden", "Ryan Fleck"],
+        "title": "Captain Marvel",
+        "directors": ["Anna Boden", "Ryan Fleck"],
         "imdb_rating": 6.8,
         "rotten_tomatoes_rating": 79,
         "ranking": 6,
@@ -150,7 +150,7 @@ movies = [
             {"name": "EMILY BLUNT", "role": "Sarah Frost", "image": "emily.jpeg"},
         ],
     },
-  {
+    {
         "id": 7,
         "title": "Spider-Man: Far From Home",
         "directors": ["Jon Watts"],
@@ -170,8 +170,8 @@ movies = [
             {"name": "BRAD PITT", "role": "John Carter", "image": "pitt.jpeg"},
             {"name": "EMILY BLUNT", "role": "Sarah Frost", "image": "emily.jpeg"},
         ],
-  },
-  {
+    },
+    {
         "id": 8,
         "title": "Angry Birds 2",
         "directors": ["Thurop Van Orman"],
@@ -288,8 +288,6 @@ movies = [
     },
 ]
 
-
-
 watchlists = [
     {
         "id": 1,
@@ -321,7 +319,7 @@ watchlists = [
         "rotten_tomatoes_rating": 85,
         "created": "2023-10-01",
         "genres": ["Action", "Adventure", "Sci-Fi"],
-        "description": "All Marvel Movies is a collection of films from the Marvel Cinematic Universe. These films feature superheroes, epic battles, and interconnected storylines that span across the universe.",   
+        "description": "All Marvel Movies is a collection of films from the Marvel Cinematic Universe. These films feature superheroes, epic battles, and interconnected storylines that span across the universe.",
         "posters": ["avengers.jpg", "endgame.jpeg", "panther.jpeg", "marvel.jpeg"],
         "watched": 100,
         "film_count": 20,
@@ -417,5 +415,26 @@ watchlists = [
             {"name": "EMMA STONE", "role": "Lucy Blake", "image": "emma.jpeg"},
             {"name": "DWAYNE JOHNSON", "role": "Max Thunder", "image": "rock.jpeg"},
         ],
-    },  
+    },
+    {
+        "id": 7,
+        "title": "Cool Drama Movies",
+        "directors": ["Christopher Nolan", "Rich Moore"],
+        "imdb_rating": 8.0,
+        "rotten_tomatoes_rating": 85,
+        "created": "2023-10-01",
+        "genres": ["Drama", "Action", "Adventure"],
+        "description": "Cool Drama Movies is a collection of films that explore complex characters and emotional narratives. "
+                       "These films are known for their powerful performances and thought-provoking themes.",
+        "posters": ["silence.jpg", "luck.jpg", "ralph.jpg"],
+        "watched": 20,
+        "film_count": 15,
+        "cast": [
+            {"name": "CHRISTOPHER NOLAN", "role": "Director", "image": "nolan.jpg"},
+            {"name": "BRAD PITT", "role": "John Carter", "image": "pitt.jpeg"},
+            {"name": "EMILY BLUNT", "role": "Sarah Frost", "image": "emily.jpeg"},
+            {"name": "EMMA STONE", "role": "Lucy Blake", "image": "emma.jpeg"},
+            {"name": "DWAYNE JOHNSON", "role": "Max Thunder", "image": "rock.jpeg"},
+        ],
+    },
 ]

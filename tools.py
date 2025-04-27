@@ -4,9 +4,7 @@ from data import movies, watchlists
 def rank_directors(movies: list) -> list[tuple[str, int]]:
     """
     Rank movie directors based on the ranks of their movies
-    
     :param movies: list of movies
-    
     :return: list of tuples (director, average_rank) sorted by average rank in descending order
     """
     directors = {}
