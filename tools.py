@@ -31,5 +31,22 @@ def similar_movies(genres: list, movies: list) -> list[dict]:
     return sorted(similar, key=lambda x: x["ranking"], reverse=True)
 
 
+def get_watchlists(movie: dict, watchlists: list) -> list[dict]:
+    """
+    Get the watchlists in the movies album_id field with a list of watchlist ids
+
+    Args:
+        movie (dict): movie dictionary containing movie details
+        watchlists (list): list of watchlists containing watchlist details
+
+    Returns:
+        list[dict]: _description_
+    """
+    print(movie)
+    return [watchlist for watchlist in watchlists if watchlist["id"] in movie["album_ids"]]
+
+
 if __name__ == "__main__":
-    print(rank_directors(movies))
+    # print(rank_directors(movies))
+    
+    print(get_watchlists(movies[0], watchlists))
