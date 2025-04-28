@@ -9,7 +9,8 @@ from flask_ckeditor import CKEditor
 # from functools import wraps
 # from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-from data import movies, watchlists, genres
+from datetime import datetime
+from data import movies, watchlists, genres, crew_cast
 import humanize
 import tools
 import os
@@ -21,6 +22,10 @@ app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 
+
+@app.template_filter('parse_date')
+def parse_date(value, date_format="%Y-%m-%d"):
+    return datetime.strptime(value, date_format)
 
 @app.route("/")
 def home():
@@ -91,9 +96,23 @@ def player():
     return render_template("player.html")
 
 
-@app.route("/people")
-def people():
-    return render_template("people.html")
+@app.route("/person/<int:person_id>")
+def people(person_id):
+    person = next((person for person in crew_cast if person["id"] == person_id), None)
+    films_by_actor = tools.get_actor_films(person, movies)
+    watchlists_by_actor = tools.get_actor_watchlists(person, watchlists)
+    num_of_movies = len(films_by_actor)
+    num_of_people = len(crew_cast)
+    now = datetime.now()
+    return render_template("person.html",
+        people=crew_cast,
+        person=person,
+        now=now,
+        films=films_by_actor,
+        watchlists=watchlists_by_actor,
+        num_of_movies=num_of_movies,
+        num_of_people=num_of_people,
+    )
 
 
 if __name__ == "__main__":

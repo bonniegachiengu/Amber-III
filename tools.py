@@ -63,7 +63,8 @@ def get_watchlists(movie: dict, watchlists: list) -> list[dict]:
 
 
 def get_album_movies(watchlist: dict, movies: list) -> list[dict]:
-    """_summary_
+    """
+    Get the movies in the watchlists album_id field with a list of movie ids.
 
     Args:
         watchlist (dict): watchlist dictionary containing watchlist details
@@ -73,6 +74,28 @@ def get_album_movies(watchlist: dict, movies: list) -> list[dict]:
         list[dict]: a list of movies with the same album_id as the given watchlist
     """
     return [movie for movie in movies if movie["id"] in watchlist["film_ids"]]
+
+
+def get_actor_films(actor: dict, movies: list) -> list[dict]:
+    """
+    Get the movies in the actor movies field with a list of movie ids.
+
+    :param actor: actor dictionary containing actor details
+    :param movies: list of movies containing movie details
+    :return: list of movies with the same actor in the actor films field
+    """
+    return [movie for movie in movies if movie["id"] in actor["movies"]]
+
+
+def get_actor_watchlists(actor: dict, watchlists: list) -> list[dict]:
+    """
+    Get the watchlists in the actor watchlists field with a list of watchlist ids.
+
+    :param actor: actor dictionary containing actor details
+    :param watchlists: list of watchlists containing watchlist details
+    :return: list of watchlists with the same actor in the actor watchlists field
+    """
+    return [watchlist for watchlist in watchlists if watchlist["id"] in actor["watchlists"]]
 
 
 if __name__ == "__main__":

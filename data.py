@@ -10,6 +10,143 @@ genres = [
     ("Family", "sofa.png"),
 ]
 
+crew_cast = [
+    {
+        "id": 1,
+        "name": "Hailee Steinfeld",
+        "roles": ["Actress"],
+        "dob": "1996-12-11",
+        "nationality": ["American"],
+        "rotten_tomatoes_rating": 99,
+        "imdb_rating": 8.5,
+        "ranking": 1,
+        "watched": 12,
+        "gender": "Female",
+        "image": "hailee.jpg",
+        "bio": "Hailee Steinfeld ( born December 11, 1996) is an American actress and singer. "
+               "She had her breakthrough with the western film True Grit ( 2010), which earned her various accolades, "
+               "including nominations for an Academy Award and a BAFTA Award.",
+        "movies": [3, 2, 8, 4],
+        "watchlists": [6],
+    },
+    {
+        "id": 2,
+        "name": "Emma Watson",
+        "roles": ["Actress"],
+        "nationality": ["British"],
+        "rotten_tomatoes_rating": 99,
+        "imdb_rating": 8.5,
+        "ranking": 2,
+        "watched": 11,
+        "dob": "1990-04-15",
+        "gender": "Female",
+        "image": "emma.jpeg",
+        "bio": "Emma Charlotte Duerre Watson is an English actress. Known for her roles in both blockbusters "
+               "and independent films, she has received a selection of accolades, including a Young Artist Award "
+               "and three MTV Movie Awards.",
+        "movies": [6, 5],
+        "watchlists": [1],
+    },
+    {
+        "id": 3,
+        "name": "Michael Fassbender",
+        "roles": ["Actor"],
+        "nationality": ["German", "Irish"],
+        "rotten_tomatoes_rating": 99,
+        "imdb_rating": 8.5,
+        "ranking": 3,
+        "watched": 10,
+        "dob": "1977-04-02",
+        "gender": "Male",
+        "image": "fass.jpeg",
+        "bio": "Michael Fassbender is a German-Irish actor. After studying at the Drama Centre London he became known "
+               "for playing intense roles in film and television. He is the recipient of various accolades, "
+               "including nominations for two Academy Awards, four BAFTA Awards and three Golden Globe Awards.",
+        "movies": [11, 2, 7],
+        "watchlists": [1, 2, 3, 4, 5, 6, 7],
+    },
+    {
+        "id": 4,
+        "name": "Christopher Nolan",
+        "roles": ["Director", "Producer"],
+        "nationality": ["British", "American"],
+        "rotten_tomatoes_rating": 99,
+        "imdb_rating": 8.5,
+        "ranking": 4,
+        "watched": 8,
+        "dob": "1970-07-30",
+        "gender": "Male",
+        "image": "nolan.jpg",
+        "bio": "Sir Christopher Edward Nolan is a British and American filmmaker. Known for blockbusters with complex "
+               "storytelling produced for Hollywood studios, he is considered a leading filmmaker of the 21st century. "
+               "Nolan's films have earned over $6.6 billion worldwide, making him the seventh-highest-grossing "
+               "film director. ",
+        "movies": [1, 2, 3, 7, 8, 9, 12],
+        "watchlists": [1, 2, 3, 4, 5, 6, 7],
+    },
+    {
+        "id": 5,
+        "name": "Brad Pitt",
+        "roles": ["Producer", "Actor"],
+        "nationality": ["American"],
+        "rotten_tomatoes_rating": 99,
+        "imdb_rating": 8.5,
+        "ranking": 5,
+        "watched": 7,
+        "dob": "1963-12-18",
+        "gender": "Male",
+        "image": "pitt.jpeg",
+        "bio": "William Bradley Pitt is an American actor and film producer. He is the recipient of various accolades, "
+               "including two Academy Awards, two British Academy Film Awards, two Golden Globe Awards, "
+               "and a Primetime Emmy Award.",
+        "movies": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        "watchlists": [4, 5],
+    },
+    {
+        "id": 6,
+        "name": "Emily Blunt",
+        "roles": ["Actress"],
+        "nationality": ["British"],
+        "rotten_tomatoes_rating": 99,
+        "imdb_rating": 8.5,
+        "ranking": 6,
+        "watched": 5,
+        "dob": "1983-02-28",
+        "gender": "Female",
+        "image": "emily.jpeg",
+        "bio": "Emily Olivia Laura Blunt is a British actress. She is the recipient of several accolades, "
+               "including a Golden Globe Award and two Screen Actors Guild Awards, in addition to nominations "
+               "for an Academy Award and four British Academy Film Awards. Forbes ranked her as one of the "
+               "highest-paid actresses in the world in 2020.",
+        "movies": [1, 2, 3, 9, 10, 11, 12],
+        "watchlists": [4, 5],
+    },
+    {
+        "id": 7,
+        "name": "Dwayne Johnson",
+        "roles": ["Actor", "Wrestler"],
+        "nationality": ["American"],
+        "rotten_tomatoes_rating": 99,
+        "imdb_rating": 8.5,
+        "ranking": 7,
+        "watched": 10,
+        "dob": "1972-05-02",
+        "gender": "Male",
+        "image": "rock.jpeg",
+        "bio": "Dwayne Douglas Johnson (born May 2, 1972), also known by his ring name The Rock, is an American actor "
+               "and professional wrestler. He is signed to WWE, where he performs on a part-time basis. Widely "
+               "regarded as one of the greatest professional wrestlers of all time, Johnson was integral to the "
+               "development and success of the World Wrestling Federation (WWF, now WWE) during the Attitude Era. "
+               "He wrestled for the WWF full-time for eight years before pursuing an acting career. His films have "
+               "grossed over $3.5 billion in North America and over $12.5 billion worldwide, making him one of the "
+               "world's highest-grossing and highest-paid actors. He is a co-owner of the United Football League, "
+               "a member of the board of directors of TKO Group Holdings—the parent company of UFC and WWE—and "
+               "co-founder of Seven Bucks Productions.",
+        "movies": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        "watchlists": [1, 7],
+    }
+]
+
 movies = [
     {
         "id": 1,
