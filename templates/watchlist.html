@@ -1,0 +1,373 @@
+{% extends "base.html" %} {% block title %} Watchlist Details {% endblock %} {% block content %}
+    <main class="container-fluid" id="summary-wrapper" style="position: relative">
+      <div
+        class="background-image"
+        style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 280px;
+          background-image: url('../static/posters/{{ watchlist.posters[0] }}');
+          background-size: cover;
+          background-position: 30%;
+          z-index: 1;
+        "
+      ></div>
+    
+      <div
+        class="background-overlay"
+        style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 280px;
+          background-color: rgba(0, 0, 0, 0.5);
+          z-index: 2;
+        "
+      ></div>
+    
+      <div
+        class="container summary-inner col-12 d-flex flex-column flex-md-row"
+        style="position: relative; z-index: 3"
+      >
+        <div class="sidebar col-lg-3 col-12">
+          <div class="poster-wrapper">
+            <div class="poster-collage">
+                {% for poster in watchlist.posters[:4] %}
+                <img
+                  src="../static/posters/{{ poster }}"
+                  alt="Poster"
+                  class="poster-crop collage-{{ watchlist.posters|length }}"
+                />
+                {% endfor %}
+              </div>
+          </div>
+          <div class="button-group">
+            <a href="#" class="btn btn-outline-light w-100" id="watch-trailer">
+              Watch Trailer <i class="bi bi-film"></i>
+            </a>
+            <a href="#" class="btn btn-primary w-100" id="continue-watching">
+              Continue Watching <i class="bi bi-play-fill"></i>
+            </a>
+            <a href="#" class="btn btn-outline-light w-100" id="download">
+              Download <i class="bi bi-cloud-arrow-down-fill"></i>
+            </a>
+            <a href="#" class="btn btn-outline-light w-100" id="film-btn">
+              Edit Details <i class="bi bi-pencil-fill"></i>
+            </a>
+            <a href="#" class="btn btn-outline-light w-100" id="film-btn">
+              Add to Watchlist <i class="bi bi-plus-circle"></i>
+            </a>
+            <a href="#" class="btn btn-outline-light w-100" id="film-btn">
+              Directory <i class="bi bi-geo-alt"></i>
+            </a>
+            <a href="#" class="btn btn-outline-light w-100" id="film-btn">
+              Share <i class="bi bi-share-fill"></i>
+            </a>
+          </div>
+        </div>
+    
+        <div class="content col-lg-9 col-12">
+          <div class="head-titles">
+            <div class="titles">
+              <h2 class="franchise-title"><em>{{ watchlist.type }}</em></h2>
+              <h1 class="movie-title">
+                {{ watchlist.title }} <span class="year">({{ watchlist.era }})</span>
+              </h1>
+            </div>
+            <div
+              class="movie-stats movie-meta d-flex flex-wrap align-items-center gap-2"
+            >
+              <img
+                src="../static/img/pg.png"
+                alt="Age Rating"
+                class="age-rating"
+                style="margin-right: 1rem"
+              />
+              {% for genre in watchlist.genres %}
+              <a href="#" class="genre">{{ genre }}</a>{% if not loop.last %}
+              <span class="divider">·</span>
+              {% endif %} {% endfor %}
+              <p class="watched">{{ watchlist.watched }}x watched</p>
+            </div>
+          </div>
+          <div class="descriptions">
+            <div
+              class="rating-section d-flex flex-wrap align-items-center gap-3 mt-3"
+            >
+              {% for director in watchlist.directors %}
+              <a href="#" class="movie-meta-director">{{ director }}</a>
+              {% if not loop.last %}
+              <span class="blue">·</span>
+              {% endif %} {% endfor %}
+    
+              <div class="ratings-icons d-flex align-items-center gap-1">
+                <img src="../static/img/imdb.png" alt="IMDb" />
+                <span>{{ watchlist.imdb_rating }}</span>
+              </div>
+              <div class="ratings-icons d-flex align-items-center gap-1">
+                <img src="../static/img/rotten.png" alt="Rotten Tomatoes" />
+                <span>{{ watchlist.rotten_tomatoes_rating }}%</span>
+              </div>
+              <div class="mb-0">
+                <p class="mb-0" style="font-weight: bold;"><small style="color:#7e7f83;">Rank #</small>{{ watchlist.id }}<em style="font-weight: normal; font-size: 0.80rem;">/{{ num_of_watchlists }}</em></p>
+              </div>
+            </div>
+    
+            <div class="movie-description">
+              <h2 class="film-subtitles mt-4">
+                Released<em class="film-descriptions">{{ watchlist.released }}</em>
+              </h2>
+              <h2 class="film-subtitles">
+                Runtime<em class="film-descriptions"
+                  >{{ watchlist.total_runtime }}</em
+                >
+              </h2>
+              <h2 class="film-subtitles">
+                Writers<em class="film-descriptions"
+                  >{{ watchlist.writers | join(', ') }}</em
+                >
+              </h2>
+              <h2 class="film-subtitles">
+                Languages<em class="film-descriptions"
+                  >{{ watchlist.languages | join(', ') }}</em
+                >
+              </h2>
+              <h2 class="film-subtitles">
+                Countries<em class="film-descriptions"
+                  >{{ watchlist.countries | join(', ') }}</em
+                >
+              </h2>
+              <h2 class="film-subtitles">
+                Genres<em class="film-descriptions"
+                  >{{ watchlist.genres | join(', ') }}</em
+                >
+              </h2>
+              <h2 class="film-subtitles mb-4">
+                BoxOffice<em class="film-descriptions"
+                  >${{ humanize.intcomma(watchlist.boxoffice) }}
+                </em>
+              </h2>
+              <p class="mt-4">{{ watchlist.description }}</p>
+            </div>
+          </div>
+    
+          <div class="cast-section mt-5">
+            <h2 class="film-subtitles">Cast</h2>
+            <div class="avatar-group gap-2">
+              {% for actor in watchlist.cast %}
+              <div>
+                <a href="#">
+                  <img
+                    src="../static/stars/{{ actor.image }}"
+                    alt="{{ actor.name }}"
+                  />
+                </a>
+                <strong>{{ actor.name }}</strong>
+                <small>{{ actor.role }}</small>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+    
+          <div class="similar-films mt-5">
+            <div class="row col-12 g-3 mb-4">
+                <div
+                  class="subtitle col-12 d-flex justify-content-between align-items-center"
+                >
+                  <ul class="nav justify-content-between align-items-center"><!--TODO: Change these-->
+                    <li>
+                      <a href="#" class="lib-link" style="color: #e7ecef !important"
+                        >Franchise</a
+                      >
+                    </li>
+                    <li><a href="#" class="lib-link">Studio</a></li>
+                    <li><a href="#" class="lib-link">Similar</a></li>
+                  </ul>
+                  <a href="#" class="lib-link mb-0"
+                    >See All <i class="bi bi-arrow-right"></i>
+                  </a>
+                </div>
+              <!-- Movie Card -->
+              {% for movie in album_movies %}
+              <div class="card-group col">
+                <div class="card bg-dark-blue-lighter">
+                  <img
+                    src="../static/posters/{{ movie.poster_main }}"
+                    class="card-img-top"
+                    alt="..."
+                  />
+                  <div class="card-body">
+                    <p
+                      class="card-title text-truncate"
+                      style="
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                      "
+                    >
+                      {{ movie.title }}
+                    </p>
+    
+                    <div
+                      class="resume-card col-12 d-flex align-items-center justify-content-between"
+                    >
+                      <div
+                        class="progress-section d-flex align-items-center flex-grow-1"
+                      >
+                        <p
+                          class="mb-0"
+                          style="
+                            font-weight: bold;
+                            font-size: 0.75rem;
+                            color: #7e7f83;
+                          "
+                        >
+                          {{ movie.year }}
+                        </p>
+                        <span style="color: #7e7f83" class="mx-2">|</span>
+                        <div>
+                          <img
+                            style="height: 20px"
+                            src="../static/img/imdb.png"
+                            alt="imdb logo"
+                          />
+                          <a
+                            href="#"
+                            style="
+                              font-size: 0.75rem;
+                              font-weight: bold;
+                              color: #ff7742 !important;
+                            "
+                            >{{ movie.imdb_rating }}</a
+                          >
+                        </div>
+                      </div>
+                      <a href="">
+                        <img
+                          src="../static/img/play.png"
+                          alt="Play"
+                          class="resume-card-icon ms-3"
+                        />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Movie Card -->
+              {% endfor %}
+            </div>
+          </div>
+          <div class="albums mt-5">
+            <div class="row col-12 g-3 mb-4">
+              <h2 class="film-subtitles">Films in <em>{{ watchlist.title }}</em></h2> <!--TODO: Rename this-->
+              <div
+                class="subtitle col-12 d-flex justify-content-between align-items-center"
+              >
+                <ul class="nav justify-content-between align-items-center">
+                  <li>
+                    <a href="#" class="lib-link" style="color: #e7ecef !important"
+                      >Franchise</a
+                    >
+                  </li>
+                  <li><a href="#" class="lib-link">Studios</a></li>
+                  <li><a href="#" class="lib-link">Marathons</a></li>
+                </ul>
+                <a href="#" class="lib-link mb-0"
+                  >See All <i class="bi bi-arrow-right"></i>
+                </a>
+              </div>
+              <!-- Watchlist Card -->
+              {% for watchlist in similar_albums %}
+              <div class="card-group col">
+                <div class="card watchlist-card bg-dark-blue-lighter">
+                  <div class="poster-collage">
+                    {% for poster in watchlist.posters[:4] %}
+                    <img
+                      src="../static/posters/{{ poster }}"
+                      alt="Poster"
+                      class="poster-crop collage-{{ watchlist.posters|length }}"
+                    />
+                    {% endfor %}
+                  </div>
+    
+                  <div class="card-body">
+                    <p
+                      class="card-title text-truncate"
+                      style="
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                      "
+                    >
+                      {{ watchlist.title }}
+                    </p>
+                    <div
+                      class="resume-card col-12 d-flex align-items-center justify-content-between"
+                    >
+                      <div
+                        class="progress-section d-flex align-items-center flex-grow-1"
+                      >
+                        <div>
+                          <p
+                            class="mb-0"
+                            style="
+                              font-weight: bold;
+                              font-size: 0.95rem;
+                              color: #7e7f83;
+                            "
+                          >
+                            {{ watchlist.film_count }}
+                          </p>
+                          <p
+                            class="mb-0"
+                            style="
+                              color: #7e7f83;
+                              font-size: 10px;
+                              padding-top: none !important;
+                            "
+                          >
+                            films
+                          </p>
+                        </div>
+                        <span style="color: #7e7f83" class="mx-2">|</span>
+                        <div class="resume-card-percentage me-2 mb-0">
+                          <p
+                            class="mb-0"
+                            style="font-weight: bold; font-size: 0.75rem"
+                          >
+                            {{ watchlist.watched }}%
+                          </p>
+                          <p class="mb-0" style="font-size: 10px">watched</p>
+                        </div>
+                      </div>
+                      <a href="">
+                        <img
+                          src="../static/img/play.png"
+                          alt="Play"
+                          class="resume-card-icon ms-3"
+                        />
+                      </a>
+                    </div>
+                    <div class="flex-grow-1 mt-2">
+                      <div class="progress" style="height: 5px">
+                        <div
+                          class="progress-bar"
+                          role="progressbar"
+                          style="width: {{ watchlist.watched }}%;"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Watchlist Card -->
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    {% endblock %}

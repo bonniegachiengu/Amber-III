@@ -31,6 +31,23 @@ def similar_movies(genres: list, movies: list) -> list[dict]:
     return sorted(similar, key=lambda x: x["ranking"], reverse=True)
 
 
+def similar_watchlists(genres: list, watchlists: list) -> list[dict]:
+    """_summary_
+
+    Args:
+        genres (list): genres for the watchlist in question
+        watchlists (list): list of all watchlists
+
+    Returns:
+        list[dict]: a filtered list of watchlists with similar genres
+    """
+    similar = []
+    for watchlist in watchlists:
+        if len(set(watchlist["genres"]) & set(genres)) >= 2:
+            similar.append(watchlist)
+    return sorted(similar, key=lambda x: x["id"], reverse=True)
+
+
 def get_watchlists(movie: dict, watchlists: list) -> list[dict]:
     """
     Get the watchlists in the movies album_id field with a list of watchlist ids
@@ -40,10 +57,22 @@ def get_watchlists(movie: dict, watchlists: list) -> list[dict]:
         watchlists (list): list of watchlists containing watchlist details
 
     Returns:
-        list[dict]: _description_
+        list[dict]: a list of watchlists with the same album_id as the given movie
     """
-    print(movie)
     return [watchlist for watchlist in watchlists if watchlist["id"] in movie["album_ids"]]
+
+
+def get_album_movies(watchlist: dict, movies: list) -> list[dict]:
+    """_summary_
+
+    Args:
+        watchlist (dict): watchlist dictionary containing watchlist details
+        movies (list): list of movies containing movie details
+
+    Returns:
+        list[dict]: a list of movies with the same album_id as the given watchlist
+    """
+    return [movie for movie in movies if movie["id"] in watchlist["film_ids"]]
 
 
 if __name__ == "__main__":

@@ -48,15 +48,40 @@ def library():
 
 @app.route("/movie/<int:movie_id>")
 def movie(movie_id):
-    # find the movie with the given id
+    """find the movie with the given id."""
     movie = next((movie for movie in movies if movie["id"] == movie_id), None)
     similar_movies = tools.similar_movies(movie["genres"], movies)
     albums = tools.get_watchlists(movie, watchlists)
     num_of_movies = len(movies)
     if movie is None:
         abort(404)
-    return render_template("film.html", movie=movie, similar_movies=similar_movies[:6], albums=albums, humanize=humanize, num_of_movies=num_of_movies)
+    return render_template("film.html",
+        movie=movie,
+        similar_movies=similar_movies[:6],
+        albums=albums,
+        humanize=humanize,
+        num_of_movies=num_of_movies
+    )
 
+
+@app.route("/watchlist/<int:watchlist_id>")
+def watchlist(watchlist_id):
+    """Find the watchlist with the given id."""
+    watchlist = next((watchlist for watchlist in watchlists if watchlist["id"] == watchlist_id), None)
+    similar_watchlists = tools.similar_watchlists(watchlist["genres"], watchlists)
+    album_movies = tools.get_album_movies(watchlist, movies)
+    num_of_movies = len(movies)
+    num_of_watchlists = len(watchlists)
+    if watchlist is None:
+        abort(404)
+    return render_template("watchlist.html",
+        watchlist=watchlist,
+        similar_watchlists=similar_watchlists[:6],
+        album_movies=album_movies,
+        humanize=humanize,
+        num_of_movies=num_of_movies,
+        num_of_watchlists=num_of_watchlists
+    )
 
 
 @app.route("/player")
