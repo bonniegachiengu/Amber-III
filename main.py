@@ -70,6 +70,7 @@ def watchlist(watchlist_id):
     watchlist = next((watchlist for watchlist in watchlists if watchlist["id"] == watchlist_id), None)
     similar_watchlists = tools.similar_watchlists(watchlist["genres"], watchlists)
     album_movies = tools.get_album_movies(watchlist, movies)
+    no_of_album_films = len(album_movies)
     num_of_movies = len(movies)
     num_of_watchlists = len(watchlists)
     if watchlist is None:
@@ -80,7 +81,8 @@ def watchlist(watchlist_id):
         album_movies=album_movies,
         humanize=humanize,
         num_of_movies=num_of_movies,
-        num_of_watchlists=num_of_watchlists
+        num_of_watchlists=num_of_watchlists,
+        album_size=no_of_album_films,
     )
 
 

@@ -97,11 +97,13 @@
             <div
               class="rating-section d-flex flex-wrap align-items-center gap-3 mt-3"
             >
+            <div class="gap-2">
               {% for director in watchlist.directors %}
               <a href="#" class="movie-meta-director">{{ director }}</a>
               {% if not loop.last %}
-              <span class="blue">·</span>
+              <span class="blue" style="margin-right: 0;">·</span>
               {% endif %} {% endfor %}
+            </div>
     
               <div class="ratings-icons d-flex align-items-center gap-1">
                 <img src="../static/img/imdb.png" alt="IMDb" />
@@ -117,7 +119,10 @@
             </div>
     
             <div class="movie-description">
-              <h2 class="film-subtitles mt-4">
+                <h2 class="film-subtitles mt-4" style="color: #e7ecef">
+                No. of Films<em class="film-descriptions">{{ album_size }}</em>
+              </h2>
+              <h2 class="film-subtitles">
                 Released<em class="film-descriptions">{{ watchlist.released }}</em>
               </h2>
               <h2 class="film-subtitles">
@@ -150,7 +155,8 @@
                   >${{ humanize.intcomma(watchlist.boxoffice) }}
                 </em>
               </h2>
-              <p class="mt-4">{{ watchlist.description }}</p>
+                <h2 class="film-subtitles">Description</h2>
+              <p>{{ watchlist.description }}</p>
             </div>
           </div>
     
@@ -173,23 +179,8 @@
           </div>
     
           <div class="similar-films mt-5">
+              <h2 class="film-subtitles">Films in <em>{{ watchlist.title }}</em></h2>
             <div class="row col-12 g-3 mb-4">
-                <div
-                  class="subtitle col-12 d-flex justify-content-between align-items-center"
-                >
-                  <ul class="nav justify-content-between align-items-center"><!--TODO: Change these-->
-                    <li>
-                      <a href="#" class="lib-link" style="color: #e7ecef !important"
-                        >Franchise</a
-                      >
-                    </li>
-                    <li><a href="#" class="lib-link">Studio</a></li>
-                    <li><a href="#" class="lib-link">Similar</a></li>
-                  </ul>
-                  <a href="#" class="lib-link mb-0"
-                    >See All <i class="bi bi-arrow-right"></i>
-                  </a>
-                </div>
               <!-- Movie Card -->
               {% for movie in album_movies %}
               <div class="card-group col">
@@ -262,7 +253,6 @@
           </div>
           <div class="albums mt-5">
             <div class="row col-12 g-3 mb-4">
-              <h2 class="film-subtitles">Films in <em>{{ watchlist.title }}</em></h2> <!--TODO: Rename this-->
               <div
                 class="subtitle col-12 d-flex justify-content-between align-items-center"
               >
@@ -280,7 +270,7 @@
                 </a>
               </div>
               <!-- Watchlist Card -->
-              {% for watchlist in similar_albums %}
+              {% for watchlist in similar_watchlists %}
               <div class="card-group col">
                 <div class="card watchlist-card bg-dark-blue-lighter">
                   <div class="poster-collage">

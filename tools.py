@@ -77,5 +77,5 @@ def get_album_movies(watchlist: dict, movies: list) -> list[dict]:
 
 if __name__ == "__main__":
     # print(rank_directors(movies))
-    
-    print(get_watchlists(movies[0], watchlists))
+    # print(get_watchlists(movies[0], watchlists))
+    print(get_watchlists())
