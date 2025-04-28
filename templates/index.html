@@ -30,7 +30,7 @@
               {% if not loop.last %}
               <span class="blue">&middot;</span>
               {% endif %} {% endfor %}
-              <p>{{ movie.watched }}% watched</p>
+              <p>{{ movie.watched }}x watched</p>
             </div>
             <div class="movie-rating d-flex align-items-center mt-2 gap-2">
               {% for director in movie.directors %}
@@ -71,7 +71,7 @@
                   >Continue Watching </a
                 ><i class="bi bi-play-fill"></i>
               </button>
-              <button class="btn btn-outline-light">
+              <button class="btn" id="home-watch-trailer">
                 <a href="#">Watch Trailer</a>
               </button>
             </div>

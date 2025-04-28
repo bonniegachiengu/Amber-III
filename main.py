@@ -10,6 +10,7 @@ from flask_ckeditor import CKEditor
 # from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from data import movies, watchlists, genres
+import humanize
 import tools
 import os
 
@@ -51,9 +52,10 @@ def movie(movie_id):
     movie = next((movie for movie in movies if movie["id"] == movie_id), None)
     similar_movies = tools.similar_movies(movie["genres"], movies)
     albums = tools.get_watchlists(movie, watchlists)
+    num_of_movies = len(movies)
     if movie is None:
         abort(404)
-    return render_template("film.html", movie=movie, similar_movies=similar_movies[:6], albums=albums)
+    return render_template("film.html", movie=movie, similar_movies=similar_movies[:6], albums=albums, humanize=humanize, num_of_movies=num_of_movies)
 
 
 
