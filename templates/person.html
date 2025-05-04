@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %}Film Details{% endblock %} {% block
+{% extends "base.html" %} {% block title %}Person Info{% endblock %} {% block
 content %}
 <main class="container-fluid" id="summary-wrapper" style="position: relative">
   <div
@@ -49,7 +49,7 @@ content %}
           >Edit Details <i class="bi bi-pencil-fill"></i
         ></a>
         <a href="#" class="btn btn-outline-light w-100" id="film-btn"
-          >Add to Watchlist <i class="bi bi-plus-circle"></i
+          >Create Watchlist<i class="bi bi-plus-circle"></i
         ></a>
         <a href="#" class="btn btn-outline-light w-100" id="film-btn"
           >Share <i class="bi bi-share-fill"></i
@@ -65,7 +65,7 @@ content %}
               {% for role in person.roles %}
               <h2 class="movie-title mb-0" style="font-size: 0.65rem; text-transform: uppercase !important;">{{ role }}</h2>
               {% if not loop.last %}
-              <span class="divider">·</span>
+              <span class="divider">&middot;</span>
               {% endif %} {% endfor %}
             </div>
         </div>
@@ -148,19 +148,10 @@ content %}
 
       <div class="similar-films mt-5">
         <div class="row col-12 g-3 mb-4">
-            <h2 class="film-subtitles">Films with <em>{{ person.name }}</em></h2>
           <div
             class="subtitle col-12 d-flex justify-content-between align-items-center"
           >
-            <ul class="nav justify-content-between align-items-center">
-              <li>
-                <a href="#" class="lib-link" style="color: #e7ecef !important"
-                  >Franchise</a
-                >
-              </li>
-              <li><a href="#" class="lib-link">Studio</a></li>
-              <li><a href="#" class="lib-link">Similar</a></li>
-            </ul>
+             <h2 class="film-subtitles">Films with <em>{{ person.name }}</em></h2>
             <a href="#" class="lib-link mb-0"
               >See All <i class="bi bi-arrow-right"></i
             ></a>
@@ -238,19 +229,10 @@ content %}
       {% if watchlists %}
       <div class="albums mt-5">
         <div class="row col-12 g-3 mb-4">
-          <h2 class="film-subtitles">Albums with <em>{{ person.name }}</em></h2>
           <div
             class="subtitle col-12 d-flex justify-content-between align-items-center"
           >
-            <ul class="nav justify-content-between align-items-center">
-              <li>
-                <a href="#" class="lib-link" style="color: #e7ecef !important"
-                  >Franchise</a
-                >
-              </li>
-              <li><a href="#" class="lib-link">Studios</a></li>
-              <li><a href="#" class="lib-link">Marathons</a></li>
-            </ul>
+          <h2 class="film-subtitles">Albums with <em>{{ person.name }}</em></h2>
             <a href="#" class="lib-link mb-0"
               >See All <i class="bi bi-arrow-right"></i
             ></a>
