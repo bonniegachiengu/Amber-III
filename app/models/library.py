@@ -1,6 +1,7 @@
 from uuid import uuid4
 from datetime import datetime
 from typing import List, Optional, TYPE_CHECKING
+from enum import Enum
 
 from sqlalchemy import String, Boolean, ForeignKey, JSON, Date, Integer, Float, Text, ARRAY
 from sqlalchemy.dialects.postgresql import UUID
@@ -325,17 +326,255 @@ class Person(db.Model):
         }
 
 
-class Character:
-    pass
+class Career(db.Model):
+    """
+    Represents a Career entity mapped to the 'careers' database table.
+
+    This class is an SQLAlchemy model that stores information related to a career
+    and is associated with a specific person. It includes relationships to the
+    Person, Character, and Gig models for managing related data. The Career entity
+    can optionally be linked to external resources like a dashboard, wiki, or
+    calendar. Instances of this class provide utility methods like string
+    representation and dictionary serialization.
+
+    :ivar id: Unique identifier for the career.
+    :type id: UUID
+    :ivar person_id: Foreign key linking to the associated person in the database.
+    :type person_id: UUID
+    :ivar dashboard_id: Optional foreign key linking to a dashboard resource.
+    :type dashboard_id: UUID or None
+    :ivar wiki_id: Optional foreign key linking to a wiki resource.
+    :type wiki_id: UUID or None
+    :ivar calendar_id: Optional foreign key linking to a calendar resource.
+    :type calendar_id: UUID or None
+    :ivar person: Relationship to the `Person` model.
+    :type person: Person
+    :ivar characters: Collection of related `Character` entities with cascading operations.
+    :type characters: list[Character]
+    :ivar gigs: Collection of related `Gig` entities with cascading operations.
+    :type gigs: list[Gig]
+    """
+    __tablename__ = "careers"
+    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    person_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=False)
+    dashboard_id: Mapped[UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    wiki_id: Mapped[UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    calendar_id: Mapped[UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    person = relationship("Person", back_populates="careers")
+    characters = relationship("Character", back_populates="career", cascade="all, delete-orphan")
+    gigs = relationship("Gig", back_populates="career", cascade="all, delete-orphan")
+
+    def __repr__(self):
+        return f"<Career {self.id} for Person {self.person_id}>"
+
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "person_id": str(self.person_id),
+            "dashboard_id": str(self.dashboard_id) if self.dashboard_id else None,
+            "wiki_id": str(self.wiki_id) if self.wiki_id else None,
+            "calendar_id": str(self.calendar_id) if self.calendar_id else None
+        }
+
+
+class Gig(db.Model):
+    """
+    Represents a professional engagement or job (Gig) associated with a film and a career.
+
+    This class provides a database representation of a job or role undertaken for a specific
+    film by a person represented by a career. The Gig has attributes describing details such
+    as the title of the job, the dates it started and ended, and additional context like
+    notes or episode count (if relevant). It also establishes relationships with the
+    Film and Career models.
+
+    :ivar id: Unique identifier for the gig.
+    :type id: UUID
+    :ivar film_id: Identifier of the film related to this gig.
+    :type film_id: UUID
+    :ivar career_id: Identifier of the career related to this gig.
+    :type career_id: UUID
+    :ivar job_title: The role or job title associated with the gig.
+    :type job_title: str
+    :ivar start_date: The date the gig started. May be None if not specified.
+    :type start_date: date or None
+    :ivar end_date: The date the gig ended. May be None if not specified.
+    :type end_date: date or None
+    :ivar episodes: Number of episodes associated with the gig, relevant for episodic productions. May be None.
+    :type episodes: int or None
+    :ivar notes: Additional notes or comments about the gig. May be None.
+    :type notes: str or None
+    :ivar is_primary_credit: Boolean indicating whether this gig is a primary credit.
+    :type is_primary_credit: bool
+    """
+    __tablename__ = "gigs"
+    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    film_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("films.id"), nullable=False)
+    career_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("careers.id"), nullable=False)
+    job_title: Mapped[str] = mapped_column(db.String(128), nullable=False)
+    start_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
+    end_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
+    episodes: Mapped[int | None] = mapped_column(db.Integer, nullable=True)
+    notes: Mapped[str | None] = mapped_column(db.Text, nullable=True)
+    is_primary_credit: Mapped[bool] = mapped_column(db.Boolean, default=False)
+    career = relationship("Career", back_populates="gigs")
+    film = relationship("Film", back_populates="gigs")
+
+    def __repr__(self):
+        return f"<Gig {self.job_title} in Film {self.film_id} by Career {self.career_id}>"
+
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "film_id": str(self.film_id),
+            "career_id": str(self.career_id),
+            "job_title": self.job_title,
+            "start_date": self.start_date.isoformat() if self.start_date else None,
+            "end_date": self.end_date.isoformat() if self.end_date else None,
+            "episodes": self.episodes,
+            "notes": self.notes,
+            "is_primary_credit": self.is_primary_credit
+        }
+
+
+class Character(db.Model):
+    """
+    Represents a character in a film, their associated attributes, and relations.
+
+    The Character class models key information about characters in films, including
+    their name, aliases, and associations with careers and films. This class also
+    handles optional data such as descriptions, episodes featuring the character,
+    and relevant dates of activity. Relationships to Career and Film models allow
+    for mapping between entities.
+
+    :ivar id: The unique identifier of the character.
+    :type id: UUID
+    :ivar name: The name of the character.
+    :type name: str
+    :ivar aliases: A list of alternate names or aliases for the character.
+    :type aliases: list[str]
+    :ivar description: An optional textual description of the character.
+    :type description: str | None
+    :ivar film_id: The foreign key referencing the film the character belongs to.
+    :type film_id: UUID
+    :ivar career_id: The foreign key referencing the character's associated career.
+    :type career_id: UUID
+    :ivar start_date: Optional start date of the character's relevant activity or role.
+    :type start_date: datetime | None
+    :ivar end_date: Optional end date of the character's relevant activity or role.
+    :type end_date: datetime | None
+    :ivar episodes: Optional count of episodes featuring the character.
+    :type episodes: int | None
+    :ivar notes: Optional additional notes about the character.
+    :type notes: str | None
+    :ivar career: The related Career entity.
+    :ivar film: The related Film entity.
+    """
+    __tablename__ = "characters"
+    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    name: Mapped[str] = mapped_column(db.String(128), nullable=False)
+    aliases: Mapped[list[str]] = mapped_column(ARRAY(db.String), default=list)
+    description: Mapped[str | None] = mapped_column(db.Text, nullable=True)
+    film_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("films.id"), nullable=False)
+    career_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("careers.id"), nullable=False)
+    start_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
+    end_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
+    episodes: Mapped[int | None] = mapped_column(db.Integer, nullable=True)
+    notes: Mapped[str | None] = mapped_column(db.Text, nullable=True)
+    career = relationship("Career", back_populates="characters")
+    film = relationship("Film", back_populates="characters")
+
+    def __repr__(self):
+        return f"<Character {self.name} in Film {self.film_id} by Career {self.career_id}>"
+
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "name": self.name,
+            "aliases": self.aliases,
+            "description": self.description,
+            "film_id": str(self.film_id),
+            "career_id": str(self.career_id),
+            "start_date": self.start_date.isoformat() if self.start_date else None,
+            "end_date": self.end_date.isoformat() if self.end_date else None,
+            "episodes": self.episodes,
+            "notes": self.notes
+        }
+
 
 
 class Studio:
     pass
 
 
-class Career:
-    pass
+class RelationshipType(Enum):
+    """
+    Enumeration for representing various types of relationships.
 
+    This class provides a standardized set of values to classify different
+    types of relationships within a domain model or relational data
+    structures. It enables clear and consistent representation across
+    applications that operate on relationship identification or analysis.
+    """
+    SIBLING = "Sibling"
+    PARENT = "Parent"
+    CHILD = "Child"
+    STEP_PARENT = "Step-Parent"
+    STEP_SIBLING = "Step-Sibling"
+    COUSIN = "Cousin"
+    SPOUSE = "Spouse"
+    EX_SPOUSE = "Ex-Spouse"
+    UNCLE = "Uncle"
+    AUNT = "Aunt"
+    NEPHEW = "Nephew"
+    NIECE = "Niece"
+    GRANDPARENT = "Grandparent"
+    GRANDCHILD = "Grandchild"
+    GREAT_GRANDPARENT = "Great-Grandparent"
+    GREAT_GRANDCHILD = "Great-Grandchild"
+    PARTNER = "Partner"
 
-class Relationship:
-    pass
+class Relationship(db.Model):
+    """
+    Represents a relationship between two people, including details about the nature
+    of the relationship and its duration.
+
+    This class is used to model relationships in a database, specifying the individuals
+    involved, the type of relationship, and optional start and end dates. The relationships
+    are established between two Person entities and are associated with `RelationshipType`.
+
+    :ivar id: The unique identifier for the relationship.
+    :type id: UUID
+    :ivar person_id: The unique identifier of the first person in the relationship.
+    :type person_id: UUID
+    :ivar related_person_id: The unique identifier of the second person in the relationship.
+    :type related_person_id: UUID
+    :ivar relationship_type: The type of relationship between the two persons.
+    :type relationship_type: RelationshipType
+    :ivar start_date: Optional date indicating when the relationship began.
+    :type start_date: datetime | None
+    :ivar end_date: Optional date indicating when the relationship ended.
+    :type end_date: datetime | None
+    """
+    __tablename__ = "relationships"
+    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    person_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=False)
+    related_person_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=False)
+    relationship_type: Mapped[RelationshipType] = mapped_column(db.Enum(RelationshipType), nullable=False)
+    start_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
+    end_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
+    person = relationship("Person", foreign_keys=[person_id], backref="relationships_as_person")
+    related_person = relationship("Person", foreign_keys=[related_person_id], backref="relationships_as_related_person")
+
+    def __repr__(self):
+        return f"<Relationship {self.relationship_type.value} between {self.person_id} and {self.related_person_id}>"
+
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "person_id": str(self.person_id),
+            "related_person_id": str(self.related_person_id),
+            "relationship_type": self.relationship_type.value,
+            "start_date": self.start_date.isoformat() if self.start_date else None,
+            "end_date": self.end_date.isoformat() if self.end_date else None
+        }
+
