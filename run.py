@@ -10,8 +10,16 @@ from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from datetime import datetime
-from data import movies, watchlists, genres, crew_cast
 import humanize
-import tools
 import os
 
+load_dotenv()
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+ckeditor = CKEditor(app)
+Bootstrap5(app)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
