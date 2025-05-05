@@ -14,3 +14,6 @@ class File:
 
 class Tag:
     pass
+
+class Contribution:
+    pass

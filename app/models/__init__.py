@@ -6,3 +6,4 @@ from .curator import *
 from .journal import *
 from .community import *
 from .common import *
+from .commerce import *

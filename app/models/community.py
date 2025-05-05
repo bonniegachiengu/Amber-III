@@ -9,5 +9,8 @@ class Arena:
 class Clique:
     pass
 
-class Role:
+class Comment:
+    pass
+
+class Reaction:
     pass

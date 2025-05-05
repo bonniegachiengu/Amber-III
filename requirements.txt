@@ -13,3 +13,6 @@ psycopg2-binary==2.9.10
 python-dotenv~=1.1.0
 humanize~=4.12.2
 Flask-Migrate~=4.1.0
+pytest~=8.3.5
+SQLAlchemy-Utils~=0.41.2
+alembic~=1.15.2
