@@ -6,6 +6,9 @@ class Hive:
 class Arena:
     pass
 
+class Fandom:
+    pass
+
 class Clique:
     pass
 

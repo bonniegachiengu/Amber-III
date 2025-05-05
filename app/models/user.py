@@ -22,68 +22,68 @@ if TYPE_CHECKING:
 
 class User(db.Model, UserMixin):
     """
-    Represents a user within the application.
+    Represents a user in the system.
 
-    This class models users and their associated attributes, preferences, system fields,
-    and relationships with other entities within the application.
+    The User class encompasses all core attributes, social information, relationships,
+    preferences, and system-level metadata about a user. It is heavily utilized in
+    authentication, authorization, and user-related content creation. This class
+    interacts with other parts of the system such as watchlists, content libraries,
+    social connections, and marketplace activity.
 
-    :ivar id: A unique identifier for the user.
-    :ivar username: The unique username for the user.
-    :ivar email: The unique email address associated with the user.
-    :ivar password_hash: The hashed password for the user's account.
-    :ivar is_verified: Indicates whether the user's email has been verified.
+    Direct database relationships and rich metadata enable the User model to serve
+    as a centralized entity for personal, social, and system-level features. User
+    details such as preferences, social connections, and activity facilitate flexible
+    customization and personalization.
+
+    :ivar id: The unique identifier for the user.
+    :ivar username: The unique username associated with the user.
+    :ivar email: The unique email address of the user.
+    :ivar password_hash: The hashed password for authentication purposes.
+    :ivar is_verified: Indicates whether the user has verified their email.
     :ivar is_active: Indicates whether the user's account is active.
-    :ivar joined_at: The date and time the user joined the platform.
-    :ivar last_seen: The last recorded date and time the user was seen online.
-
-    :ivar bio: A short biography or description provided by the user.
-    :ivar avatar_url: A URL to the user's profile avatar image.
-    :ivar location: The user's geographical location.
-    :ivar portfolio_visibility: The visibility of the user's portfolio, either "public" or "private".
-
-    :ivar preferred_tags: A list of tags representing the user's preferred interests or topics.
-    :ivar language: The user's preferred language for interactions.
-    :ivar streaming_accounts: A dictionary of the user's linked streaming accounts.
-    :ivar playback_settings: A dictionary containing the user's playback preferences.
-    :ivar calendar: A dictionary representing the user's calendar data.
-
-    :ivar created_at: The date and time when the user's account was created.
-    :ivar updated_at: The date and time of the user's most recent account update.
-    :ivar deleted_at: The date and time, if applicable, when the user's account was deleted.
-    :ivar deleted_by: The ID of the user who deleted this account, if applicable.
-    :ivar role: The user's role within the application (e.g., "user", "admin").
-    :ivar settings: A dictionary of additional user-specific settings.
-    :ivar notifications_enabled: Indicates whether the user has enabled notifications.
-    :ivar api_key: A unique API key associated with the user.
-
-    :ivar watchlists: A list of watchlists owned by the user.
-    :ivar library: A list of collections owned by the user.
-    :ivar magazines: A list of magazines created by the user.
-    :ivar articles: A list of articles authored by the user.
-    :ivar scrolls: A list of scrolls associated with the user.
-    :ivar bookmarks: A list of bookmarks created by the user.
-    :ivar watch_history: A list of watch history records associated with the user.
-    :ivar contributions: A list of contributions made by the user.
-
-    :ivar followers: A list of users who follow this user.
-    :ivar following: A list of users whom this user is following.
-    :ivar joined_hives: A list of hives the user has joined.
-    :ivar cliques: A list of cliques associated with the user.
-    :ivar comments: A list of comments made by the user.
-    :ivar reactions: A list of reactions made by the user.
-    :ivar cloned_hitlists: A list of hitlists cloned by the user.
-
-    :ivar ambertokens: The number of AmberTokens associated with the user's account.
-
-    :ivar fund: A Fund object including details about the user's fund, if any.
-    :ivar shop: A Shop object representing the user's shop, if any.
-    :ivar transactions: A list of transactions made by the user.
-    :ivar exchanges: A list of exchanges involving the user.
-    :ivar assets: A list of assets owned by the user.
-    :ivar purchased_merchandise: A list of merchandise purchased by the user.
+    :ivar joined_at: The date and time when the user joined.
+    :ivar last_seen: The last date and time the user was active.
+    :ivar bio: A short biography of the user.
+    :ivar avatar_url: The URL of the user's avatar or profile picture.
+    :ivar location: The geographical location of the user.
+    :ivar portfolio_visibility: Visibility setting of the user's portfolio.
+    :ivar preferred_tags: Tags representing the user's preferred topics or interests.
+    :ivar language: The preferred language code of the user.
+    :ivar streaming_accounts: Streaming account details connected to the user.
+    :ivar playback_settings: User's personal playback preferences or configurations.
+    :ivar calendar: Calendar metadata associated with the user's activities.
+    :ivar created_at: The datetime when the user record was created.
+    :ivar updated_at: The datetime when the user record was last updated.
+    :ivar deleted_at: The datetime when the user record was deleted.
+    :ivar deleted_by: ID of the user who deleted this user record, if applicable.
+    :ivar role: The role assigned to the user (e.g., admin, user).
+    :ivar settings: Arbitrary user settings stored as a JSON object.
+    :ivar notifications_enabled: Indicates if notifications are enabled for the user.
+    :ivar api_key: The unique API key generated for the user.
+    :ivar watchlists: List of watchlists created or owned by the user.
+    :ivar library: List of collections in the user's library.
+    :ivar magazines: List of magazines created by the user.
+    :ivar articles: List of articles authored by the user.
+    :ivar scrolls: List of scrolls associated with the user.
+    :ivar bookmarks: List of bookmarks created by the user.
+    :ivar watch_history: List of media watch history records for the user.
+    :ivar contributions: List of contributions made by the user.
+    :ivar followers: List of users following this user.
+    :ivar following: List of users this user is following.
+    :ivar joined_hives: List of hives the user has joined.
+    :ivar cliques: List of cliques the user is a member of.
+    :ivar comments: List of comments made by the user.
+    :ivar reactions: List of reactions created by the user.
+    :ivar cloned_hitlists: List of watchlists cloned by the user.
+    :ivar ambertokens: Number of AmberTokens owned by the user.
+    :ivar fund: The associated fund for the user, if applicable.
+    :ivar shop: The associated shop owned by the user, if applicable.
+    :ivar transactions: List of transactions belonging to the user.
+    :ivar exchanges: List of exchanges associated with the user.
+    :ivar assets: List of assets owned by the user.
+    :ivar purchased_merchandise: List of merchandise purchased by the user.
     """
     __tablename__ = "users"
-
     # Core Fields
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
@@ -93,20 +93,17 @@ class User(db.Model, UserMixin):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     joined_at: Mapped[datetime] = mapped_column(default=datetime.now)
     last_seen: Mapped[Optional[datetime]] = mapped_column(default=None)
-
     # Profile & Social Fields
     bio: Mapped[Optional[str]] = mapped_column(String(500))
     avatar_url: Mapped[Optional[str]] = mapped_column(String(255))
     location: Mapped[Optional[str]] = mapped_column(String(100))
     portfolio_visibility: Mapped[str] = mapped_column(String(10), default="public")  # 'public' or 'private'
-
     # Preferences & Personalization Fields
     preferred_tags: Mapped[Optional[list]] = mapped_column(JSON)
     language: Mapped[str] = mapped_column(String(10), default="en")
     streaming_accounts: Mapped[Optional[dict]] = mapped_column(JSON)
     playback_settings: Mapped[Optional[dict]] = mapped_column(JSON)
     calendar: Mapped[Optional[dict]] = mapped_column(JSON)
-
     # System Fields
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now, onupdate=datetime.now)
@@ -116,7 +113,6 @@ class User(db.Model, UserMixin):
     settings: Mapped[Optional[dict]] = mapped_column(JSON)
     notifications_enabled: Mapped[bool] = mapped_column(default=True)
     api_key: Mapped[Optional[str]] = mapped_column(String(64), unique=True)
-
     # Content Relationships
     watchlists: Mapped[List["Watchlist"]] = relationship(back_populates="owner")
     library: Mapped[List["Collection"]] = relationship(back_populates="owner")
@@ -126,7 +122,6 @@ class User(db.Model, UserMixin):
     bookmarks: Mapped[List["Bookmark"]] = relationship(back_populates="user")
     watch_history: Mapped[List["WatchHistory"]] = relationship(back_populates="user")
     contributions: Mapped[List["Contribution"]] = relationship(back_populates="user")
-
     # Social
     followers: Mapped[List["UserFollow"]] = relationship(
         "UserFollow",
@@ -134,7 +129,6 @@ class User(db.Model, UserMixin):
         back_populates="followed",
         cascade="all, delete-orphan"
     )
-
     following: Mapped[List["UserFollow"]] = relationship(
         "UserFollow",
         foreign_keys="[UserFollow.follower_id]",
@@ -148,10 +142,8 @@ class User(db.Model, UserMixin):
     cloned_hitlists: Mapped[List["Watchlist"]] = relationship(
         back_populates="cloned_by", foreign_keys="[Watchlist.cloned_by_id]"
     )
-
     # AmberTokens
     ambertokens: Mapped[int] = mapped_column(default=0)
-
     # Marketplace Relationships
     fund: Mapped[Optional["Fund"]] = relationship(back_populates="user", uselist=False)
     shop: Mapped[Optional["Shop"]] = relationship(back_populates="owner", uselist=False)
@@ -199,11 +191,11 @@ class UserFollow(db.Model):
     :type follower_id: uuid.UUID
     :ivar followed_id: The UUID of the user being followed.
     :type followed_id: uuid.UUID
-    :ivar created_at: The datetime when the follow relationship was created.
+    :ivar created_at: The datetime when the 'follow' relationship was created.
     :type created_at: datetime
     :ivar follower: The User instance representing the follower of the relationship.
     :type follower: User
-    :ivar followed: The User instance representing the followed user in the relationship.
+    :ivar followed: The User instance representing the 'followed' user in the relationship.
     :type followed: User
     """
     __tablename__ = "user_follows"
@@ -211,7 +203,7 @@ class UserFollow(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     follower_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
     followed_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.now)
 
     # Relationships
     follower: Mapped["User"] = relationship("User", foreign_keys=[follower_id], back_populates="following")

@@ -14,3 +14,6 @@ class Column:
 
 class Article:
     pass
+
+class Report:
+    pass

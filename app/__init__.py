@@ -21,7 +21,7 @@ def create_app(config_class=Config, testing=False):
 
     # Import and register blueprints
     from .blueprints.auth import auth_bp
-    # from .blueprints.library import library_bp
+    from .blueprints.library import library_bp
     # from .blueprints.scrolls import scrolls_bp
     # from .blueprints.player import player_bp
     # from .blueprints.curator import curator_bp
@@ -33,7 +33,7 @@ def create_app(config_class=Config, testing=False):
 
 
     app.register_blueprint(auth_bp)
-    # app.register_blueprint(library_bp, url_prefix="/library")
+    app.register_blueprint(library_bp, url_prefix="/library")
     # app.register_blueprint(scrolls_bp, url_prefix="/scrolls")
     # app.register_blueprint(player_bp, url_prefix="/player")
     # app.register_blueprint(curator_bp, url_prefix="/curator")
