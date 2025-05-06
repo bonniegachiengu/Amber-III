@@ -7,3 +7,5 @@ from .journal import *
 from .community import *
 from .common import *
 from .commerce import *
+from .calendar import *
+from .associations import *
