@@ -10,8 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from ..extensions import db
 from .mixins import (
-    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin, ContributionMixin,
-    ContributorMixin, ModelMixin, TokenMixin
+    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin,
+    ModelMixin, TokenMixin
 )
 
 
@@ -26,41 +26,41 @@ if TYPE_CHECKING:
     from .common import Genre, Language, Nationality, Country, Keyword, Theme, Tag, Period, WikiTemplate, DashboardTemplate
 
 
-class Market(db.Model, ModelMixin, ContributionMixin, EntityMixin, HiveMixin):
+class Market(db.Model, ModelMixin, EntityMixin, HiveMixin):
     pass
 
-class Ledger(db.Model, ModelMixin, ContributionMixin, EntityMixin):
+class Ledger(db.Model, ModelMixin, EntityMixin):
     pass
 
-class Currency(db.Model, ModelMixin, ContributionMixin):
+class Currency(db.Model, ModelMixin):
     pass
 
-class AmberTokens(db.Model, ModelMixin, ContributionMixin, TokenMixin):
+class AmberTokens(db.Model, ModelMixin, TokenMixin):
     pass
 
-class CustomToken(db.Model, ModelMixin, ContributionMixin, TokenMixin):
+class CustomToken(db.Model, ModelMixin, TokenMixin):
     pass
 
-class Fund(db.Model, ModelMixin, ContributionMixin):
+class Fund(db.Model, ModelMixin):
     pass
 
-class Listing(db.Model, ModelMixin, ContributionMixin, EntityMixin):
+class Listing(db.Model, ModelMixin, EntityMixin):
     pass
 
-class Exchange(db.Model, ModelMixin, ContributionMixin):
+class Exchange(db.Model, ModelMixin):
     pass
 
-class Transaction(db.Model, ModelMixin, ContributionMixin):
+class Transaction(db.Model, ModelMixin):
     pass
 
-class Order(db.Model, ModelMixin, ContributionMixin):
+class Order(db.Model, ModelMixin):
     pass
 
-class Discount(db.Model, ModelMixin, ContributionMixin):
+class Discount(db.Model, ModelMixin):
     pass
 
-class Receipt(db.Model, ModelMixin, ContributionMixin):
+class Receipt(db.Model, ModelMixin):
     pass
 
-class Inventory(db.Model, ModelMixin, ContributionMixin):
+class Inventory(db.Model, ModelMixin):
     pass

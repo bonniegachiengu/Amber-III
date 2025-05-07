@@ -10,8 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from ..extensions import db
 from .mixins import (
-    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin, ContributionMixin,
-    ContributorMixin, ModelMixin
+    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin,
+    ModelMixin
 )
 
 
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from .scrolls import Scroll
     from .user import User
     from .journal import Magazine, Article
-    from .library import Bookmark, WatchHistory
+    from .library import Library
     from .community import Reaction, Fandom
     from .calendar import Event, Calendar
     from .commerce import Fund, Transaction, Exchange
@@ -27,11 +27,11 @@ if TYPE_CHECKING:
 
 
 
-class Player(db.Model, ModelMixin, ContributionMixin):
+class Player(db.Model, ModelMixin):
     pass
 
-class WatchHistory(db.Model, ModelMixin, ContributionMixin):
+class WatchHistory(db.Model, ModelMixin):
     pass
 
-class Bookmark(db.Model, ModelMixin, ContributionMixin):
+class Bookmark(db.Model, ModelMixin):
     pass

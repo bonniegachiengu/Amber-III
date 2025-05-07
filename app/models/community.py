@@ -10,8 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from ..extensions import db
 from .mixins import (
-    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin, ContributionMixin,
-    ContributorMixin, ModelMixin, PerksMixin, BoardMixin, EntryMixin, WallMixin, PostMixin, ActionMixin
+    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin,
+    ModelMixin, PerksMixin, BoardMixin, EntryMixin, WallMixin, PostMixin, ActionMixin
 )
 
 if TYPE_CHECKING:
@@ -24,144 +24,144 @@ if TYPE_CHECKING:
     from .calendar import Event, Calendar
 
 
-class Arena(db.Model, ModelMixin, ContributionMixin, EntityMixin, HiveMixin):
+class Arena(db.Model, ModelMixin, EntityMixin, HiveMixin):
     pass
 
 
-class Fandom(db.Model, ModelMixin, ContributionMixin, EntityMixin, HiveMixin):
+class Fandom(db.Model, ModelMixin, EntityMixin, HiveMixin):
     pass
 
 
-class Thread(db.Model, ModelMixin, ContributorMixin):
+class Thread(db.Model, ModelMixin):
     pass
 
 
-class Message(db.Model, ModelMixin, ContributionMixin):
+class Message(db.Model, ModelMixin):
     pass
 
 
-class Reaction(db.Model, ModelMixin, ContributionMixin):
+class Reaction(db.Model, ModelMixin):
     pass
 
 
-class Founder(db.Model, ModelMixin, ContributionMixin, CliqueMixin, ModeratorMixin, CreatorMixin):
+class Founder(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, CreatorMixin):
     pass
 
 
 
-class Member(db.Model, ModelMixin, ContributionMixin, CliqueMixin):
+class Member(db.Model, ModelMixin, CliqueMixin):
     pass
 
 
-class Subscriber(db.Model, ModelMixin, ContributionMixin, CliqueMixin):
+class Subscriber(db.Model, ModelMixin, CliqueMixin):
     pass
 
 
-class Fan(db.Model, ModelMixin, ContributionMixin, CliqueMixin):
+class Fan(db.Model, ModelMixin, CliqueMixin):
     pass
 
 
-class Watcher(db.Model, ModelMixin, ContributionMixin, CliqueMixin):
+class Watcher(db.Model, ModelMixin, CliqueMixin):
     pass
 
 
-class Creator(db.Model, ModelMixin, ContributionMixin, CliqueMixin, ModeratorMixin, CreatorMixin):
+class Creator(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, CreatorMixin):
     pass
 
 
-class Owner(db.Model, ModelMixin, ContributionMixin, CliqueMixin, ModeratorMixin, OwnerMixin):
+class Owner(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, OwnerMixin):
     pass
 
 
-class Columnist(db.Model, ModelMixin, ContributionMixin, CliqueMixin, ModeratorMixin, OwnerMixin):
+class Columnist(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, OwnerMixin):
     pass
 
 
-class Editor(db.Model, ModelMixin, ContributionMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin):
+class Editor(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin):
     pass
 
 
-class Writer(db.Model, ModelMixin, ContributionMixin, CliqueMixin, CreatorMixin, OwnerMixin, AuthorMixin):
+class Writer(db.Model, ModelMixin, CliqueMixin, CreatorMixin, OwnerMixin, AuthorMixin):
     pass
 
 
-class ChiefEditor(db.Model, ModelMixin, ContributionMixin, Editor, CreatorMixin, OwnerMixin, AuthorMixin):
+class ChiefEditor(db.Model, ModelMixin, Editor, CreatorMixin, OwnerMixin, AuthorMixin):
     pass
 
 
-class Correspondent(db.Model, ModelMixin, ContributionMixin, CliqueMixin, CreatorMixin, OwnerMixin, AuthorMixin):
+class Correspondent(db.Model, ModelMixin, CliqueMixin, CreatorMixin, OwnerMixin, AuthorMixin):
     pass
 
 
-class EditorInChief(db.Model, ModelMixin, ContributionMixin, Editor, CreatorMixin, OwnerMixin, AuthorMixin):
+class EditorInChief(db.Model, ModelMixin, Editor, CreatorMixin, OwnerMixin, AuthorMixin):
     pass
 
 
-class Analyst(db.Model, ModelMixin, ContributionMixin, CliqueMixin, CreatorMixin, OwnerMixin, AuthorMixin):
+class Analyst(db.Model, ModelMixin, CliqueMixin, CreatorMixin, OwnerMixin, AuthorMixin):
     pass
 
 
-class Reward(db.Model, ModelMixin, ContributionMixin, PerksMixin):
+class Reward(db.Model, ModelMixin, PerksMixin):
     pass
 
 
-class Tier(db.Model, ModelMixin, ContributionMixin, PerksMixin):
+class Tier(db.Model, ModelMixin, PerksMixin):
     pass
 
 
-class Pins(db.Model, ModelMixin, ContributionMixin, BoardMixin):
+class Pins(db.Model, ModelMixin, BoardMixin):
     pass
 
 
-class Pin(db.Model, ModelMixin, ContributionMixin, EntryMixin):
+class Pin(db.Model, ModelMixin, EntryMixin):
     pass
 
 
-class Updates(db.Model, ModelMixin, ContributionMixin, BoardMixin):
+class Updates(db.Model, ModelMixin, BoardMixin):
     pass
 
 
-class Update(db.Model, ModelMixin, ContributionMixin, EntryMixin):
+class Update(db.Model, ModelMixin, EntryMixin):
     pass
 
 
-class Issues(db.Model, ModelMixin, ContributionMixin, BoardMixin):
+class Issues(db.Model, ModelMixin, BoardMixin):
     pass
 
 
-class Issue(db.Model, ModelMixin, ContributionMixin, EntryMixin):
+class Issue(db.Model, ModelMixin, EntryMixin):
     pass
 
 
-class Posts(db.Model, ModelMixin, ContributionMixin, WallMixin):
+class Posts(db.Model, ModelMixin, WallMixin):
     pass
 
 
-class Post(db.Model, ModelMixin, ContributionMixin, PostMixin):
+class Post(db.Model, ModelMixin, PostMixin):
     pass
 
 
-class Clips(db.Model, ModelMixin, ContributionMixin, WallMixin):
+class Clips(db.Model, ModelMixin, WallMixin):
     pass
 
 
-class Clip(db.Model, ModelMixin, ContributionMixin, PostMixin):
+class Clip(db.Model, ModelMixin, PostMixin):
     pass
 
 
 #---------------------------- Actions ------------------------------
 
-class Write(db.Model, ModelMixin, ContributorMixin, ActionMixin):
+class Write(db.Model, ModelMixin, ActionMixin):
     pass
 
 
-class Publish(db.Model, ModelMixin, ContributorMixin, ActionMixin):
+class Publish(db.Model, ModelMixin, ActionMixin):
     pass
 
 
-class Review(db.Model, ModelMixin, ContributorMixin, ActionMixin):
+class Review(db.Model, ModelMixin, ActionMixin):
     pass
 
 
-class Follow(db.Model, ModelMixin, ContributorMixin, ActionMixin):
+class Follow(db.Model, ModelMixin, ActionMixin):
     pass

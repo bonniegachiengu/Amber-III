@@ -12,8 +12,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from ..extensions import db
 from .associations import event_guests, event_moderators
 from .mixins import (
-    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin, ContributionMixin,
-    ContributorMixin, ModelMixin
+    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin,
+    ModelMixin
 )
 
 
@@ -112,7 +112,7 @@ class EventStatus(enum.Enum):
     CANCELLED = "cancelled"
 
 
-class Event(db.Model, ModelMixin, ContributionMixin):
+class Event(db.Model, ModelMixin):
     __tablename__ = "events"
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
     # Core fields
@@ -173,15 +173,15 @@ class Event(db.Model, ModelMixin, ContributionMixin):
         }
 
 
-class Log(db.Model, ModelMixin, ContributionMixin):
+class Log(db.Model, ModelMixin):
     pass
 
 
-class Reminder(db.Model, ModelMixin, ContributionMixin):
+class Reminder(db.Model, ModelMixin):
     pass
 
 
-class Calendar(db.Model, ModelMixin, ContributionMixin):
+class Calendar(db.Model, ModelMixin):
     __tablename__ = "calendars"
     id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
     # TODO: Generic ownership links that make Common Models generic, meaning they can belong to any Model

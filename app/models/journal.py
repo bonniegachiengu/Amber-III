@@ -10,8 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from ..extensions import db
 from .mixins import (
-    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin, ContributionMixin,
-    ContributorMixin, ModelMixin, ContentMixin
+    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin,
+    ModelMixin, ContentMixin
 )
 
 
@@ -26,23 +26,23 @@ if TYPE_CHECKING:
     from .common import Genre, Language, Nationality, Country, Keyword, Theme, Tag, Period, WikiTemplate, DashboardTemplate
 
 
-class Journal(db.Model, ModelMixin, ContributionMixin, EntityMixin, HiveMixin):
+class Journal(db.Model, ModelMixin, EntityMixin, HiveMixin):
     pass
 
-class Magazine(db.Model, ModelMixin, ContributionMixin, EntityMixin, HiveMixin):
+class Magazine(db.Model, ModelMixin, EntityMixin, HiveMixin):
     pass
 
-class FrontPage(db.Model, ModelMixin, ContributionMixin):
+class FrontPage(db.Model, ModelMixin):
     pass
 
-class Slot(db.Model, ModelMixin, ContributionMixin):
+class Slot(db.Model, ModelMixin):
     pass
 
-class Column(db.Model, ModelMixin, ContributionMixin, EntityMixin, HiveMixin):
+class Column(db.Model, ModelMixin, EntityMixin, HiveMixin):
     pass
 
-class Article(db.Model, ModelMixin, ContributionMixin, EntityMixin, ContentMixin):
+class Article(db.Model, ModelMixin, EntityMixin, ContentMixin):
     pass
 
-class Report(db.Model, ModelMixin, ContributionMixin, EntityMixin, ContentMixin):
+class Report(db.Model, ModelMixin, EntityMixin, ContentMixin):
     pass

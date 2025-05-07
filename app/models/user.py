@@ -10,8 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from ..extensions import db
 from .mixins import (
-    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin, ContributionMixin,
-    ContributorMixin, ModelMixin
+    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin,
+    ModelMixin, LibraryMixin
 )
 
 
@@ -26,16 +26,13 @@ if TYPE_CHECKING:
     from .calendar import Event, Calendar
 
 
-class User(db.Model, ModelMixin, ContributionMixin, UserMixin):
+class User(db.Model, ModelMixin, UserMixin, EntityMixin, LibraryMixin):
 
     __tablename__ = "users"
     # Core Fields
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(128), nullable=False)
-    is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     joined_at: Mapped[datetime] = mapped_column(default=datetime.now)
     last_seen: Mapped[Optional[datetime]] = mapped_column(default=None)
     # Profile & Social Fields
@@ -49,25 +46,14 @@ class User(db.Model, ModelMixin, ContributionMixin, UserMixin):
     streaming_accounts: Mapped[Optional[dict]] = mapped_column(JSON)
     playback_settings: Mapped[Optional[dict]] = mapped_column(JSON)
     # System Fields
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now)
-    updated_at: Mapped[datetime] = mapped_column(default=datetime.now, onupdate=datetime.now)
-    deleted_at: Mapped[Optional[datetime]] = mapped_column(default=None)
-    deleted_by: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("users.id"), default=None)
     role: Mapped[str] = mapped_column(String(20), default="user")
-    settings: Mapped[Optional[dict]] = mapped_column(JSON)
     notifications_enabled: Mapped[bool] = mapped_column(default=True)
     api_key: Mapped[Optional[str]] = mapped_column(String(64), unique=True)
     # Relationships # TODO: Review these relationships
     # --- Encompassing Singular Models ---
-    calendar: Mapped[Optional["Calendar"]] = relationship(back_populates="owner", uselist=False)
-    library: Mapped[Optional["Library"]] = relationship(back_populates="owner", uselist=False)
-    wiki: Mapped[Optional["WikiTemplate"]] = relationship(back_populates="user", uselist=False)
-    dashboard: Mapped[Optional["DashboardTemplate"]] = relationship(back_populates="user", uselist=False)
     # --- Content Creation ---
-    magazines: Mapped[List["Magazine"]] = relationship(back_populates="creator")
-    articles: Mapped[List["Article"]] = relationship(back_populates="author")
-    scrolls: Mapped[List["Scroll"]] = relationship(back_populates="user")
-    # contributions: Mapped[List["Contribution"]] = relationship(back_populates="user")
+
+
     # --- Activity Tracking ---
     watch_history: Mapped[List["WatchHistory"]] = relationship(back_populates="user")
     # --- Social Features ---

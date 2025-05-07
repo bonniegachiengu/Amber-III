@@ -1,7 +1,12 @@
+from datetime import datetime
 from sqlalchemy import Table, Column
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import UUID
+from sqlalchemy import ForeignKey
+from typing import Optional
+
 from ..extensions import db
+from utils.tools import make_contribution_table
 
 
 #------------------------ EVENT MODEL --------------------------------------------------------
@@ -20,4 +25,6 @@ event_moderators = Table(
     db.Column('clique_id', UUID, db.ForeignKey('cliques.id'), primary_key=True)
 )
 
-#------------------------ "" MODEL --------------------------------------------------------
+#------------------------ CONTRIBUTIONS --------------------------------------------------------
+
+film_contributors = make_contribution_table('Film', 'film')

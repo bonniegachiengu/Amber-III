@@ -12,8 +12,8 @@ from sqlalchemy import Enum as SQLAlchemyEnum
 from . import ContentMixin
 from ..extensions import db
 from .mixins import (
-    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin, ContributionMixin,
-    ContributorMixin, ModelMixin, MarkMixin, MediaMixin, ThumbnailMixin
+    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin,
+    ModelMixin, MarkMixin, MediaMixin, ThumbnailMixin
 )
 
 
@@ -39,205 +39,209 @@ class Visibility(enum.Enum):
     CLIQUE = "clique"
 
 
-class DashboardTemplate(db.Model, ModelMixin, ContributionMixin):
+class DashboardTemplate(db.Model, ModelMixin):
     pass
 
 
-class Overview(db.Model, ModelMixin, ContributionMixin):
+class Overview(db.Model, ModelMixin):
     pass
 
 
-class Widget(db.Model, ModelMixin, ContributionMixin):
+class Widget(db.Model, ModelMixin):
     pass
 
 
-class WikiTemplate(db.Model, ModelMixin, ContributionMixin):
+class WikiTemplate(db.Model, ModelMixin):
     pass
 
 
-class WikiSection(db.Model, ModelMixin, ContributionMixin):
+class WikiSection(db.Model, ModelMixin):
     pass
 
 
-class Anchor(db.Model, ModelMixin, ContributionMixin):
+class Anchor(db.Model, ModelMixin):
     pass
 
 
-class Link(db.Model, ModelMixin, ContributionMixin):
+class Link(db.Model, ModelMixin):
     pass
 
 
-class Image(db.Model, ModelMixin, ContributionMixin, MediaMixin):
+class Image(db.Model, ModelMixin, MediaMixin):
     pass
 
 
-class Video(db.Model, ModelMixin, ContributionMixin, MediaMixin):
+class Video(db.Model, ModelMixin, MediaMixin):
     pass
 
 
-class SubtitleFile(db.Model, ModelMixin, ContributionMixin, MediaMixin):
+class SubtitleFile(db.Model, ModelMixin, MediaMixin):
     pass
 
 
-class Tag(db.Model, ModelMixin, ContributionMixin, MarkMixin):
+class Tag(db.Model, ModelMixin, MarkMixin):
     pass
 
 
-class Language(db.Model, ModelMixin, ContributionMixin):
+class Language(db.Model, ModelMixin):
     pass
 
 
-class Country(db.Model, ModelMixin, ContributionMixin):
+class Country(db.Model, ModelMixin):
     pass
 
 
-class Nationality(db.Model, ModelMixin, ContributionMixin):
+class Nationality(db.Model, ModelMixin):
     pass
 
 
-class Period(db.Model, ModelMixin, ContributionMixin):
+class Period(db.Model, ModelMixin):
     pass
 
 
-class Genre(db.Model, ModelMixin, ContributionMixin):
+class Genre(db.Model, ModelMixin):
     pass
 
 
-class Theme(db.Model, ModelMixin, ContributionMixin):
+class Theme(db.Model, ModelMixin):
     pass
 
 
-class Keyword(db.Model, ModelMixin, ContributionMixin):
+class Keyword(db.Model, ModelMixin):
     pass
 
 
-class Map(db.Model, ModelMixin, ContributionMixin):
+class Map(db.Model, ModelMixin):
     pass
 
 
-class Location(db.Model, ModelMixin, ContributionMixin):
+class Location(db.Model, ModelMixin):
     pass
 
 
-class Venue(db.Model, ModelMixin, ContributionMixin):
+class Venue(db.Model, ModelMixin):
     pass
 
 
-class Directory(db.Model, ModelMixin, ContributionMixin):
+class Directory(db.Model, ModelMixin):
     pass
 
 
-class Feature(db.Model, ModelMixin, ContributionMixin):
+class Feature(db.Model, ModelMixin):
     pass
 
 
-class Figure(db.Model, ModelMixin, ContributionMixin, ContentMixin):
+class Figure(db.Model, ModelMixin, ContentMixin):
     pass
 
 
-class BarGraph(db.Model, ModelMixin, ContributionMixin, ContentMixin):
+class BarGraph(db.Model, ModelMixin, ContentMixin):
     pass
 
 
-class LineGraph(db.Model, ModelMixin, ContributionMixin, ContentMixin):
+class LineGraph(db.Model, ModelMixin, ContentMixin):
     pass
 
 
-class PieChart(db.Model, ModelMixin, ContributionMixin, ContentMixin):
+class PieChart(db.Model, ModelMixin, ContentMixin):
     pass
 
 
-class Axis(db.Model, ModelMixin, ContributionMixin, ContentMixin):
+class Axis(db.Model, ModelMixin, ContentMixin):
     pass
 
 
-class Legend(db.Model, ModelMixin, ContributionMixin, ContentMixin):
+class Legend(db.Model, ModelMixin, ContentMixin):
     pass
 
 
-class DataSet(db.Model, ModelMixin, ContributionMixin, ContentMixin):
+class DataSet(db.Model, ModelMixin, ContentMixin):
     pass
 
 
-class Preferences(db.Model, ModelMixin, ContributionMixin):
+class Preferences(db.Model, ModelMixin):
     pass
 
 
-class Field(db.Model, ModelMixin, ContributionMixin):
+class Field(db.Model, ModelMixin):
     pass
 
 
-class Confidence(db.Model, ModelMixin, ContributionMixin):
+class Confidence(db.Model, ModelMixin):
     pass
 
 
-class Weight(db.Model, ModelMixin, ContributionMixin):
+class Weight(db.Model, ModelMixin):
     pass
 
 
-class ConfidenceScore(db.Model, ModelMixin, ContributionMixin):
+class ConfidenceScore(db.Model, ModelMixin):
     pass
 
 
-class Avatar(db.Model, ModelMixin, ContributionMixin, MediaMixin):
+class Avatar(db.Model, ModelMixin, MediaMixin):
     pass
 
 
-class Exclusivity(db.Model, ModelMixin, ContributionMixin):
+class Exclusivity(db.Model, ModelMixin):
     pass
 
 
-class CTA(db.Model, ModelMixin, ContributionMixin):
+class CTA(db.Model, ModelMixin):
     pass
 
 
-class Filters(db.Model, ModelMixin, ContributionMixin):
+class Filters(db.Model, ModelMixin):
     pass
 
 
-class Search(db.Model, ModelMixin, ContributionMixin):
+class Search(db.Model, ModelMixin):
     pass
 
 
-class Explorer(db.Model, ModelMixin, ContributionMixin):
+class Explorer(db.Model, ModelMixin):
     pass
 
 
-class SortBy(db.Model, ModelMixin, ContributionMixin):
+class SortBy(db.Model, ModelMixin):
     pass
 
 
-class SearchResult(db.Model, ModelMixin, ContributionMixin):
+class SearchResult(db.Model, ModelMixin):
     pass
 
 
-class ClipThumbnail(db.Model, ModelMixin, ContributionMixin, ThumbnailMixin, ContentMixin):
+class ClipThumbnail(db.Model, ModelMixin, ThumbnailMixin, ContentMixin):
     pass
 
 
-class ColumnThumbnail(db.Model, ModelMixin, ContributionMixin, ThumbnailMixin, ContentMixin):
+class ColumnThumbnail(db.Model, ModelMixin, ThumbnailMixin, ContentMixin):
     pass
 
 
-class ArticleThumbnail(db.Model, ModelMixin, ContributionMixin, ThumbnailMixin, ContentMixin):
+class ArticleThumbnail(db.Model, ModelMixin, ThumbnailMixin, ContentMixin):
     pass
 
 
-class PostThumbnail(db.Model, ModelMixin, ContributionMixin, ThumbnailMixin, ContentMixin):
+class PostThumbnail(db.Model, ModelMixin, ThumbnailMixin, ContentMixin):
     pass
 
 
-class ReportThumbnail(db.Model, ModelMixin, ContributionMixin, ThumbnailMixin, ContentMixin):
+class ReportThumbnail(db.Model, ModelMixin, ThumbnailMixin, ContentMixin):
     pass
 
 
-class ReportTemplate(db.Model, ModelMixin, ContributionMixin, ContentMixin):
+class ReportTemplate(db.Model, ModelMixin, ContentMixin):
     pass
 
 
-class Notification(db.Model, ModelMixin, ContributionMixin):
+class Notification(db.Model, ModelMixin):
     pass
 
 
-class Local(db.Model, ModelMixin, ContributionMixin):
+class Local(db.Model, ModelMixin):
+    pass
+
+
+class Verification(db.Model, ModelMixin):
     pass
