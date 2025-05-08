@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from .journal import Magazine, Article
     from .community import Fandom
     from .calendar import Calendar
-    from .commerce import Listing, Order, Market, Discount
+    from .commerce import Listing, Order, Market, Discount, CustomToken
     from .common import Genre, Language, Country, Keyword, Theme, Tag, Period, WikiTemplate, DashboardTemplate
 
 
@@ -65,6 +65,7 @@ class Portfolio(db.Model, ModelMixin):
     own_films: Mapped[List["Film"]] = relationship(back_populates="studios")
     own_hitlists: Mapped[List["Hitlist"]] = relationship(back_populates="creator")
     orders: Mapped[List["Order"]] = relationship(back_populates="buyer_portfolio")
+    customtokens: Mapped[List["CustomToken"]] = relationship(back_populates="creator_portfolio")
 
 
 class Film(db.Model, ModelMixin, EntityMixin):
@@ -335,8 +336,6 @@ class Relationship(db.Model, ModelMixin):
 
 class Shop(db.Model, ModelMixin, EntityMixin, HiveMixin):
     __tablename__ = "shops"
-    library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("libraries.id"), nullable=False)
-    library: Mapped["Library"] = relationship(back_populates="shops")
     merchandise: Mapped[List["Merchandise"]] = relationship("Merchandise", back_populates="shop")
 
 

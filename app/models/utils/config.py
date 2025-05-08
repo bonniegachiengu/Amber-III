@@ -355,3 +355,40 @@ class TransactionStatus(Enum):
     PENDING_REFUND = "pending_refund"
     REFUNDED_WITH_CREDIT = "refunded_with_credit"
     REFUNDED_WITH_DEBIT = "refunded_with_debit"
+
+class TransactionType(Enum):
+    """
+    Represents the different types of financial transactions.
+
+    This enumeration defines the possible transaction types that can occur in
+    a financial system. Each type corresponds to a specific purpose or action
+    associated with monetary operations.
+
+    :ivar PURCHASE: Represents a transaction where goods or services are bought.
+    :type PURCHASE: str
+    :ivar REFUND: Represents a transaction where money is returned to the buyer.
+    :type REFUND: str
+    :ivar EXCHANGE: Indicates a transaction where items are substituted or swapped.
+    :type EXCHANGE: str
+    :ivar TIP: Indicates an optional additional amount given, often to service providers.
+    :type TIP: str
+    :ivar DEPOSIT: Represents a transaction where money is added to an account.
+    :type DEPOSIT: str
+    :ivar WITHDRAW: Represents a transaction that deducts money from an account.
+    :type WITHDRAW: str
+    :ivar CREDIT: Represents a transaction that increases the account's credit balance.
+    :type CREDIT: str
+    :ivar DEBIT: Represents a transaction that decreases the account's balance.
+    :type DEBIT: str
+    :ivar PAYMENT: Represents a transaction that settles a debt or fee.
+    :type PAYMENT: str
+    """
+    PURCHASE = "purchase"
+    REFUND = "refund"
+    EXCHANGE = "exchange"
+    TIP = "tip"
+    DEPOSIT = "deposit"
+    WITHDRAW = "withdraw"
+    CREDIT = "credit"
+    DEBIT = "debit"
+    PAYMENT = "payment"

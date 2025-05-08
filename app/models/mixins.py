@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from .journal import Magazine, Article
     from .player import WatchHistory
     from .community import Message, Thread, Reaction
-    from .commerce import Fund, Transaction, Exchange, Ledger, Currency
+    from .commerce import Fund, Transaction, Ledger, Currency
     from .common import WikiTemplate, DashboardTemplate, Exclusivity
     from .calendar import Event, Calendar
 
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 class ModelMixin:
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
-    created_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), default=None, nullable=False)
+    created_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("libraries.id"), default=None, nullable=False)
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now, onupdate=datetime.now)
     deleted_at: Mapped[Optional[datetime]] = mapped_column(default=None)
     deleted_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), default=None)
@@ -54,8 +54,12 @@ class EraMixin:
     end_time: Mapped[datetime] = mapped_column(db.DateTime, nullable=False)
 
 class LibraryMixin:
+    library_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("libraries.id"), default=None, nullable=False)
     library: Mapped["Library"] = relationship(back_populates="owner", uselist=False)
 
+class ListMixin:
+    scroll_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("scrolls.id"), default=None, nullable=False)
+    scroll: Mapped["Scroll"] = relationship(back_populates="lists", uselist=False)
 
 class CreatorMixin:
     pass
@@ -116,7 +120,7 @@ class ThumbnailMixin:
 class MarkMixin:
     pass
 
-class WatchListMixin:
+class WatchListMixin(ListMixin):
     pass
 
 class AwardTypeMixin:
