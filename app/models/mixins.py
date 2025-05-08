@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from .journal import Magazine, Article
     from .player import WatchHistory
     from .community import Message, Thread, Reaction
-    from .commerce import Fund, Transaction, Exchange
+    from .commerce import Fund, Transaction, Exchange, Ledger, Currency
     from .common import WikiTemplate, DashboardTemplate, Exclusivity
     from .calendar import Event, Calendar
 
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 class ModelMixin:
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
-    created_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), default=None)
+    created_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), default=None, nullable=False)
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now, onupdate=datetime.now)
     deleted_at: Mapped[Optional[datetime]] = mapped_column(default=None)
     deleted_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), default=None)
@@ -48,9 +48,10 @@ class EntityMixin:
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     settings: Mapped[Optional[dict]] = mapped_column(JSON)
     calendar: Mapped["Calendar"] = relationship(back_populates="owner", uselist=False)
-    creator_portfolio: Mapped[uuid.UUID] = mapped_column(ForeignKey("portfolios.id"), default=None)
-    editor_portfolios: Mapped[uuid.UUID] = mapped_column(ForeignKey("portfolios.id"), default=None)
 
+class EraMixin:
+    start_time: Mapped[datetime] = mapped_column(db.DateTime, nullable=False)
+    end_time: Mapped[datetime] = mapped_column(db.DateTime, nullable=False)
 
 class LibraryMixin:
     library: Mapped["Library"] = relationship(back_populates="owner", uselist=False)
@@ -67,11 +68,6 @@ class AuthorMixin:
 class OwnerMixin:
     pass
 
-
-class TokenMixin:
-    pass
-
-
 class HiveMixin(LibraryMixin):
     pass
 
@@ -85,7 +81,6 @@ class PerksMixin:
     pass
 
 class ContentMixin:
-    # exclusivity:
     pass
 
 class BoardMixin:

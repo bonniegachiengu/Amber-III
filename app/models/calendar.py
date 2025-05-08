@@ -1,4 +1,3 @@
-import enum
 from uuid import uuid4
 from datetime import datetime
 from typing import List, Optional, TYPE_CHECKING
@@ -11,6 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from ..extensions import db
 from .associations import event_guests, event_moderators
+from .utils.config import EventRepeat, EventStatus, EventType
 from .mixins import (
     EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin,
     ModelMixin
@@ -30,86 +30,6 @@ if TYPE_CHECKING:
 
 def generate_uuid():
     return str(uuid4())
-
-
-class EventType(enum.Enum):
-    # --- Film Events ---
-    PREMIERE = "premiere"
-    SCREENING = "screening"
-    RELEASE_DATE = "release_date"
-    FESTIVAL_APPEARANCE = "festival_appearance"
-    AWARD_NOMINATION = "award_nomination"
-    AWARD_WIN = "award_win"
-    RE_RELEASE = "re_release"
-    TRAILER_DROP = "trailer_drop"
-    STREAMING_RELEASE = "streaming_release"
-    HOME_RELEASE = "home_release"
-    WATCH_LOG = "watch_log"
-    # --- Album Events ---
-    CURATION_START = "curation_start"
-    CURATION_LOCK = "curation_lock"
-    PUBLIC_RELEASE = "public_release"
-    UPDATE = "update"
-    COLLABORATION_EVENT = "collaboration_event"
-    # --- Fandom Events ---
-    FAN_EVENT = "fan_event"
-    WATCH_PARTY = "watch_party"
-    COSPLAY_CONTEST = "cosplay_contest"
-    FAN_THEORY_DROP = "fan_theory_drop"
-    ANNIVERSARY = "anniversary"
-    # --- Club Events ---
-    MEETING = "meeting"
-    SCREENING_SESSION = "screening_session"
-    VOTE_START = "vote_start"
-    VOTE_DEADLINE = "vote_deadline"
-    CHALLENGE_LAUNCH = "challenge_launch"
-    CHALLENGE_WRAPUP = "challenge_wrapup"
-    NEW_ROUND_ANNOUNCEMENT = "new_round_announcement"
-    # --- Arena Events ---
-    DEBATE = "debate"
-    SHOWDOWN_START = "showdown_start"
-    SHOWDOWN_RESULT = "showdown_result"
-    POLL_OPEN = "poll_open"
-    POLL_CLOSE = "poll_close"
-    MATCHUP_ANNOUNCEMENT = "matchup_announcement"
-    # --- Journal / Magazine Events ---
-    COLUMN_PUBLISH = "column_publish"
-    ISSUE_RELEASE = "issue_release"
-    SUBMISSION_DEADLINE = "submission_deadline"
-    EDITORIAL_MEETING = "editorial_meeting"
-    REVIEW_SESSION = "review_session"
-    FEATURE_ANNOUNCEMENT = "feature_announcement"
-    # --- Market / Merch Events ---
-    DROP_ANNOUNCEMENT = "drop_announcement"
-    DROP_START = "drop_start"
-    DROP_END = "drop_end"
-    RESTOCK = "restock"
-    SALE_EVENT = "sale_event"
-    AUCTION_OPEN = "auction_open"
-    AUCTION_CLOSE = "auction_close"
-    NEW_LISTING = "new_listing"
-    # --- General Events ---
-    ANNOUNCEMENT = "announcement"
-    MAINTENANCE = "maintenance"
-    COMMUNITY_EVENT = "community_event"
-    MILESTONE = "milestone"
-    CAMPAIGN_LAUNCH = "campaign_launch"
-
-
-class EventRepeat(enum.Enum):
-    ONCE = "once"
-    DAILY = "daily"
-    WEEKLY = "weekly"
-    MONTHLY = "monthly"
-    YEARLY = "yearly"
-    NONE = "none"
-
-
-class EventStatus(enum.Enum):
-    UPCOMING = "upcoming"
-    ONGOING = "ongoing"
-    COMPLETED = "completed"
-    CANCELLED = "cancelled"
 
 
 class Event(db.Model, ModelMixin):

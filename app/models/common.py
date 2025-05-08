@@ -183,10 +183,6 @@ class Avatar(db.Model, ModelMixin, MediaMixin):
     pass
 
 
-class Exclusivity(db.Model, ModelMixin):
-    pass
-
-
 class CTA(db.Model, ModelMixin):
     pass
 
