@@ -5,15 +5,17 @@ from typing import List, Optional, TYPE_CHECKING
 from flask_login import UserMixin
 from sqlalchemy import String, Boolean, DateTime, ForeignKey, JSON
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.sql.schema import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import relationship, Mapped, mapped_column, declared_attr, relationships
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from ..extensions import db
+from utils.config import ContentType
 
 if TYPE_CHECKING:
     from .user import User
     from .scrolls import Scroll
-    from .library import Library
+    from .library import Library, Film, Album, Hitlist
     from .journal import Magazine, Article
     from .player import WatchHistory
     from .community import Message, Thread, Reaction
@@ -76,6 +78,15 @@ class CliqueMixin:
     agents: List["User"] = relationship("User", back_populates="cliques")
 
 
+class HiveMixin(LibraryMixin):
+    pass
+
+
+class ContentMixin:
+    content_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    content_type: Mapped[ContentType] = mapped_column(SQLAlchemyEnum(ContentType), nullable=False)
+
+
 class WatchListMixin(ListMixin):
     pass
 
@@ -91,16 +102,10 @@ class AuthorMixin:
 class OwnerMixin:
     pass
 
-class HiveMixin(LibraryMixin):
-    pass
-
 class ModeratorMixin:
     pass
 
 class PerksMixin:
-    pass
-
-class ContentMixin:
     pass
 
 class BoardMixin:
@@ -116,12 +121,6 @@ class WallMixin:
     pass
 
 class ActionMixin:
-    pass
-
-class RecommendationMixin:
-    pass
-
-class ExhibitionMixin:
     pass
 
 class PartnerMixin:

@@ -36,10 +36,10 @@ class RelationshipType(Enum):
     :type PARENT: str
     :ivar CHILD: Refers to a child relationship.
     :type CHILD: str
-    :ivar STEP_PARENT: Represents a step-parent relationship.
-    :type STEP_PARENT: str
-    :ivar STEP_SIBLING: Refers to a step-sibling relationship.
-    :type STEP_SIBLING: str
+    :ivar STEPPARENT: Represents a stepparent relationship.
+    :type STEPPARENT: str
+    :ivar STEPSIBLING: Refers to a stepsibling relationship.
+    :type STEPSIBLING: str
     :ivar COUSIN: Indicates a cousin relationship.
     :type COUSIN: str
     :ivar SPOUSE: Represents a marital relationship.
@@ -68,8 +68,8 @@ class RelationshipType(Enum):
     SIBLING = "Sibling"
     PARENT = "Parent"
     CHILD = "Child"
-    STEP_PARENT = "Step-Parent"
-    STEP_SIBLING = "Step-Sibling"
+    STEPPARENT = "StepParent"
+    STEPSIBLING = "StepSibling"
     COUSIN = "Cousin"
     SPOUSE = "Spouse"
     EX_SPOUSE = "Ex-Spouse"
@@ -285,10 +285,10 @@ class SubmissionStatus(Enum):
     Provides predefined statuses, such as 'DRAFT', 'PENDING', 'APPROVED',
     'REJECTED', and 'DELETED'.
 
-    :ivar DRAFT: Represents a submission that is in draft state and not yet
+    :ivar DRAFT: Represents a submission in draft state and not yet
         finalized.
     :type DRAFT: str
-    :ivar PENDING: Indicates a submission that is awaiting review or approval.
+    :ivar PENDING: Indicates a submission awaiting review or approval.
     :type PENDING: str
     :ivar APPROVED: Indicates that a submission has been reviewed and approved.
     :type APPROVED: str
@@ -336,12 +336,12 @@ class TransactionStatus(Enum):
 
     :cvar SUCCESS: Represents a successfully completed transaction.
     :cvar FAILED: Indicates a transaction that has failed to process.
-    :cvar CANCELLED: Denotes a transaction that was cancelled by the user or provider.
-    :cvar PENDING: Refers to a transaction that is still in progress or awaiting confirmation.
+    :cvar CANCELLED: Denotes a transaction cancelled by the user or provider.
+    :cvar PENDING: Refers to a transaction still in progress or awaiting confirmation.
     :cvar REJECTED: Marks a transaction that has been explicitly rejected.
-    :cvar EXPIRED: Represents a transaction that was not completed within allowable time limits.
+    :cvar EXPIRED: Represents a transaction not completed within allowable time limits.
     :cvar REFUNDED: Denotes a transaction for which the payment has been returned to the user.
-    :cvar PENDING_REFUND: Indicates a transaction that is awaiting the initiation of a refund.
+    :cvar PENDING_REFUND: Indicates a transaction awaiting the initiation of a refund.
     :cvar REFUNDED_WITH_CREDIT: Specifies a transaction refunded through a credit balance.
     :cvar REFUNDED_WITH_DEBIT: Specifies a transaction refunded through a debit balance.
     """
@@ -465,3 +465,70 @@ class TicketStatus(Enum):
     SOLD_OUT = "sold_out"
     RESERVED = "reserved"
     CANCELLED = "cancelled"
+
+
+class RecommendationType(Enum):
+    """
+    Represents the type of recommendations categorized as OLD or NEW.
+
+    This Enum class is used to define and enforce specific recommendation
+    types within a system or application, ensuring consistency and avoiding
+    the use of arbitrary strings or values.
+
+    :ivar OLD: Represents the 'old' type recommendation.
+    :type OLD: str
+    :ivar NEW: Represents the 'new' type recommendation.
+    :type NEW: str
+    """
+    OLD = "old"
+    NEW = "new"
+
+
+class ContentType(Enum):
+    """
+    Enumeration of various content types.
+
+    This class represents a list of predefined content types that can
+    be used to identify or categorize different pieces of content.
+    Each content type is mapped to a specific string identifier.
+
+    :ivar FILM: Represents a film content type.
+    :type FILM: str
+    :ivar ALBUM: Represents an album content type.
+    :type ALBUM: str
+    :ivar HITLIST: Represents a hitlist content type.
+    :type HITLIST: str
+    :ivar ARTICLE: Represents an article content type.
+    :type ARTICLE: str
+    :ivar POST: Represents a 'post' content type.
+    :type POST: str
+    :ivar CLIP: Represents a clip content type.
+    :type CLIP: str
+    :ivar REPORT: Represents a report content type.
+    :type REPORT: str
+    :ivar MAGAZINE: Represents a magazine content type.
+    :type MAGAZINE: str
+    :ivar PERSON: Represents a 'person' content type.
+    :type PERSON: str
+    :ivar COLUMN: Represents a column content type.
+    :type COLUMN: str
+    :ivar FANDOM: Represents a fandom content type.
+    :type FANDOM: str
+    :ivar CLUB: Represents a club content type.
+    :type CLUB: str
+    :ivar LISTING: Represents a listing content type.
+    :type LISTING: str
+    """
+    FILM = "film"
+    ALBUM = "album"
+    HITLIST = "hitlist"
+    ARTICLE = "article"
+    POST = "post"
+    CLIP = "clip"
+    REPORT = "report"
+    MAGAZINE = "magazine"
+    PERSON = "person"
+    COLUMN = "column"
+    FANDOM = "fandom"
+    CLUB = "club"
+    LISTING = "listing"
