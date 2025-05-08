@@ -17,8 +17,8 @@ if TYPE_CHECKING:
     from .player import WatchHistory
     from .community import Message, Thread, Reaction
     from .commerce import Fund, Transaction, Ledger, Currency
-    from .common import WikiTemplate, DashboardTemplate, Exclusivity
-    from .calendar import Event, Calendar
+    from .common import WikiTemplate, DashboardTemplate, Tag, Keyword, Language, Country, Nationality, Period, Anchor
+    from .calendar import Event, Calendar, Ticket
 
 
 class ModelMixin:
@@ -47,19 +47,38 @@ class EntityMixin:
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     settings: Mapped[Optional[dict]] = mapped_column(JSON)
-    calendar: Mapped["Calendar"] = relationship(back_populates="owner", uselist=False)
+    calendar_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("calendars.id"), default=None, nullable=False)
+    calendar: Mapped["Calendar"] = relationship(back_populates="entities", uselist=False)
+
 
 class EraMixin:
     start_time: Mapped[datetime] = mapped_column(db.DateTime, nullable=False)
     end_time: Mapped[datetime] = mapped_column(db.DateTime, nullable=False)
 
+
 class LibraryMixin:
     library_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("libraries.id"), default=None, nullable=False)
     library: Mapped["Library"] = relationship(back_populates="owner", uselist=False)
 
+
 class ListMixin:
     scroll_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("scrolls.id"), default=None, nullable=False)
     scroll: Mapped["Scroll"] = relationship(back_populates="lists", uselist=False)
+
+
+class MarkMixin:
+    tags: Mapped[Optional[list["Tag"]]] = relationship("Tag", back_populates="marked")
+    keywords: Mapped[Optional[list["Keyword"]]] = relationship("Keyword", back_populates="marked")
+    languages: Mapped[Optional[list["Language"]]] = relationship("Language", back_populates="marked")
+    countries: Mapped[Optional[list["Country"]]] = relationship("Country", back_populates="marked")
+    nationalities: Mapped[Optional[list["Nationality"]]] = relationship("Nationality", back_populates="marked")
+    periods: Mapped[Optional[list["Period"]]] = relationship("Period", back_populates="marked")
+    anchors: Mapped[Optional[list["Anchor"]]] = relationship("Anchor", back_populates="marked")
+
+
+class WatchListMixin(ListMixin):
+    pass
+
 
 class CreatorMixin:
     pass
@@ -115,12 +134,6 @@ class MediaMixin:
     pass
 
 class ThumbnailMixin:
-    pass
-
-class MarkMixin:
-    pass
-
-class WatchListMixin(ListMixin):
     pass
 
 class AwardTypeMixin:

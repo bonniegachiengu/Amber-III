@@ -23,20 +23,12 @@ if TYPE_CHECKING:
     from .journal import Magazine, Article
     from .player import Bookmark, WatchHistory
     from .community import Reaction, Fandom
-    from .commerce import Fund, Transaction, Exchange
+    from .commerce import Fund, Transaction
     from .library import Library
 
 
 def generate_uuid():
     return str(uuid4())
-
-
-class Visibility(enum.Enum):
-    PUBLIC = "public"
-    PRIVATE = "private"
-    FOLLOWERS = "followers"
-    HIVE = "hive"
-    CLIQUE = "clique"
 
 
 class DashboardTemplate(db.Model, ModelMixin):
@@ -79,7 +71,7 @@ class SubtitleFile(db.Model, ModelMixin, MediaMixin):
     pass
 
 
-class Tag(db.Model, ModelMixin, MarkMixin):
+class Tag(db.Model, ModelMixin):
     pass
 
 

@@ -7,10 +7,9 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from utils.config import FilmType, RelationshipType, SubmissionStatus
-from . import film_contributors
 from ..extensions import db
 from .mixins import (
-    EntityMixin, HiveMixin,
+    EntityMixin, HiveMixin, LibraryMixin,
     ModelMixin, WatchListMixin, PartnerMixin, AwardMixin, AwardTypeMixin, EraMixin
 )
 
@@ -31,6 +30,7 @@ def generate_uuid():
 
 class Library(db.Model, ModelMixin, EntityMixin):
     __tablename__ = 'libraries'
+    owner: Mapped["LibraryMixin"] = relationship("LibraryMixin" ,back_populates="libraries", uselist=False)
     wallet: Mapped["Wallet"] = relationship(back_populates="library", uselist=False, cascade="all, delete-orphan")
     portfolio: Mapped["Portfolio"] = relationship(back_populates="library", uselist=False, cascade="all, delete-orphan")
     collections: Mapped[List["Collection"]] = relationship(back_populates="library", cascade="all, delete-orphan")
@@ -66,6 +66,8 @@ class Portfolio(db.Model, ModelMixin):
     own_hitlists: Mapped[List["Hitlist"]] = relationship(back_populates="creator")
     orders: Mapped[List["Order"]] = relationship(back_populates="buyer_portfolio")
     customtokens: Mapped[List["CustomToken"]] = relationship(back_populates="creator_portfolio")
+    created_tickets: Mapped[List["Ticket"]] = relationship(back_populates="creator_portfolio")
+    bought_tickets: Mapped[List["Ticket"]] = relationship(back_populates="buying_portfolios")
 
 
 class Film(db.Model, ModelMixin, EntityMixin):
@@ -454,6 +456,3 @@ class Theatre(db.Model, ModelMixin, EntityMixin, PartnerMixin):
 class Release(db.Model, ModelMixin, EntityMixin):
     pass
 
-
-class Ticket(db.Model, ModelMixin, EntityMixin):
-    pass

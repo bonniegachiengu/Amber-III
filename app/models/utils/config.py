@@ -392,3 +392,76 @@ class TransactionType(Enum):
     CREDIT = "credit"
     DEBIT = "debit"
     PAYMENT = "payment"
+
+
+class Visibility(Enum):
+    """
+    Enumeration of visibility levels.
+
+    This class defines the possible visibility levels that can be used to control
+    access or exposure within an application. It provides predefined constants
+    that correspond to specific visibility states.
+
+    :ivar PUBLIC: Represents public visibility where content is accessible to
+        everyone.
+    :type PUBLIC: str
+    :ivar PRIVATE: Represents private visibility where content is accessible
+        only to the owner.
+    :type PRIVATE: str
+    :ivar FOLLOWERS: Represents visibility restricted to followers of the owner.
+    :type FOLLOWERS: str
+    :ivar HIVE: Represents visibility limited to a specific group/community
+        called a "hive".
+    :type HIVE: str
+    :ivar CLIQUE: Represents visibility restricted to a smaller, more intimate
+        group, referred to as a "clique".
+    :type CLIQUE: str
+    """
+    PUBLIC = "public"
+    PRIVATE = "private"
+    FOLLOWERS = "followers"
+    HIVE = "hive"
+    CLIQUE = "clique"
+
+
+class TicketType(Enum):
+    """
+    Represents types of tickets available for an event.
+
+    This class is an enumeration that defines two types of tickets:
+    GENERAL_ADMISSION and VIP. It is used to categorize ticket types
+    and provide a simple way to differentiate ticket levels in an
+    event management system.
+
+    :ivar GENERAL_ADMISSION: Represents a general admission ticket type.
+    :type GENERAL_ADMISSION: str
+    :ivar VIP: Represents a VIP ticket type.
+    :type VIP: str
+    """
+    FREE = "free"
+    GENERAL_ADMISSION = "general_admission"
+    VIP = "vip"
+
+
+class TicketStatus(Enum):
+    """
+    Represents various statuses for tickets.
+
+    This class is an enumeration that defines a set of symbolic names for
+    different ticket statuses such as availability, sold out, reserved, and
+    cancelled. It can be used to standardize the representation of these
+    statuses across an application or program.
+
+    :cvar AVAILABLE: Represents a ticket status indicating that the ticket
+        is available for purchase.
+    :cvar SOLD_OUT: Represents a ticket status indicating that all tickets
+        are sold out.
+    :cvar RESERVED: Represents a ticket status indicating that the ticket
+        has been reserved.
+    :cvar CANCELLED: Represents a ticket status indicating that the ticket
+        has been cancelled.
+    """
+    AVAILABLE = "available"
+    SOLD_OUT = "sold_out"
+    RESERVED = "reserved"
+    CANCELLED = "cancelled"

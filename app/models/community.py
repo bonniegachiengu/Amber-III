@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from .library import Library, Shop
     from .journal import Magazine, Article
     from .player import WatchHistory
-    from .commerce import Fund, Transaction, Exchange
+    from .commerce import Fund, Transaction
     from .common import WikiTemplate, DashboardTemplate
     from .calendar import Event, Calendar
 
@@ -72,6 +72,8 @@ class Creator(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, CreatorMixin):
 class Owner(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, OwnerMixin):
     pass
 
+class Organizer(db.Model, ModelMixin, CliqueMixin, ModeratorMixin):
+    pass
 
 class Columnist(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, OwnerMixin):
     pass
