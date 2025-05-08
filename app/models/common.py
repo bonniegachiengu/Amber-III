@@ -108,7 +108,7 @@ class Map(db.Model, ModelMixin):
 
 
 class Location(db.Model, ModelMixin):
-    pass
+    users: Mapped[List["User"]] = relationship("User", secondary="user_locations")
 
 
 class Venue(db.Model, ModelMixin):

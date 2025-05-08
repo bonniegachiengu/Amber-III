@@ -24,7 +24,6 @@ if TYPE_CHECKING:
     from .calendar import Event, Calendar
 
 
-
 class Scroll(db.Model, ModelMixin, ContributionMixin):
     pass
 

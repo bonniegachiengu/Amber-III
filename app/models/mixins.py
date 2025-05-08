@@ -11,6 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from ..extensions import db
 
 if TYPE_CHECKING:
+    from .user import User
     from .scrolls import Scroll
     from .library import Library
     from .journal import Magazine, Article
@@ -31,11 +32,6 @@ class ModelMixin:
     wiki: Mapped[Optional["WikiTemplate"]] = relationship(back_populates="user", uselist=False)
     dashboard: Mapped[Optional["DashboardTemplate"]] = relationship(back_populates="user", uselist=False)
     fields: Mapped[Optional[dict]] = mapped_column(JSON)
-
-    def to_dict(self):
-        return {
-            "id": str(self.id),
-        }
 
 
 class EntityMixin:
@@ -76,6 +72,10 @@ class MarkMixin:
     anchors: Mapped[Optional[list["Anchor"]]] = relationship("Anchor", back_populates="marked")
 
 
+class CliqueMixin:
+    agents: List["User"] = relationship("User", back_populates="cliques")
+
+
 class WatchListMixin(ListMixin):
     pass
 
@@ -92,9 +92,6 @@ class OwnerMixin:
     pass
 
 class HiveMixin(LibraryMixin):
-    pass
-
-class CliqueMixin:
     pass
 
 class ModeratorMixin:

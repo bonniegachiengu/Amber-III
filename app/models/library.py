@@ -19,7 +19,8 @@ if TYPE_CHECKING:
     from .user import User
     from .journal import Magazine, Article
     from .community import Fandom
-    from .calendar import Calendar
+    from .calendar import Calendar, Ticket
+    from .player import Bookmark
     from .commerce import Listing, Order, Market, Discount, CustomToken
     from .common import Genre, Language, Country, Keyword, Theme, Tag, Period, WikiTemplate, DashboardTemplate
 
@@ -36,6 +37,7 @@ class Library(db.Model, ModelMixin, EntityMixin):
     collections: Mapped[List["Collection"]] = relationship(back_populates="library", cascade="all, delete-orphan")
     shops: Mapped[List["Shop"]] = relationship(back_populates="library", cascade="all, delete-orphan")
     markets: Mapped[List["Market"]] = relationship(back_populates="library", cascade="all, delete-orphan")
+    watch_history: Mapped[List["WatchHistory"]] = relationship(back_populates="library", cascade="all, delete-orphan")
 
 
 class Collection(db.Model, ModelMixin):
@@ -68,6 +70,12 @@ class Portfolio(db.Model, ModelMixin):
     customtokens: Mapped[List["CustomToken"]] = relationship(back_populates="creator_portfolio")
     created_tickets: Mapped[List["Ticket"]] = relationship(back_populates="creator_portfolio")
     bought_tickets: Mapped[List["Ticket"]] = relationship(back_populates="buying_portfolios")
+
+
+class WatchHistory(db.Model, ModelMixin):
+    library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("libraries.id"), nullable=False)
+    library: Mapped["Library"] = relationship(back_populates="watch_history")
+    bookmarks: Mapped[List["Bookmark"]] = relationship(back_populates="watch_history")
 
 
 class Film(db.Model, ModelMixin, EntityMixin):

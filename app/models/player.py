@@ -19,19 +19,16 @@ if TYPE_CHECKING:
     from .scrolls import Scroll
     from .user import User
     from .journal import Magazine, Article
-    from .library import Library
+    from .library import Library, WatchHistory
     from .community import Reaction, Fandom
     from .calendar import Event, Calendar
-    from .commerce import Fund, Transaction, Exchange
+    from .commerce import Fund, Transaction
     from .common import Genre, Language, Nationality, Country, Keyword, Theme, Tag, Period, WikiTemplate, DashboardTemplate
-
 
 
 class Player(db.Model, ModelMixin):
     pass
 
-class WatchHistory(db.Model, ModelMixin):
-    pass
-
 class Bookmark(db.Model, ModelMixin):
-    pass
+    watch_history_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("watch_history.id"), nullable=False)
+    watch_history: Mapped["WatchHistory"] = relationship("WatchHistory", back_populates="bookmarks")
