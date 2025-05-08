@@ -41,6 +41,8 @@ class User(db.Model, ModelMixin, UserMixin, EntityMixin, LibraryMixin):
     :type last_seen: Optional[datetime]
     :ivar bio: A brief biography or description of the user (optional).
     :type bio: Optional[str]
+    :ivar catchphrase: A catchphrase or tagline for the user (optional).
+    :type catchphrase: Optional[str]
     :ivar avatar_url: URL of the user's avatar or profile picture (optional).
     :type avatar_url: Optional[str]
     :ivar location_id: The UUID reference to the user’s associated location (optional).
@@ -81,7 +83,7 @@ class User(db.Model, ModelMixin, UserMixin, EntityMixin, LibraryMixin):
     last_seen: Mapped[Optional[datetime]] = mapped_column(default=None)
     # Profile & Social Fields
     bio: Mapped[Optional[str]] = mapped_column(String(500))
-    catch_phrase: Mapped[Optional[str]] = mapped_column(String(100))
+    catchphrase: Mapped[Optional[str]] = mapped_column(String(100))
     avatar_url: Mapped[Optional[str]] = mapped_column(String(255))
     location_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey("locations.id"), default=None)
     portfolio_visibility: Mapped[Visibility] = mapped_column(SQLAlchemyEnum(Visibility, name="portfolio_visibility"), default=Visibility.PUBLIC)
