@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from .journal import Magazine, Article
     from .community import Fandom
     from .calendar import Calendar, Ticket
-    from .player import Bookmark
+    from .player import Bookmark, PlaybackSession
     from .commerce import Listing, Order, Market, Discount, CustomToken
     from .common import Genre, Language, Country, Keyword, Theme, Tag, Period, WikiTemplate, DashboardTemplate
 
@@ -38,6 +38,7 @@ class Library(db.Model, ModelMixin, EntityMixin):
     shops: Mapped[List["Shop"]] = relationship(back_populates="library", cascade="all, delete-orphan")
     markets: Mapped[List["Market"]] = relationship(back_populates="library", cascade="all, delete-orphan")
     watch_history: Mapped[List["WatchHistory"]] = relationship(back_populates="library", cascade="all, delete-orphan")
+    playback_sessions: Mapped[List["PlaybackSession"]] = relationship(back_populates="library", cascade="all, delete-orphan")
 
 
 class Collection(db.Model, ModelMixin):
@@ -73,6 +74,7 @@ class Portfolio(db.Model, ModelMixin):
 
 
 class WatchHistory(db.Model, ModelMixin):
+    __tablename__ = "watch_histories"
     library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("libraries.id"), nullable=False)
     library: Mapped["Library"] = relationship(back_populates="watch_history")
     bookmarks: Mapped[List["Bookmark"]] = relationship(back_populates="watch_history")
@@ -92,11 +94,13 @@ class Film(db.Model, ModelMixin, EntityMixin):
     available_locally: Mapped[bool] = mapped_column(Boolean, default=False)
     streaming_links: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
     trailer_url: Mapped[Optional[str]] = mapped_column(String)
+    local_file_url: Mapped[Optional[str]] = mapped_column(String)
     watch_count: Mapped[int] = mapped_column(Integer, default=0)
     average_progress: Mapped[float] = mapped_column(Float, default=0.0)
     popularity_score: Mapped[float] = mapped_column(Float, default=0.0)
     scroll_stats: Mapped[Optional[dict]] = mapped_column(JSON, default={})
     viewer_tags: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
+    subtitles: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
 
     contributed_by_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey('users.id'))
 
