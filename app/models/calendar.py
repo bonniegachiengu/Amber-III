@@ -9,7 +9,8 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from ..extensions import db
 from .utils.config import EventRepeat, EventStatus, EventType, Visibility, TicketType, TicketStatus
-from .mixins import EntityMixin, ModelMixin, MarkMixin, EraMixin
+from .mixins import EntityMixin, ModelMixin, MarkMixin, EraMixin, ContributionMixin
+from .associations import event_contributors, ticket_contributors
 
 
 if TYPE_CHECKING:
@@ -51,7 +52,7 @@ class Calendar(db.Model, ModelMixin):
     logs: Mapped[List["Log"]] = relationship("Log", backref="calendar")
 
 
-class Event(db.Model, ModelMixin, EntityMixin, MarkMixin, EraMixin):
+class Event(db.Model, ModelMixin, EntityMixin, MarkMixin, EraMixin, ContributionMixin):
     """
     Represents an event within a calendar application, allowing configuration
     of event-specific attributes and relationships with other entities.
@@ -59,7 +60,7 @@ class Event(db.Model, ModelMixin, EntityMixin, MarkMixin, EraMixin):
     This class is mapped to the "events" table in the database and facilitates
     the creation, modification, and management of events. It enables associating
     events with calendars, venues, users, and other related objects such as
-    notifications, reminders, tickets, and logs. The use of mixin classes enhances
+    notifications, reminders, tickets, and logs. The use of 'mixin' classes enhances
     the model with additional functionality such as marking, entity identification,
     and tracking within the historical context (era).
 
@@ -99,17 +100,18 @@ class Event(db.Model, ModelMixin, EntityMixin, MarkMixin, EraMixin):
     :ivar reminders: List of reminders tied to the event. Reminders are deleted
         along with the event.
     :type reminders: List[Reminder]
-    :ivar tickets: List of tickets associated with the event. Tickets are
-        also deleted when the event is removed.
+    :ivar tickets: List of tickets associated with the event. Tickets get deleted when the event is removed.
     :type tickets: List[Ticket]
     :ivar logs: List of logs recording changes or actions associated with the
         event. Logs are cascaded and removed with the event.
     :type logs: List[Log]
     :ivar ctas: List of call-to-action (CTA) elements associated with the
-        event. These elements are also removed when the event is deleted.
+        event. These elements also get removed when the event is deleted.
     :type ctas: List[CTA]
     """
     __tablename__ = "events"
+    __contribution_table__ = event_contributors
+    __contribution_backref__ = "event_contributions"
     event_type: Mapped["EventType"] = mapped_column(SQLAlchemyEnum(EventType, name="event_type"), nullable=False)
     repeat: Mapped[EventRepeat] = mapped_column(SQLAlchemyEnum(EventRepeat, name="event_repeat"), default=EventRepeat.NONE)
     status: Mapped[EventStatus] = mapped_column(SQLAlchemyEnum(EventStatus, name="event_status"), default=EventStatus.UPCOMING)
@@ -133,7 +135,7 @@ class Reminder(db.Model, ModelMixin):
     Represents a reminder associated with an event in the system.
 
     This class defines a Reminder, which is linked to an event and includes details
-    like the reminder message and the time the reminder should trigger. It utilizes
+    like the reminder message and the time the reminder should trigger. It uses
     SQLAlchemy's ORM capabilities to map this class to the corresponding database
     table and manage relationships with other entities.
 
@@ -153,7 +155,7 @@ class Reminder(db.Model, ModelMixin):
     event: Mapped["Event"] = relationship("Event", backref="reminders")
 
 
-class Ticket(db.Model, ModelMixin, EraMixin):
+class Ticket(db.Model, ModelMixin, EraMixin, ContributionMixin):
     """
     Represents a ticket for an event, including information about its associated entities
     and attributes such as type, quantity, and price.
@@ -194,6 +196,8 @@ class Ticket(db.Model, ModelMixin, EraMixin):
     :type order: Order
     """
     __tablename__ = "tickets"
+    __contribution_table__ = ticket_contributors
+    __contribution_backref__ = "ticket_contributions"
     creator_portfolio_id: Mapped[UUID] = mapped_column(ForeignKey("portfolios.id"), nullable=False)
     event_id: Mapped[UUID] = mapped_column(ForeignKey("events.id"), nullable=False)
     currency_id: Mapped[UUID] = mapped_column(ForeignKey("currencies.id"), nullable=False)

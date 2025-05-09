@@ -7,18 +7,19 @@ from sqlalchemy import String, ForeignKey, Integer, Numeric
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
-from app.models import Merchandise
-from app.models import Wallet
-from . import EraMixin
 from ..extensions import db
 from .utils.config import OrderStatus, TransactionStatus, TransactionType
-from .mixins import EntityMixin, HiveMixin, ModelMixin
+from .mixins import EntityMixin, HiveMixin, ModelMixin, ContributionMixin, EraMixin
+from .associations import (
+    market_contributors, customtoken_contributors, fund_contributors, listing_contributors, order_contributors,
+    transaction_contributors, discount_contributors
+)
 
 if TYPE_CHECKING:
     from .library import Portfolio, Wallet, Merchandise
 
 
-class Market(db.Model, ModelMixin, EntityMixin, HiveMixin):
+class Market(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin):
     """
     Represents a Market entity within the application.
 
@@ -33,6 +34,8 @@ class Market(db.Model, ModelMixin, EntityMixin, HiveMixin):
     :type listings: sqlalchemy.orm.relationship
     """
     __tablename__ = "markets"
+    __contribution_table__ = market_contributors
+    __contribution_backref__ = "market_contributions"
     listings = relationship("Listing", back_populates="market")
 
 
@@ -83,7 +86,7 @@ class Token(db.Model, ModelMixin):
     }
 
 
-class CustomToken(db.Model, ModelMixin, Token):
+class CustomToken(db.Model, ModelMixin, Token, ContributionMixin):
     """
     Defines a custom token class for use in a database model.
 
@@ -95,6 +98,8 @@ class CustomToken(db.Model, ModelMixin, Token):
     :type creator_portfolio: Mapped["Portfolio"]
     """
     __tablename__ = "customtokens"
+    __contribution_table__ = customtoken_contributors
+    __contribution_backref__ = "customtoken_contributions"
     creator_portfolio: Mapped["Portfolio"] = relationship("User", back_populates="customtokens")
 
     __mapper_args__ = {
@@ -143,7 +148,7 @@ class Ledger(db.Model, ModelMixin, EntityMixin):
     transactions: Mapped[List["Transaction"]] = relationship("Transaction", back_populates="ledger")
 
 
-class Fund(db.Model, ModelMixin):
+class Fund(db.Model, ModelMixin, ContributionMixin):
     """
     Represents a financial fund within the system.
 
@@ -172,6 +177,8 @@ class Fund(db.Model, ModelMixin):
     :type wallet: Wallet
     """
     __tablename__ = "funds"
+    __contribution_table__ = fund_contributors
+    __contribution_backref__ = "fund_contributions"
     wallet_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("wallets.id"))
     token_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("tokens.id"))
     balance: Mapped[float] = mapped_column(Numeric(20, 4), default=0.0)
@@ -206,7 +213,7 @@ class Currency(db.Model, ModelMixin):
     tokens: Mapped[List["Token"]] = relationship("Token", back_populates="currency")
 
 
-class Listing(db.Model, ModelMixin, EntityMixin):
+class Listing(db.Model, ModelMixin, EntityMixin, ContributionMixin):
     """
     Represents a listing entity within a marketplace system.
 
@@ -230,6 +237,8 @@ class Listing(db.Model, ModelMixin, EntityMixin):
     :type orders: List[Order]
     """
     __tablename__ = "listings"
+    __contribution_table__ = listing_contributors
+    __contribution_backref__ = "listing_contributions"
     market_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("markets.id"))
     merchandise_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("merchandises.id"))
     price: Mapped[float] = mapped_column(Numeric(20, 4), default=0.0)
@@ -238,7 +247,7 @@ class Listing(db.Model, ModelMixin, EntityMixin):
     orders: Mapped[List["Order"]] = relationship("Order", back_populates="listing")
 
 
-class Order(db.Model, ModelMixin):
+class Order(db.Model, ModelMixin, ContributionMixin):
     """
     Represents an order entity in the database.
 
@@ -275,6 +284,8 @@ class Order(db.Model, ModelMixin):
     :type transactions: List[Transaction]
     """
     __tablename__ = "orders"
+    __contribution_table__ = order_contributors
+    __contribution_backref__ = "order_contributions"
     buyer_portfolio_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("portfolios.id"))
     listing_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("listings.id"))
     fund_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("funds.id"))
@@ -330,7 +341,7 @@ class Conversion(db.Model, ModelMixin):
     to_token: Mapped["Token"] = relationship("Token", foreign_keys=[to_token_id])
 
 
-class Transaction(db.Model, ModelMixin, EntityMixin):
+class Transaction(db.Model, ModelMixin, EntityMixin, ContributionMixin):
     """
     Represents a financial transaction within the system.
 
@@ -375,6 +386,8 @@ class Transaction(db.Model, ModelMixin, EntityMixin):
     :type timestamp: datetime
     """
     __tablename__ = "transactions"
+    __contribution_table__ = transaction_contributors
+    __contribution_backref__ = "transaction_contributions"
     from_fund_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("funds.id"))
     to_fund_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("funds.id"))
     toll_fund: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("funds.id"))
@@ -394,7 +407,7 @@ class Transaction(db.Model, ModelMixin, EntityMixin):
     timestamp: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.now)
 
 
-class Discount(db.Model, ModelMixin, EntityMixin, EraMixin):
+class Discount(db.Model, ModelMixin, EntityMixin, EraMixin, ContributionMixin):
     """
     Represents the discount applied to a merchandise item.
 
@@ -410,6 +423,8 @@ class Discount(db.Model, ModelMixin, EntityMixin, EraMixin):
         discount applies.
     """
     __tablename__ = "discounts"
+    __contribution_table__ = discount_contributors
+    __contribution_backref__ = "discount_contributions"
     merchandise_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("merchandises.id"))
     percentage: Mapped[float] = mapped_column(Numeric(5, 2), default=0.0)
     merchandise: Mapped["Merchandise"] = relationship("Merchandise", back_populates="discounts")

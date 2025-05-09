@@ -8,10 +8,11 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from utils.config import FilmType, RelationshipType, SubmissionStatus
 from associations import film_contributors, person_contributors
+
 from ..extensions import db
 from .mixins import (
     EntityMixin, HiveMixin, LibraryMixin,
-    ModelMixin, WatchListMixin, PartnerMixin, AwardMixin, AwardTypeMixin, EraMixin
+    ModelMixin, WatchListMixin, PartnerMixin, AwardMixin, AwardTypeMixin, EraMixin, ContributionMixin
 )
 
 
@@ -81,7 +82,7 @@ class WatchHistory(db.Model, ModelMixin):
     bookmarks: Mapped[List["Bookmark"]] = relationship(back_populates="watch_history")
 
 
-class Film(db.Model, ModelMixin, EntityMixin):
+class Film(db.Model, ModelMixin, EntityMixin, ContributionMixin):
     __tablename__ = "films"
     __contribution_table__ = film_contributors
     __contribution_backref__ = "film_contributions"
@@ -181,7 +182,7 @@ class Hitlist(db.Model, ModelMixin, WatchListMixin, EntityMixin):
     pass
 
 
-class Person(db.Model, ModelMixin, EntityMixin):
+class Person(db.Model, ModelMixin, EntityMixin, ContributionMixin):
     __tablename__ = 'people'
     __contribution_table__ = person_contributors
     __contribution_backref__ = "person_contributions"

@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from .journal import Magazine, Article
     from .player import WatchHistory
     from .community import Message, Thread, Reaction
-    from .commerce import Fund, Transaction, Ledger, Currency
+    from .commerce import Fund, Transaction, Ledger, Currency, AmberToken
     from .common import WikiTemplate, DashboardTemplate, Tag, Keyword, Language, Country, Nationality, Period, Anchor
     from .calendar import Event, Calendar, Ticket
 
@@ -50,6 +50,8 @@ class EntityMixin:
     calendar_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("calendars.id"), default=None, nullable=False)
     calendar: Mapped["Calendar"] = relationship(back_populates="entities", uselist=False)
 
+
+class ContributionMixin:
     # noinspection PyMethodParameters
     @declared_attr
     def contributors(cls):
