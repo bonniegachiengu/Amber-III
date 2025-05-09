@@ -6,7 +6,7 @@ from sqlalchemy import String, Boolean, ForeignKey, JSONB, Date, Integer, Float,
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
-from utils.config import FilmType, RelationshipType, SubmissionStatus
+from utils.config import FilmTypeEnum, RelationshipTypeEnum, SubmissionStatusEnum
 from associations import film_contributors, person_contributors
 
 from ..extensions import db
@@ -19,12 +19,12 @@ from .mixins import (
 if TYPE_CHECKING:
     from .scrolls import Scroll
     from .user import User
-    from .journal import Magazine, Article
+    from .journal import Magazine, Article, Report, Column
     from .community import Fandom
     from .calendar import Calendar, Ticket
     from .player import Bookmark, PlaybackSession
     from .commerce import Listing, Order, Market, Discount, CustomToken
-    from .common import Genre, Language, Country, Keyword, Theme, Tag, Period, WikiTemplate, DashboardTemplate
+    from .common import Genre, Language, Country, Keyword, Theme, Tag, Period, Anchor, WikiTemplate, DashboardTemplate
 
 
 def generate_uuid():
@@ -60,15 +60,18 @@ class Portfolio(db.Model, ModelMixin):
     __tablename__ = "portfolios"
     library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("libraries.id"), nullable=False)
     library: Mapped["Library"] = relationship(back_populates="portfolio")
-    career: Mapped["Career"] = relationship(back_populates="portfolio")
-    created_magazines: Mapped[List["Magazine"]] = relationship(back_populates="creator_portf")
-    authored_articles: Mapped[List["Article"]] = relationship(back_populates="authors")
-    ranked_scrolls: Mapped[List["Scroll"]] = relationship(back_populates="users")
-    created_people: Mapped[List["Person"]] = relationship(back_populates="creator")
+    created_magazines: Mapped[List["Magazine"]] = relationship(back_populates="founders") # founder
+    authored_articles: Mapped[List["Article"]] = relationship(back_populates="authors") # writer
+    authored_reports: Mapped[List["Report"]] = relationship(back_populates="authors") # analyst
+    maintained_columns: Mapped[List["Column"]] = relationship(back_populates="maintainers")
+
+    reviewed_scrolls: Mapped[List["Scroll"]] = relationship(back_populates="reviewer")
+    created_people: Mapped[List["Person"]] = relationship(back_populates="creators")
     assets: Mapped[List["Asset"]] = relationship(back_populates="portfolio")
-    own_albums: Mapped[List["Album"]] = relationship(back_populates="creator")
-    own_films: Mapped[List["Film"]] = relationship(back_populates="studios")
-    own_hitlists: Mapped[List["Hitlist"]] = relationship(back_populates="creator")
+    owned_magazines: Mapped[List["Magazine"]] = relationship(back_populates="owners") # owner
+    owned_albums: Mapped[List["Album"]] = relationship(back_populates="studios")
+    owned_films: Mapped[List["Film"]] = relationship(back_populates="studios")
+    owned_hitlists: Mapped[List["Hitlist"]] = relationship(back_populates="creators")
     orders: Mapped[List["Order"]] = relationship(back_populates="buyer_portfolio")
     customtokens: Mapped[List["CustomToken"]] = relationship(back_populates="creator_portfolio")
     created_tickets: Mapped[List["Ticket"]] = relationship(back_populates="creator_portfolio")
@@ -78,7 +81,12 @@ class Portfolio(db.Model, ModelMixin):
 class WatchHistory(db.Model, ModelMixin):
     __tablename__ = "watch_histories"
     library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("libraries.id"), nullable=False)
+    film_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("films.id"), nullable=False)
     library: Mapped["Library"] = relationship(back_populates="watch_history")
+    film: Mapped["Film"] = relationship(back_populates="watch_history")
+    watch_count: Mapped[int] = mapped_column(Integer, default=0)
+    current_position: Mapped[float] = mapped_column(Float, default=0.0) # seconds
+    last_watched: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.now)
     bookmarks: Mapped[List["Bookmark"]] = relationship(back_populates="watch_history")
 
 
@@ -97,8 +105,9 @@ class Film(db.Model, ModelMixin, EntityMixin, ContributionMixin):
     streaming_links: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
     trailer_url: Mapped[Optional[str]] = mapped_column(String)
     local_file_url: Mapped[Optional[str]] = mapped_column(String)
-    watch_count: Mapped[int] = mapped_column(Integer, default=0)
-    average_progress: Mapped[float] = mapped_column(Float, default=0.0)
+    total_watch_count: Mapped[int] = mapped_column(Integer, default=0)
+    watch_history: Mapped[Optional[list[UUID]]] = mapped_column(ARRAY(UUID(as_uuid=True)))
+    anchored: Mapped[List[Anchor]] = relationship("Anchor", backref="anchored_content", cascade="all, delete-orphan")
     popularity_score: Mapped[float] = mapped_column(Float, default=0.0)
     scroll_stats: Mapped[Optional[dict]] = mapped_column(JSONB, default={})
     viewer_tags: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
@@ -110,7 +119,7 @@ class Film(db.Model, ModelMixin, EntityMixin, ContributionMixin):
 
     contributor_amber_points: Mapped[float] = mapped_column(Float, default=0.0)
 
-    submission_status: Mapped[SubmissionStatus] = mapped_column(db.Enum(SubmissionStatus), default=SubmissionStatus.PENDING)
+    submission_status: Mapped[SubmissionStatusEnum] = mapped_column(db.Enum(SubmissionStatusEnum), default=SubmissionStatusEnum.PENDING)
     edit_history: Mapped[Optional[list[UUID]]] = mapped_column(ARRAY(UUID(as_uuid=True)))
     imdb_id: Mapped[Optional[str]] = mapped_column(String)
     tmdb_id: Mapped[Optional[int]] = mapped_column(Integer)
@@ -132,7 +141,7 @@ class Film(db.Model, ModelMixin, EntityMixin, ContributionMixin):
     country_of_origin: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
     imdb_data: Mapped[Optional[dict]] = mapped_column(JSONB)
     tmdb_data: Mapped[Optional[dict]] = mapped_column(JSONB)
-    film_type: Mapped[FilmType] = mapped_column(db.Enum(FilmType), nullable=False)
+    film_type: Mapped[FilmTypeEnum] = mapped_column(db.Enum(FilmTypeEnum), nullable=False)
 
     # Relationships # TODO: Review the Backrefs after creating models
     film_contributions: Mapped[list["Film"]] = relationship(secondary="film_contributors", backref="contributors")
@@ -209,7 +218,7 @@ class Person(db.Model, ModelMixin, EntityMixin, ContributionMixin):
     # dashboard: Mapped[Optional["DashboardTemplate"]] = relationship('Dashboard', back_populates='person', uselist=False)
     # created_at: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.now)
     # updated_at: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.now, onupdate=datetime.now)
-    pass
+    creators: Mapped[List["Portfolio"]] = relationship('Portfolio', backref='created_people')
 
     def __repr__(self):
         return f"<Person {self.full_name or f'{self.first_name} {self.last_name}'} {self.profession_summary}>"

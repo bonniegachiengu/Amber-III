@@ -3,14 +3,14 @@ from datetime import datetime
 from typing import List, Optional, TYPE_CHECKING
 
 from flask_login import UserMixin
-from sqlalchemy import String, Boolean, DateTime, ForeignKey, JSON
+from sqlalchemy import String, Boolean, DateTime, ForeignKey, JSONB, Integer, Float, Text, ARRAY
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql.schema import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import relationship, Mapped, mapped_column, declared_attr, backref
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from ..extensions import db
-from utils.config import ContentType
+from utils.config import ContentTypeEnum, CliqueTypeEnum, VisibilityEnum, ArticleReportStatusEnum, HiveTypeEnum
 
 if TYPE_CHECKING:
     from .user import User
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from .library import Library, Film, Album, Hitlist
     from .journal import Magazine, Article
     from .player import WatchHistory
-    from .community import Message, Thread, Reaction
+    from .community import Message, Thread, Reaction, Tier, Posts, Updates, Issues, Pins, Clips
     from .commerce import Fund, Transaction, Ledger, Currency, AmberToken
     from .common import WikiTemplate, DashboardTemplate, Tag, Keyword, Language, Country, Nationality, Period, Anchor
     from .calendar import Event, Calendar, Ticket
@@ -35,7 +35,7 @@ class ModelMixin:
     deleted_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), default=None)
     wiki: Mapped[Optional["WikiTemplate"]] = relationship(back_populates="user", uselist=False)
     dashboard: Mapped[Optional["DashboardTemplate"]] = relationship(back_populates="user", uselist=False)
-    fields: Mapped[Optional[dict]] = mapped_column(JSON)
+    fields: Mapped[Optional[dict]] = mapped_column(JSONB)
 
 
 class EntityMixin:
@@ -46,7 +46,7 @@ class EntityMixin:
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
-    settings: Mapped[Optional[dict]] = mapped_column(JSON)
+    settings: Mapped[Optional[dict]] = mapped_column(JSONB, default={})
     calendar_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("calendars.id"), default=None, nullable=False)
     calendar: Mapped["Calendar"] = relationship(back_populates="entities", uselist=False)
 
@@ -113,15 +113,40 @@ class MarkMixin:
 
 class CliqueMixin:
     agents: List["User"] = relationship("User", back_populates="cliques")
+    clique_type: Mapped[CliqueTypeEnum] = mapped_column(SQLAlchemyEnum(CliqueTypeEnum), nullable=False)
 
 
 class HiveMixin(LibraryMixin):
-    pass
+    boards: Mapped[List["BoardMixin"]] = relationship("BoardMixin", back_populates="hive")
+    walls: Mapped[List["WallMixin"]] = relationship("WallMixin", back_populates="hive")
+    join_rules: Mapped[Optional[dict]] = mapped_column(JSONB, default={})
 
 
 class ContentMixin:
     content_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
-    content_type: Mapped[ContentType] = mapped_column(SQLAlchemyEnum(ContentType), nullable=False)
+    content_type: Mapped[ContentTypeEnum] = mapped_column(SQLAlchemyEnum(ContentTypeEnum), nullable=False)
+
+
+class SharableMixin:
+    views: Mapped[int] = mapped_column(Integer, default=0)
+    likes: Mapped[int] = mapped_column(Integer, default=0)
+    shares: Mapped[int] = mapped_column(Integer, default=0)
+    comments: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class AuthoredMixin:
+    publish_time: Mapped[DateTime] = mapped_column(DateTime, nullable=False)
+    status: Mapped[ArticleReportStatusEnum] = mapped_column(SQLAlchemyEnum, default=ArticleReportStatusEnum.UNPUBLISHED)
+    visibility: Mapped[VisibilityEnum] = mapped_column(SQLAlchemyEnum, default=VisibilityEnum.PUBLIC)
+    content: Mapped[str] = mapped_column(Text, nullable=False, info={"rich_text": "ckeditor"})
+    excerpt: Mapped[str] = mapped_column(Text, nullable=False)
+    revision_history: Mapped[list[dict]] = mapped_column(JSONB, default=[])
+    thread: Mapped["Thread"] = relationship("Thread", back_populates="topic")
+    thread_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("threads.id"))
+
+
+class PerksMixin:
+    tiers: Mapped[List["Tier"]] = relationship("Tier", back_populates="perks")
 
 
 class WatchListMixin(ListMixin):
@@ -142,20 +167,15 @@ class OwnerMixin:
 class ModeratorMixin:
     pass
 
-class PerksMixin:
-    pass
-
 class BoardMixin:
-    pass
-
-class EntryMixin:
-    pass
-
-class PostMixin:
-    pass
+    hive_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    hive: Mapped["HiveMixin"] = relationship(HiveMixin, foreign_keys=[hive_id], back_populates="boards")
+    hive_type: Mapped[HiveTypeEnum] = mapped_column(SQLAlchemyEnum(HiveTypeEnum), nullable=False)
 
 class WallMixin:
-    pass
+    hive_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    hive: Mapped["HiveMixin"] = relationship(HiveMixin, foreign_keys=[hive_id], back_populates="walls")
+    hive_type: Mapped[HiveTypeEnum] = mapped_column(SQLAlchemyEnum(HiveTypeEnum), nullable=False)
 
 class ActionMixin:
     pass

@@ -1,23 +1,21 @@
-import uuid
 from datetime import datetime
 from typing import List, Optional, TYPE_CHECKING
 
 from flask_login import UserMixin
-from sqlalchemy import String, ForeignKey, JSONB, UniqueConstraint, Enum as SQLAlchemyEnum, Boolean
+from sqlalchemy import String, ForeignKey, JSONB, UniqueConstraint, Enum as SQLAlchemyEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import EntityMixin
 from ..extensions import db
-from .utils.config import Visibility
+from .utils.config import VisibilityEnum
 from .mixins import CliqueMixin, ModelMixin, LibraryMixin
 
 
 if TYPE_CHECKING:
     from .community import Thread
     from .common import Location
-    from .calendar import Calendar
 
 
 class User(db.Model, ModelMixin, UserMixin, LibraryMixin, EntityMixin):
@@ -26,7 +24,7 @@ class User(db.Model, ModelMixin, UserMixin, LibraryMixin, EntityMixin):
 
     This class defines the `User` model, which includes core user attributes,
     profile details, preferences, and social features. It supports authentication,
-    relationships with other models, and customization of user experience. The
+    relationships with other models, and customization of the user experience. The
     class integrates with SQLAlchemy for database mapping and allows user details
     to be securely stored and managed.
 
@@ -51,7 +49,7 @@ class User(db.Model, ModelMixin, UserMixin, LibraryMixin, EntityMixin):
     :ivar location_id: Unique identifier for the user's location.
     :type location_id: Optional[UUID]
     :ivar portfolio_visibility: Enum representing the visibility preference for the user's portfolio.
-    :type portfolio_visibility: Visibility
+    :type portfolio_visibility: VisibilityEnum
     :ivar location: Relationship to the related `Location` object.
     :type location: Location
     :ivar preferred_tags: List of user-preferred tags represented in JSON format.
@@ -89,7 +87,7 @@ class User(db.Model, ModelMixin, UserMixin, LibraryMixin, EntityMixin):
     catchphrase: Mapped[Optional[str]] = mapped_column(String(100))
     avatar_url: Mapped[Optional[str]] = mapped_column(String(255))
     location_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey("locations.id"), default=None)
-    portfolio_visibility: Mapped[Visibility] = mapped_column(SQLAlchemyEnum(Visibility, name="portfolio_visibility"), default=Visibility.PUBLIC)
+    portfolio_visibility: Mapped[VisibilityEnum] = mapped_column(SQLAlchemyEnum(VisibilityEnum, name="portfolio_visibility"), default=VisibilityEnum.PUBLIC)
     location: Mapped["Location"] = relationship(back_populates="users")
     # Preferences & Personalization Fields
     preferred_tags: Mapped[Optional[list]] = mapped_column(JSONB)

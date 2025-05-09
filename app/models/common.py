@@ -9,11 +9,13 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column, relationships
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import Enum as SQLAlchemyEnum
 
-from . import ContentMixin
 from ..extensions import db
-from .mixins import (
-    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin,
-    ModelMixin, MarkMixin, MediaMixin, ThumbnailMixin
+from .utils.config import ContentTypeEnum
+from .mixins import ModelMixin, MediaMixin, ThumbnailMixin, ContentMixin, ContributionMixin
+from .associations import (
+    dashboard_template_contributors, wiki_template_contributors, tag_contributors, language_contributors,
+    country_contributors, nationality_contributors, period_contributors, genre_contributors, theme_contributors,
+    keyword_contributors, report_template_contributors, verification_contributors
 )
 
 
@@ -28,8 +30,10 @@ if TYPE_CHECKING:
 
 
 
-class DashboardTemplate(db.Model, ModelMixin):
-    pass
+class DashboardTemplate(db.Model, ModelMixin, ContributionMixin):
+    __tablename__ = "dashboard_templates"
+    __contribution_table__ = dashboard_template_contributors
+    __contribution_backref__ = "dashboard_template_contributions"
 
 
 class Overview(db.Model, ModelMixin):
@@ -40,8 +44,10 @@ class Widget(db.Model, ModelMixin):
     pass
 
 
-class WikiTemplate(db.Model, ModelMixin):
-    pass
+class WikiTemplate(db.Model, ModelMixin, ContributionMixin):
+    __tablename__ = "wiki_templates"
+    __contribution_table__ = wiki_template_contributors
+    __contribution_backref__ = "wiki_template_contributions"
 
 
 class WikiSection(db.Model, ModelMixin):
@@ -49,7 +55,12 @@ class WikiSection(db.Model, ModelMixin):
 
 
 class Anchor(db.Model, ModelMixin):
-    pass
+    __tablename__ = "anchors"
+    marked: Mapped[List["ContentMixin"]] = relationship("ContentMixin", back_populates="anchors")
+    anchors_type: Mapped[ContentTypeEnum] = mapped_column(SQLAlchemyEnum(ContentTypeEnum), nullable=False)
+    anchor_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    anchored_content: Mapped["ContentMixin"] = relationship("ContentMixin", foreign_keys=[anchor_id], back_populates="anchored") # TODO: Enforce the use of anchored in Films, watchlists, people etc.
+
 
 
 class Link(db.Model, ModelMixin):
@@ -64,40 +75,52 @@ class Video(db.Model, ModelMixin, MediaMixin):
     pass
 
 
-class SubtitleFile(db.Model, ModelMixin, MediaMixin):
-    pass
+class Tag(db.Model, ModelMixin, ContributionMixin):
+    __tablename__ = "tags"
+    __contribution_table__ = tag_contributors
+    __contribution_backref__ = "tag_contributions"
 
 
-class Tag(db.Model, ModelMixin):
-    pass
+class Language(db.Model, ModelMixin, ContributionMixin):
+    __tablename__ = "languages"
+    __contribution_table__ = language_contributors
+    __contribution_backref__ = "language_contributions"
 
 
-class Language(db.Model, ModelMixin):
-    pass
+class Country(db.Model, ModelMixin, ContributionMixin):
+    __tablename__ = "countries"
+    __contribution_table__ = country_contributors
+    __contribution_backref__ = "country_contributions"
 
 
-class Country(db.Model, ModelMixin):
-    pass
+class Nationality(db.Model, ModelMixin, ContributionMixin):
+    __tablename__ = "nationalities"
+    __contribution_table__ = nationality_contributors
+    __contribution_backref__ = "nationality_contributions"
 
 
-class Nationality(db.Model, ModelMixin):
-    pass
+class Period(db.Model, ModelMixin, ContributionMixin):
+    __tablename__ = "periods"
+    __contribution_table__ = period_contributors
+    __contribution_backref__ = "period_contributions"
 
 
-class Period(db.Model, ModelMixin):
-    pass
+class Genre(db.Model, ModelMixin, ContributionMixin):
+    __tablename__ = "genres"
+    __contribution_table__ = genre_contributors
+    __contribution_backref__ = "genre_contributions"
 
 
-class Genre(db.Model, ModelMixin):
-    pass
+class Theme(db.Model, ModelMixin, ContributionMixin):
+    __tablename__ = "themes"
+    __contribution_table__ = theme_contributors
+    __contribution_backref__ = "theme_contributions"
 
 
-class Theme(db.Model, ModelMixin):
-    pass
-
-
-class Keyword(db.Model, ModelMixin):
-    pass
+class Keyword(db.Model, ModelMixin, ContributionMixin):
+    __tablename__ = "keywords"
+    __contribution_table__ = keyword_contributors
+    __contribution_backref__ = "keyword_contributions"
 
 
 class Map(db.Model, ModelMixin):
@@ -216,8 +239,10 @@ class ReportThumbnail(db.Model, ModelMixin, ThumbnailMixin, ContentMixin):
     pass
 
 
-class ReportTemplate(db.Model, ModelMixin, ContentMixin):
-    pass
+class ReportTemplate(db.Model, ModelMixin, ContentMixin, ContributionMixin):
+    __tablename__ = "report_templates"
+    __contribution_table__ = report_template_contributors
+    __contribution_backref__ = "report_template_contributions"
 
 
 class Notification(db.Model, ModelMixin):
@@ -228,5 +253,7 @@ class Local(db.Model, ModelMixin):
     pass
 
 
-class Verification(db.Model, ModelMixin):
-    pass
+class Verification(db.Model, ModelMixin, ContributionMixin):
+    __tablename__ = "verifications"
+    __contribution_table__ = verification_contributors
+    __contribution_backref__ = "verification_contributions"

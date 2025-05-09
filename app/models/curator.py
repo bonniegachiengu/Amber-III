@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from ..extensions import db
-from .utils.config import RecommendationType
+from .utils.config import RecommendationTypeEnum
 from .mixins import EntityMixin, ModelMixin, ContentMixin
 
 
@@ -41,14 +41,14 @@ class RecommendationItem(db.Model, ModelMixin, ContentMixin):
     :ivar curator_id: Unique identifier for the curator associated with the recommendation.
     :type curator_id: UUID
     :ivar type: Type of the recommendation. This is represented using the RecommendationType enum.
-    :type type: RecommendationType
+    :type type: RecommendationTypeEnum
     :ivar curator: Relationship to the Curator entity. Represents the curator who created
         this recommendation.
     :type curator: Curator
     """
     __tablename__ = "recommendations"
     curator_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("curators.id"), nullable=False)
-    type: Mapped[RecommendationType] = mapped_column(SQLAlchemyEnum(RecommendationType), nullable=False)
+    type: Mapped[RecommendationTypeEnum] = mapped_column(SQLAlchemyEnum(RecommendationTypeEnum), nullable=False)
     curator: Mapped["Curator"] = relationship("Curator", back_populates="recommendations")
 
 

@@ -8,7 +8,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from ..extensions import db
-from .utils.config import EventRepeat, EventStatus, EventType, Visibility, TicketType, TicketStatus
+from .utils.config import EventRepeatEnum, EventStatusEnum, EventTypeEnum, VisibilityEnum, TicketTypeEnum, TicketStatusEnum
 from .mixins import EntityMixin, ModelMixin, MarkMixin, EraMixin, ContributionMixin
 from .associations import event_contributors, ticket_contributors
 
@@ -66,16 +66,16 @@ class Event(db.Model, ModelMixin, EntityMixin, MarkMixin, EraMixin, Contribution
 
     :ivar event_type: The specific type of the event (e.g., meeting, party,
         appointment).
-    :type event_type: EventType
+    :type event_type: EventTypeEnum
     :ivar repeat: The recurrence configuration of the event (e.g., none, daily,
         weekly).
-    :type repeat: EventRepeat
+    :type repeat: EventRepeatEnum
     :ivar status: The current status of the event (e.g., upcoming,
         completed, canceled).
-    :type status: EventStatus
+    :type status: EventStatusEnum
     :ivar visibility: The visibility setting of the event (e.g., private,
         public, restricted).
-    :type visibility: Visibility
+    :type visibility: VisibilityEnum
     :ivar priority: An optional integer representing the priority level of the
         event, where a smaller value indicates higher priority.
     :type priority: Optional[int]
@@ -112,10 +112,10 @@ class Event(db.Model, ModelMixin, EntityMixin, MarkMixin, EraMixin, Contribution
     __tablename__ = "events"
     __contribution_table__ = event_contributors
     __contribution_backref__ = "event_contributions"
-    event_type: Mapped["EventType"] = mapped_column(SQLAlchemyEnum(EventType, name="event_type"), nullable=False)
-    repeat: Mapped[EventRepeat] = mapped_column(SQLAlchemyEnum(EventRepeat, name="event_repeat"), default=EventRepeat.NONE)
-    status: Mapped[EventStatus] = mapped_column(SQLAlchemyEnum(EventStatus, name="event_status"), default=EventStatus.UPCOMING)
-    visibility: Mapped[Visibility] = mapped_column(SQLAlchemyEnum(Visibility, name="event_visibility"), default=Visibility.PRIVATE)
+    event_type: Mapped["EventTypeEnum"] = mapped_column(SQLAlchemyEnum(EventTypeEnum, name="event_type"), nullable=False)
+    repeat: Mapped[EventRepeatEnum] = mapped_column(SQLAlchemyEnum(EventRepeatEnum, name="event_repeat"), default=EventRepeatEnum.NONE)
+    status: Mapped[EventStatusEnum] = mapped_column(SQLAlchemyEnum(EventStatusEnum, name="event_status"), default=EventStatusEnum.UPCOMING)
+    visibility: Mapped[VisibilityEnum] = mapped_column(SQLAlchemyEnum(VisibilityEnum, name="event_visibility"), default=VisibilityEnum.PRIVATE)
     priority: Mapped[Optional[int]] = mapped_column(Integer)
     parent_calendar_id: Mapped[UUID] = mapped_column(ForeignKey("calendars.id"), nullable=False)
     venue_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey("venues.id"))
@@ -175,13 +175,13 @@ class Ticket(db.Model, ModelMixin, EraMixin, ContributionMixin):
     :ivar transaction_id: Identifier of the transaction associated with the ticket.
     :type transaction_id: UUID, optional
     :ivar type: Type of the ticket (e.g., FREE, PAID).
-    :type type: TicketType
+    :type type: TicketTypeEnum
     :ivar quantity: Number of tickets associated with this instance.
     :type quantity: int
     :ivar price: Price of the ticket in specified currency.
     :type price: float
     :ivar status: Current status of the ticket (e.g., ACTIVE, CANCELLED).
-    :type status: TicketStatus
+    :type status: TicketStatusEnum
     :ivar creator_portfolio: The portfolio that created this ticket. Related via `creator_portfolio_id`.
     :type creator_portfolio: Portfolio
     :ivar event: The event associated with this ticket. Related via `event_id`.
@@ -203,10 +203,10 @@ class Ticket(db.Model, ModelMixin, EraMixin, ContributionMixin):
     currency_id: Mapped[UUID] = mapped_column(ForeignKey("currencies.id"), nullable=False)
     order_id: Mapped[UUID] = mapped_column(ForeignKey("orders.id"), nullable=False)
     transaction_id: Mapped[UUID] = mapped_column(ForeignKey("transactions.id"))
-    type: Mapped["TicketType"] = mapped_column(SQLAlchemyEnum(TicketType, name="ticket_type"), nullable=False, default=TicketType.FREE)
+    type: Mapped["TicketTypeEnum"] = mapped_column(SQLAlchemyEnum(TicketTypeEnum, name="ticket_type"), nullable=False, default=TicketTypeEnum.FREE)
     quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     price: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False, default=0.0)
-    status: Mapped["TicketStatus"] = mapped_column(SQLAlchemyEnum(TicketStatus, name="ticket_status"), nullable=False)
+    status: Mapped["TicketStatusEnum"] = mapped_column(SQLAlchemyEnum(TicketStatusEnum, name="ticket_status"), nullable=False)
     creator_portfolio: Mapped["Portfolio"] = relationship("Portfolio", backref="created_tickets")
     event: Mapped["Event"] = relationship("Event", backref="tickets")
     buying_portfolios: Mapped[List["Portfolio"]] = relationship("Portfolio", backref="bought_tickets")

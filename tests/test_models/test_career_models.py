@@ -1,6 +1,6 @@
 import pytest
 from datetime import date
-from app.models.library import Film, Career, Gig, Character, Person, Relationship, RelationshipType
+from app.models.library import Film, Career, Gig, Character, Person, Relationship, RelationshipTypeEnum
 
 
 @pytest.fixture
@@ -219,7 +219,7 @@ def test_relationship_model_full_lifecycle(session, relationship_persons):
     relationship = Relationship(
         person_id=alice.id,
         related_person_id=bob.id,
-        relationship_type=RelationshipType.SIBLING,
+        relationship_type=RelationshipTypeEnum.SIBLING,
         start_date=date(2000, 1, 1),
         end_date=None
     )
@@ -230,7 +230,7 @@ def test_relationship_model_full_lifecycle(session, relationship_persons):
     assert retrieved is not None
     assert retrieved.person_id == alice.id
     assert retrieved.related_person_id == bob.id
-    assert retrieved.relationship_type == RelationshipType.SIBLING
+    assert retrieved.relationship_type == RelationshipTypeEnum.SIBLING
     assert retrieved.start_date == date(2000, 1, 1)
     assert retrieved.end_date is None
     # Backref: check alice.relationships includes the relationship

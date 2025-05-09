@@ -8,7 +8,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from ..extensions import db
-from .utils.config import OrderStatus, TransactionStatus, TransactionType
+from .utils.config import OrderStatusEnum, TransactionStatusEnum, TransactionTypeEnum
 from .mixins import EntityMixin, HiveMixin, ModelMixin, ContributionMixin, EraMixin
 from .associations import (
     market_contributors, customtoken_contributors, fund_contributors, listing_contributors, order_contributors,
@@ -267,7 +267,7 @@ class Order(db.Model, ModelMixin, ContributionMixin):
     :ivar total_price: The total price of the order. Defaults to 0.0.
     :type total_price: float
     :ivar status: The current status of the order, such as pending or completed.
-    :type status: OrderStatus
+    :type status: OrderStatusEnum
     :ivar timestamp: The time when the order was created. Defaults to the current time.
     :type timestamp: datetime
     :ivar buyer_portfolio: The portfolio entity associated with the order. Establishes
@@ -291,7 +291,7 @@ class Order(db.Model, ModelMixin, ContributionMixin):
     fund_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("funds.id"))
     quantity: Mapped[int] = mapped_column(Integer, default=1)
     total_price: Mapped[float] = mapped_column(Numeric(20, 4), default=0.0)
-    status: Mapped[OrderStatus] = mapped_column(Enum(OrderStatus), default=OrderStatus.PENDING)
+    status: Mapped[OrderStatusEnum] = mapped_column(Enum(OrderStatusEnum), default=OrderStatusEnum.PENDING)
     timestamp: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.now)
     buyer_portfolio: Mapped["Portfolio"] = relationship("Portfolio", back_populates="orders")
     listing: Mapped["Listing"] = relationship("Listing", back_populates="orders")
@@ -369,9 +369,9 @@ class Transaction(db.Model, ModelMixin, EntityMixin, ContributionMixin):
     :ivar total_amount: Total transaction amount, including fees and tolls.
     :type total_amount: float
     :ivar status: Status of the transaction (e.g., pending, completed, failed).
-    :type status: TransactionStatus
+    :type status: TransactionStatusEnum
     :ivar type: Type/category of the transaction.
-    :type type: TransactionType
+    :type type: TransactionTypeEnum
     :ivar ledger: Relationship to the associated ledger.
     :type ledger: Ledger
     :ivar from_fund: Relationship to the originating fund.
@@ -397,8 +397,8 @@ class Transaction(db.Model, ModelMixin, EntityMixin, ContributionMixin):
     amount: Mapped[float] = mapped_column(Numeric(20, 4), default=0.0)
     fee: Mapped[float] = mapped_column(Numeric(20, 4), default=0.0)
     total_amount: Mapped[float] = mapped_column(Numeric(20, 4), default=0.0)
-    status: Mapped[TransactionStatus] = mapped_column(Enum(TransactionStatus), default=TransactionStatus.PENDING)
-    type: Mapped[TransactionType] = mapped_column(Enum(TransactionType), nullable=False)
+    status: Mapped[TransactionStatusEnum] = mapped_column(Enum(TransactionStatusEnum), default=TransactionStatusEnum.PENDING)
+    type: Mapped[TransactionTypeEnum] = mapped_column(Enum(TransactionTypeEnum), nullable=False)
     ledger: Mapped["Ledger"] = relationship("Ledger", back_populates="transactions")
     from_fund: Mapped["Fund"] = relationship("Fund", foreign_keys=[from_fund_id], back_populates="transactions")
     to_fund: Mapped["Fund"] = relationship("Fund", foreign_keys=[to_fund_id], back_populates="transactions")

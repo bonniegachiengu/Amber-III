@@ -5,8 +5,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from ..extensions import db
-from .mixins import ModelMixin, EraMixin
-
+from .mixins import ModelMixin, EraMixin, ContributionMixin
+from .associations import subtitle_contributors
 
 if TYPE_CHECKING:
     from .library import Library, WatchHistory, Film, Album, Hitlist
@@ -109,7 +109,7 @@ class QueueItem(db.Model, ModelMixin):
     film: Mapped["Film"] = relationship("Film")
 
 
-class Subtitle(db.Model, ModelMixin):
+class Subtitle(db.Model, ModelMixin, ContributionMixin):
     """
     Represents the Subtitle model within the database.
 
@@ -130,6 +130,8 @@ class Subtitle(db.Model, ModelMixin):
     :type film: Film
     """
     __tablename__ = "subtitles"
+    __contribution_table__ = subtitle_contributors
+    __contribution_backref__ = "subtitle_contributions"
     film_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("films.id"))
     language: Mapped[str] = mapped_column(String(255), nullable=False)
     url: Mapped[str] = mapped_column(String(255), nullable=False)

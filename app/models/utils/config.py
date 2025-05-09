@@ -1,6 +1,19 @@
 from enum import Enum
+from typing import TYPE_CHECKING
 
-class FilmType(Enum):
+if TYPE_CHECKING:
+    from ..library import Film, Album, Hitlist, Person
+    from ..commerce import Listing, Merchandise
+    from ..journal import (
+        Writer, Analyst, Columnist, Correspondent, Editor, ChiefEditor, ChiefCorrespondent, ChiefAnalyst,
+        ExecutiveEditor, EditorInChief, Magazine, Report, Article, Column, Journal
+    )
+    from ..community import (
+        Fan, Subscriber, Member, Organizer, Watcher, Tracker, Creator, Collector, Post, Clip, Fandom, Club, Arena
+    )
+
+
+class FilmTypeEnum(Enum):
     """
     Represents the different types of films or videos that can be categorized.
 
@@ -19,7 +32,7 @@ class FilmType(Enum):
     SHORT = "Short"
 
 
-class RelationshipType(Enum):
+class RelationshipTypeEnum(Enum):
     """
     Represents different types of familial or relational connections.
 
@@ -85,7 +98,7 @@ class RelationshipType(Enum):
 
 
 
-class EventType(Enum):
+class EventTypeEnum(Enum):
     """
     Enum representing various types of events.
 
@@ -224,7 +237,7 @@ class EventType(Enum):
     CAMPAIGN_LAUNCH = "campaign_launch"
 
 
-class EventRepeat(Enum):
+class EventRepeatEnum(Enum):
     """
     Enumeration representing various repetition modes for events.
 
@@ -253,7 +266,7 @@ class EventRepeat(Enum):
     NONE = "none"
 
 
-class EventStatus(Enum):
+class EventStatusEnum(Enum):
     """
     Represents the statuses an event can have.
 
@@ -277,7 +290,7 @@ class EventStatus(Enum):
     CANCELLED = "cancelled"
 
 
-class SubmissionStatus(Enum):
+class SubmissionStatusEnum(Enum):
     """
     Enumeration representing the various states of a submission.
 
@@ -304,7 +317,7 @@ class SubmissionStatus(Enum):
     DELETED = "deleted"
 
 
-class OrderStatus(Enum):
+class OrderStatusEnum(Enum):
     """
     Represents the status of an order.
 
@@ -326,7 +339,7 @@ class OrderStatus(Enum):
     CANCELLED = "cancelled"
 
 
-class TransactionStatus(Enum):
+class TransactionStatusEnum(Enum):
     """
     Represents the status of a transaction in a financial or e-commerce system.
 
@@ -356,7 +369,7 @@ class TransactionStatus(Enum):
     REFUNDED_WITH_CREDIT = "refunded_with_credit"
     REFUNDED_WITH_DEBIT = "refunded_with_debit"
 
-class TransactionType(Enum):
+class TransactionTypeEnum(Enum):
     """
     Represents the different types of financial transactions.
 
@@ -394,7 +407,7 @@ class TransactionType(Enum):
     PAYMENT = "payment"
 
 
-class Visibility(Enum):
+class VisibilityEnum(Enum):
     """
     Enumeration of visibility levels.
 
@@ -424,7 +437,7 @@ class Visibility(Enum):
     CLIQUE = "clique"
 
 
-class TicketType(Enum):
+class TicketTypeEnum(Enum):
     """
     Represents types of tickets available for an event.
 
@@ -443,7 +456,7 @@ class TicketType(Enum):
     VIP = "vip"
 
 
-class TicketStatus(Enum):
+class TicketStatusEnum(Enum):
     """
     Represents various statuses for tickets.
 
@@ -467,7 +480,7 @@ class TicketStatus(Enum):
     CANCELLED = "cancelled"
 
 
-class RecommendationType(Enum):
+class RecommendationTypeEnum(Enum):
     """
     Represents the type of recommendations categorized as OLD or NEW.
 
@@ -484,51 +497,175 @@ class RecommendationType(Enum):
     NEW = "new"
 
 
-class ContentType(Enum):
+class ContentTypeEnum(Enum):
     """
-    Enumeration of various content types.
+    Enumeration for various content types.
 
-    This class represents a list of predefined content types that can
-    be used to identify or categorize different pieces of content.
-    Each content type is mapped to a specific string identifier.
+    This enumeration defines a set of content types used to categorize different
+    kinds of content into specific categories. Each member of the enumeration
+    represents a unique category that can be assigned to content within a
+    structured application context.
 
-    :ivar FILM: Represents a film content type.
-    :type FILM: str
-    :ivar ALBUM: Represents an album content type.
-    :type ALBUM: str
-    :ivar HITLIST: Represents a hitlist content type.
-    :type HITLIST: str
-    :ivar ARTICLE: Represents an article content type.
-    :type ARTICLE: str
-    :ivar POST: Represents a 'post' content type.
-    :type POST: str
-    :ivar CLIP: Represents a clip content type.
-    :type CLIP: str
-    :ivar REPORT: Represents a report content type.
-    :type REPORT: str
-    :ivar MAGAZINE: Represents a magazine content type.
-    :type MAGAZINE: str
-    :ivar PERSON: Represents a 'person' content type.
-    :type PERSON: str
-    :ivar COLUMN: Represents a column content type.
-    :type COLUMN: str
-    :ivar FANDOM: Represents a fandom content type.
-    :type FANDOM: str
-    :ivar CLUB: Represents a club content type.
-    :type CLUB: str
-    :ivar LISTING: Represents a listing content type.
-    :type LISTING: str
+    :ivar FILM: Represents a film category.
+    :ivar ALBUM: Represents an album category.
+    :ivar HITLIST: Represents a hitlist category.
+    :ivar ARTICLE: Represents an article category.
+    :ivar POST: Represents a post-category.
+    :ivar CLIP: Represents a clip category.
+    :ivar REPORT: Represents a report category.
+    :ivar MAGAZINE: Represents a magazine category.
+    :ivar PERSON: Represents a person category.
+    :ivar COLUMN: Represents a column category.
+    :ivar FANDOM: Represents a fandom category.
+    :ivar CLUB: Represents a club category.
+    :ivar LISTING: Represents a listing category.
+    :ivar MERCHANDISE: Represents a merchandise category.
+    :type FILM: ContentTypeEnum
+    :type ALBUM: ContentTypeEnum
+    :type HITLIST: ContentTypeEnum
+    :type ARTICLE: ContentTypeEnum
+    :type POST: ContentTypeEnum
+    :type CLIP: ContentTypeEnum
+    :type REPORT: ContentTypeEnum
+    :type MAGAZINE: ContentTypeEnum
+    :type PERSON: ContentTypeEnum
+    :type COLUMN: ContentTypeEnum
+    :type FANDOM: ContentTypeEnum
+    :type CLUB: ContentTypeEnum
+    :type LISTING: ContentTypeEnum
+    :type MERCHANDISE: ContentTypeEnum
     """
-    FILM = "film"
-    ALBUM = "album"
-    HITLIST = "hitlist"
-    ARTICLE = "article"
-    POST = "post"
-    CLIP = "clip"
-    REPORT = "report"
-    MAGAZINE = "magazine"
-    PERSON = "person"
-    COLUMN = "column"
-    FANDOM = "fandom"
-    CLUB = "club"
-    LISTING = "listing"
+    FILM = Film
+    ALBUM = Album
+    HITLIST = Hitlist
+    ARTICLE = Article
+    POST = Post
+    CLIP = Clip
+    REPORT = Report
+    MAGAZINE = Magazine
+    PERSON = Person
+    COLUMN = Column
+    FANDOM = Fandom
+    CLUB = Club
+    LISTING = Listing
+    MERCHANDISE = Merchandise
+
+
+class ArticleReportStatusEnum(Enum):
+    """
+    Defines the various statuses an article report can have.
+
+    This class contains a set of constants that represent the possible
+    statuses for an article report. These statuses can be used to
+    track the state of an article over its lifecycle within a system
+    that manages article publishing.
+
+    :ivar UNPUBLISHED: Indicates that the article has not been published yet.
+    :type UNPUBLISHED: str
+    :ivar PUBLISHED: Indicates that the article has been published.
+    :type PUBLISHED: str
+    :ivar REJECTED: Indicates that the article has been rejected during review.
+    :type REJECTED: str
+    :ivar APPROVED: Indicates that the article has been approved but not
+        yet published.
+    :type APPROVED: str
+    :ivar SCHEDULED: Indicates that the article publication is scheduled for
+        a later time.
+    :type SCHEDULED: str
+    :ivar DELETED: Indicates that the article has been deleted or removed.
+    :type DELETED: str
+    """
+    UNPUBLISHED = "unpublished"
+    PUBLISHED = "published"
+    REJECTED = "rejected"
+    APPROVED = "approved"
+    SCHEDULED = "scheduled"
+    DELETED = "deleted"
+
+
+class CliqueTypeEnum(Enum):
+    """
+    Enumeration for different types within a clique.
+
+    Provides a structured representation of various roles or designations
+    that can exist within a group or organization. Can be utilized to
+    categorize, differentiate, or apply specific logic based on these roles.
+
+    :ivar FAN: A fan.
+    :ivar SUBSCRIBER: A subscriber.
+    :ivar MEMBER: A member.
+    :ivar ORGANIZER: An organizer.
+    :ivar WATCHER: A watcher.
+    :ivar TRACKER: A tracker.
+    :ivar CREATOR: A creator.
+    :ivar COLLECTOR: A collector.
+    :ivar WRITER: A writer.
+    :ivar ANALYST: An analyst.
+    :ivar COLUMNIST: A columnist.
+    :ivar CORRESPONDENT: A correspondent.
+    :ivar EDITOR: An editor.
+    :ivar CHIEF_EDITOR: A chief editor.
+    :ivar CHIEF_CORRESPONDENT: A chief correspondent.
+    :ivar CHIEF_ANALYST: A chief analyst.
+    :ivar EXECUTIVE_EDITOR: An executive editor.
+    :ivar EDITOR_IN_CHIEF: An editor-in-chief.
+    """
+    FAN = Fan
+    SUBSCRIBER = Subscriber
+    MEMBER = Member
+    ORGANIZER = Organizer
+    WATCHER = Watcher
+    TRACKER = Tracker
+    CREATOR = Creator
+    COLLECTOR = Collector
+    WRITER = Writer
+    ANALYST = Analyst
+    COLUMNIST = Columnist
+    CORRESPONDENT = Correspondent
+    EDITOR = Editor
+    CHIEF_EDITOR = ChiefEditor
+    CHIEF_CORRESPONDENT =  ChiefCorrespondent
+    CHIEF_ANALYST = ChiefAnalyst
+    EXECUTIVE_EDITOR = ExecutiveEditor
+    EDITOR_IN_CHIEF =  EditorInChief
+
+
+class HiveTypeEnum(Enum):
+    """
+    Represents an enumeration of various Hive types.
+
+    This class is used to define specific types of Hives that can be used
+    in different contexts. Each member of this enumeration represents a
+    distinct Hive type.
+
+    :ivar ARENA: Represents the Arena type of Hive.
+    :ivar CLUB: Represents the Club type of Hive.
+    :ivar MAGAZINE: Represents the Magazine type of Hive.
+    :ivar COLUMN: Represents the Column type of Hive.
+    :ivar FANDOM: Represents the Fandom type of Hive.
+    :ivar JOURNAL: Represents the Journal type of Hive.
+    """
+    ARENA = Arena
+    CLUB = Club
+    MAGAZINE = Magazine
+    COLUMN = Column
+    FANDOM = Fandom
+    JOURNAL = Journal
+
+
+class ColumnStatusEnum(Enum):
+    """
+    Represents the status of a column in an enumeration format.
+
+    This enumeration contains predefined values to categorize the state
+    of a column. It is primarily used to standardize the status
+    designation across different parts of a system and promote
+    consistency in column state management.
+
+    :cvar ACTIVE: Represents a column that is currently active and in use.
+    :type ACTIVE: str
+    :cvar ARCHIVED: Represents a column that is archived and no longer actively used.
+    :type ARCHIVED: str
+    """
+    ACTIVE = "active"
+    ARCHIVED = "archived"

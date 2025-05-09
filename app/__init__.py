@@ -1,6 +1,6 @@
 from flask import Flask
 from .config import Config, TestingConfig
-from .extensions import db, migrate, login_manager, csrf
+from .extensions import db, migrate, login_manager, csrf, ckeditor
 from . import models
 
 
@@ -18,6 +18,7 @@ def create_app(config_class=Config, testing=False):
     migrate.init_app(app, db)
     login_manager.init_app(app)
     csrf.init_app(app)
+    ckeditor.init_app(app)
 
     # Import and register blueprints
     from .blueprints.auth import auth_bp
