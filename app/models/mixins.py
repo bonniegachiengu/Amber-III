@@ -6,7 +6,7 @@ from flask_login import UserMixin
 from sqlalchemy import String, Boolean, DateTime, ForeignKey, JSON
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql.schema import Enum as SQLAlchemyEnum
-from sqlalchemy.orm import relationship, Mapped, mapped_column, declared_attr, relationships
+from sqlalchemy.orm import relationship, Mapped, mapped_column, declared_attr, backref
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from ..extensions import db
@@ -23,9 +23,11 @@ if TYPE_CHECKING:
     from .common import WikiTemplate, DashboardTemplate, Tag, Keyword, Language, Country, Nationality, Period, Anchor
     from .calendar import Event, Calendar, Ticket
 
+def generate_uuid():
+    return str(uuid.uuid4())
 
 class ModelMixin:
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
     created_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("libraries.id"), default=None, nullable=False)
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now, onupdate=datetime.now)
@@ -47,6 +49,39 @@ class EntityMixin:
     settings: Mapped[Optional[dict]] = mapped_column(JSON)
     calendar_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("calendars.id"), default=None, nullable=False)
     calendar: Mapped["Calendar"] = relationship(back_populates="entities", uselist=False)
+
+    # noinspection PyMethodParameters
+    @declared_attr
+    def contributors(cls):
+        """
+        A declared attribute that dynamically creates a relationship for contributors.
+
+        This attribute establishes a many-to-many relationship between the current
+        class and the `Contributor` class using the specified secondary table and backref
+        name. The class must define `__contribution_table__` and `__contribution_backref__`
+        as attributes to specify the mapping table and the backref configuration,
+        respectively. If these attributes are not implemented, an error will be raised.
+
+        :return: A dynamic relationship to `Contributor` using the specified
+                 secondary table and backref.
+        :rtype: sqlalchemy.orm.RelationshipProperty
+
+        :raises NotImplementedError: If the class does not define both
+                                      `__contribution_table__` and
+                                      `__contribution_backref__`.
+        """
+        table = getattr(cls, "__contribution_table__", None)
+        backref_name = getattr(cls, "__contribution_backref__", None)
+
+        if not table or not backref_name:
+            raise NotImplementedError(
+                f"{cls.__name__} must define a __contribution_table__ and __contribution_backref__ class attribute"
+            )
+        return relationship(
+            "Contributor",
+            secondary=table,
+            backref=backref(backref_name, lazy="dynamic"),
+        )
 
 
 class EraMixin:

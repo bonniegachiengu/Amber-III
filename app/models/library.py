@@ -2,11 +2,12 @@ from uuid import uuid4
 from datetime import datetime
 from typing import List, Optional, TYPE_CHECKING
 
-from sqlalchemy import String, Boolean, ForeignKey, JSON, Date, Integer, Float, Text, ARRAY, Numeric
+from sqlalchemy import String, Boolean, ForeignKey, JSONB, Date, Integer, Float, Text, ARRAY, Numeric
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from utils.config import FilmType, RelationshipType, SubmissionStatus
+from associations import film_contributors, person_contributors
 from ..extensions import db
 from .mixins import (
     EntityMixin, HiveMixin, LibraryMixin,
@@ -98,7 +99,7 @@ class Film(db.Model, ModelMixin, EntityMixin):
     watch_count: Mapped[int] = mapped_column(Integer, default=0)
     average_progress: Mapped[float] = mapped_column(Float, default=0.0)
     popularity_score: Mapped[float] = mapped_column(Float, default=0.0)
-    scroll_stats: Mapped[Optional[dict]] = mapped_column(JSON, default={})
+    scroll_stats: Mapped[Optional[dict]] = mapped_column(JSONB, default={})
     viewer_tags: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
     subtitles: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
 
@@ -128,8 +129,8 @@ class Film(db.Model, ModelMixin, EntityMixin):
     production_companies: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
     spoken_languages: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
     country_of_origin: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
-    imdb_data: Mapped[Optional[dict]] = mapped_column(JSON)
-    tmdb_data: Mapped[Optional[dict]] = mapped_column(JSON)
+    imdb_data: Mapped[Optional[dict]] = mapped_column(JSONB)
+    tmdb_data: Mapped[Optional[dict]] = mapped_column(JSONB)
     film_type: Mapped[FilmType] = mapped_column(db.Enum(FilmType), nullable=False)
 
     # Relationships # TODO: Review the Backrefs after creating models
@@ -181,7 +182,9 @@ class Hitlist(db.Model, ModelMixin, WatchListMixin, EntityMixin):
 
 
 class Person(db.Model, ModelMixin, EntityMixin):
-    # __tablename__ = 'people'
+    __tablename__ = 'people'
+    __contribution_table__ = person_contributors
+    __contribution_backref__ = "person_contributions"
     # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
     # first_name: Mapped[str] = mapped_column(String, nullable=False)
     # last_name: Mapped[str] = mapped_column(String, nullable=False)

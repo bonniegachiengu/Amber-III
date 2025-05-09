@@ -24,6 +24,13 @@ if TYPE_CHECKING:
     from .calendar import Event, Calendar
 
 
+class Contributor(db.Model, ModelMixin):
+    __tablename__ = "contributors"
+    contributor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("libraries.id"), primary_key=True)
+    contributor: Mapped["Library"] = relationship(back_populates="contributions")
+    contribution_type: Mapped[str] = mapped_column(String(100), primary_key=True)
+
+
 class Arena(db.Model, ModelMixin, EntityMixin, HiveMixin):
     pass
 

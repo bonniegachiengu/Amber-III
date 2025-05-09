@@ -1,77 +1,94 @@
+import uuid
 from datetime import datetime
 from typing import List, Optional, TYPE_CHECKING
 
 from flask_login import UserMixin
-from sqlalchemy import String, ForeignKey, JSON, UniqueConstraint
+from sqlalchemy import String, ForeignKey, JSONB, UniqueConstraint, Enum as SQLAlchemyEnum, Boolean
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from ..extensions import db
 from .utils.config import Visibility
-from .mixins import EntityMixin, CliqueMixin, ModelMixin, LibraryMixin
+from .mixins import CliqueMixin, ModelMixin, LibraryMixin
 
 
 if TYPE_CHECKING:
     from .community import Thread
     from .common import Location
+    from .calendar import Calendar
 
 
-class User(db.Model, ModelMixin, UserMixin, EntityMixin, LibraryMixin):
+class User(db.Model, ModelMixin, UserMixin, LibraryMixin):
     """
-    Represents a user model in the database.
+    Represents a user entity in the application, managing core user-related data and preferences.
 
-    The User class encapsulates data and behavior related to application users. It extends
-    multiple mixins to provide reusable functionalities for user authentication, entity
-    management, and library interactions. The class also defines relationships to other
-    models, such as locations, followers, and threads. Key system attributes include
-    account metadata, preferences, and social features. This class can be used across
-    the application to represent and manage user-related data.
+    This class is used for managing user data within the database. It contains essential attributes
+    such as username, email, password_hash, as well as optional fields for personalization like bio,
+    avatar_url, and social features like 'followers' and 'following' relationships. It integrates with
+    multiple mixins to provide enhanced functionality for user models.
 
-    :ivar username: The unique username associated with the user.
+    :ivar username: The unique identifier for the user.
     :type username: str
-    :ivar email: The unique email address associated with the user.
+    :ivar email: The email address of the user, used for identification and communication.
     :type email: str
-    :ivar password_hash: The hashed representation of the user's password.
+    :ivar password_hash: A hashed representation of the user's password.
     :type password_hash: str
-    :ivar joined_at: The datetime when the user created their account.
+    :ivar name: The full name of the user.
+    :type name: str
+    :ivar joined_at: The date and time when the user created the account.
     :type joined_at: datetime
-    :ivar last_seen: The last datetime the user was active (optional).
+    :ivar last_seen: The most recent date and time the user was active. This may be None.
     :type last_seen: Optional[datetime]
-    :ivar bio: A brief biography or description of the user (optional).
+    :ivar is_active: Indicates if the user account is currently active.
+    :type is_active: bool
+    :ivar is_verified: Indicates if the user's email address or account is verified.
+    :type is_verified: bool
+    :ivar is_deleted: Indicates if the user's account has been marked for deletion.
+    :type is_deleted: bool
+    :ivar icon: A path or URL for the user's profile icon. This may be None.
+    :type icon: Optional[str]
+    :ivar slug: A unique slug identifier for the user's profile.
+    :type slug: str
+    :ivar bio: A short biography or description of the user. This may be None.
     :type bio: Optional[str]
-    :ivar catchphrase: A catchphrase or tagline for the user (optional).
+    :ivar catchphrase: A user's chosen phrase or tagline. This may be None.
     :type catchphrase: Optional[str]
-    :ivar avatar_url: URL of the user's avatar or profile picture (optional).
+    :ivar avatar_url: URL for the user's profile avatar. This may be None.
     :type avatar_url: Optional[str]
-    :ivar location_id: The UUID reference to the user’s associated location (optional).
+    :ivar location_id: The UUID of the user's associated location. This may be None.
     :type location_id: Optional[UUID]
-    :ivar portfolio_visibility: Visibility setting for the user's portfolio.
+    :ivar portfolio_visibility: Determines the user's portfolio visibility. Defaults to public.
     :type portfolio_visibility: Visibility
-    :ivar location: The `Location` instance representing the user’s location (related model).
+    :ivar location: Relationship to the location associated with the user.
     :type location: Location
-    :ivar preferred_tags: A list of user-preferred tags for personalization (optional).
+    :ivar calendar_id: The UUID of the user's associated calendar.
+    :type calendar_id: uuid.UUID
+    :ivar calendar: Relationship to the user's linked calendar entity.
+    :type calendar: Calendar
+    :ivar preferred_tags: A list of user's preferred tags for personalization. This may be None.
     :type preferred_tags: Optional[list]
-    :ivar language: The user’s preferred language for the application interface.
+    :ivar language: The language preference of the user. Defaults to "en".
     :type language: str
-    :ivar streaming_accounts: A dictionary mapping user's streaming account info (optional).
+    :ivar streaming_accounts: A dictionary of the user's streaming accounts. This may be None.
     :type streaming_accounts: Optional[dict]
-    :ivar playback_settings: A dictionary mapping user's playback preferences (optional).
+    :ivar playback_settings: A dictionary defining playback settings for the user. This may be None.
     :type playback_settings: Optional[dict]
-    :ivar role: The application-defined role assigned to the user (default is "user").
+    :ivar settings: A dictionary containing the user's system and personalization settings. This may be None.
+    :type settings: Optional[dict]
+    :ivar role: The role assigned to the user, defaults to "user".
     :type role: str
-    :ivar notifications_enabled: Indicates whether the user has enabled notifications.
+    :ivar notifications_enabled: Specifies whether notifications are enabled for the user.
     :type notifications_enabled: bool
-    :ivar api_key: The API key for external services or integrations (optional).
+    :ivar api_key: A unique API key assigned to the user. This may be None.
     :type api_key: Optional[str]
-    :ivar followers: List of `UserFollow` objects representing users following this user.
+    :ivar followers: List of relationships representing other users following this user.
     :type followers: List[UserFollow]
-    :ivar following: List of `UserFollow` objects representing users this user follows.
+    :ivar following: List of relationships representing other users followed by this user.
     :type following: List[UserFollow]
-    :ivar cliques: List of `CliqueMixin` instances associated with the user.
+    :ivar cliques: List of cliques the user belongs to.
     :type cliques: List[CliqueMixin]
-    :ivar threads: List of `Thread` instances in which the user participates.
+    :ivar threads: List of threads in which the user is a participant.
     :type threads: List[Thread]
     """
     __tablename__ = "users"
@@ -79,20 +96,29 @@ class User(db.Model, ModelMixin, UserMixin, EntityMixin, LibraryMixin):
     username: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(128), generate_password_hash())
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
     joined_at: Mapped[datetime] = mapped_column(default=datetime.now)
     last_seen: Mapped[Optional[datetime]] = mapped_column(default=None)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     # Profile & Social Fields
+    icon: Mapped[Optional[str]] = mapped_column(String(255))
+    slug: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     bio: Mapped[Optional[str]] = mapped_column(String(500))
     catchphrase: Mapped[Optional[str]] = mapped_column(String(100))
     avatar_url: Mapped[Optional[str]] = mapped_column(String(255))
     location_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey("locations.id"), default=None)
     portfolio_visibility: Mapped[Visibility] = mapped_column(SQLAlchemyEnum(Visibility, name="portfolio_visibility"), default=Visibility.PUBLIC)
     location: Mapped["Location"] = relationship(back_populates="users")
+    calendar_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("calendars.id"), default=None, nullable=False)
+    calendar: Mapped["Calendar"] = relationship(back_populates="entities", uselist=False)
     # Preferences & Personalization Fields
-    preferred_tags: Mapped[Optional[list]] = mapped_column(JSON)
+    preferred_tags: Mapped[Optional[list]] = mapped_column(JSONB)
     language: Mapped[str] = mapped_column(String(10), default="en")
-    streaming_accounts: Mapped[Optional[dict]] = mapped_column(JSON)
-    playback_settings: Mapped[Optional[dict]] = mapped_column(JSON)
+    streaming_accounts: Mapped[Optional[dict]] = mapped_column(JSONB)
+    playback_settings: Mapped[Optional[dict]] = mapped_column(JSONB)
+    settings: Mapped[Optional[dict]] = mapped_column(JSONB)
     # System Fields
     role: Mapped[str] = mapped_column(String(20), default="user")
     notifications_enabled: Mapped[bool] = mapped_column(default=True)

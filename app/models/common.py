@@ -1,4 +1,4 @@
-import enum
+import uuid
 from uuid import uuid4
 from datetime import datetime
 from typing import List, Optional, TYPE_CHECKING
@@ -26,9 +26,6 @@ if TYPE_CHECKING:
     from .commerce import Fund, Transaction
     from .library import Library
 
-
-def generate_uuid():
-    return str(uuid4())
 
 
 class DashboardTemplate(db.Model, ModelMixin):
