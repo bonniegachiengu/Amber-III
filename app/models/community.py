@@ -12,7 +12,7 @@ from ..extensions import db
 from .associations import fandom_contributors, club_contributors
 from .mixins import (
     EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, ListMixin, ScrollItemMixin,
-    ModelMixin, PerksMixin, BoardMixin, WallMixin, ActionMixin, ContributionMixin
+    ModelMixin, PerksMixin, BoardMixin, WallMixin, MarkMixin, ContributionMixin
 )
 
 if TYPE_CHECKING:
@@ -38,13 +38,13 @@ class Contributor(db.Model, ModelMixin):
 class Arena(db.Model, ModelMixin, EntityMixin, HiveMixin):
     __tablename__ = "arena"
 
-class Club(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin):
+class Club(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin, MarkMixin):
     __tablename__ = "clubs"
     __contribution_table__ = club_contributors
     __contribution_backref__ = "club_contributions"
 
 
-class Fandom(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin):
+class Fandom(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin, MarkMixin):
     __tablename__ = "fandoms"
     __contribution_table__ = fandom_contributors
     __contribution_backref__ = "fandom_contributions"
@@ -79,8 +79,6 @@ class Reaction(db.Model, ModelMixin, Message):
     reaction: Mapped[str] = mapped_column(String(100))
 
 
-
-
 class Member(db.Model, ModelMixin, CliqueMixin):
     pass
 
@@ -98,11 +96,14 @@ class Fan(db.Model, ModelMixin, CliqueMixin):
 class Watcher(db.Model, ModelMixin, CliqueMixin):
     pass
 
+
 class Tracker(db.Model, ModelMixin, CliqueMixin):
     pass
 
-class Collector(db.Model, ModelMixin, CliqueMixin): # something to do with scrolls
+
+class Collector(db.Model, ModelMixin, CliqueMixin):
     pass
+
 
 class Creator(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, CreatorMixin):
     pass

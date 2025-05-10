@@ -15,7 +15,7 @@ from .mixins import (
 if TYPE_CHECKING:
     from .library import Portfolio
     from .community import Tier, Fan
-    from .common import Image
+    from .common import Image, ReportTemplate
 
 
 class Journal(db.Model, ModelMixin, EntityMixin, HiveMixin):
@@ -345,6 +345,7 @@ class Report(db.Model, ModelMixin, EntityMixin, ContentMixin, ContributionMixin,
     __contribution_backref__ = "report_contributions"
     publishing_magazine_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("magazines.id"))
     publishing_magazine: Mapped["Magazine"] = relationship("Magazine", back_populates="reports")
+    report_template_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("report_templates.id"))
     authors: Mapped[List["Portfolio"]] = relationship("Portfolio", back_populates="authored_reports")
     analysts: Mapped[List["Analyst"]] = relationship("Analyst", back_populates="reports")
     editors: Mapped[List["Editor"]] = relationship("Editor", back_populates="edited_reports")
@@ -352,6 +353,7 @@ class Report(db.Model, ModelMixin, EntityMixin, ContentMixin, ContributionMixin,
     previous_columns: Mapped[List["Column"]] = relationship("Column", back_populates="previous_reports")
     next_columns: Mapped[List["Column"]] = relationship("Column", back_populates="next_reports")
     slots: Mapped[List["Slot"]] = relationship("Slot", back_populates="report")
+    report_template: Mapped["ReportTemplate"] = relationship("ReportTemplate", back_populates="reports")
 
 
 class Writer(db.Model, ModelMixin, CliqueMixin, CreatorMixin, AuthorMixin):

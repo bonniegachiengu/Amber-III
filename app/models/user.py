@@ -15,7 +15,8 @@ from .mixins import CliqueMixin, ModelMixin, LibraryMixin
 
 if TYPE_CHECKING:
     from .community import Thread
-    from .common import Location
+    from .common import Location, Avatar
+    from .calendar import Event
 
 
 class User(db.Model, ModelMixin, UserMixin, LibraryMixin, EntityMixin):
@@ -44,8 +45,8 @@ class User(db.Model, ModelMixin, UserMixin, LibraryMixin, EntityMixin):
     :type bio: Optional[str]
     :ivar catchphrase: User's personal catchphrase or tagline.
     :type catchphrase: Optional[str]
-    :ivar avatar_url: URL to the user's avatar image.
-    :type avatar_url: Optional[str]
+    :ivar avatar: The user's avatar image.
+    :type avatar: Optional[Avatar]
     :ivar location_id: Unique identifier for the user's location.
     :type location_id: Optional[UUID]
     :ivar portfolio_visibility: Enum representing the visibility preference for the user's portfolio.
@@ -85,10 +86,11 @@ class User(db.Model, ModelMixin, UserMixin, LibraryMixin, EntityMixin):
     # Profile & Social Fields
     bio: Mapped[Optional[str]] = mapped_column(String(500))
     catchphrase: Mapped[Optional[str]] = mapped_column(String(100))
-    avatar_url: Mapped[Optional[str]] = mapped_column(String(255))
+    avatar_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey("avatars.id"), default=None)
+    avatar: Mapped["Avatar"] = relationship(back_populates="user")
     location_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey("locations.id"), default=None)
-    portfolio_visibility: Mapped[VisibilityEnum] = mapped_column(SQLAlchemyEnum(VisibilityEnum, name="portfolio_visibility"), default=VisibilityEnum.PUBLIC)
     location: Mapped["Location"] = relationship(back_populates="users")
+    portfolio_visibility: Mapped[VisibilityEnum] = mapped_column(SQLAlchemyEnum(VisibilityEnum, name="portfolio_visibility"), default=VisibilityEnum.PUBLIC)
     # Preferences & Personalization Fields
     preferred_tags: Mapped[Optional[list]] = mapped_column(JSONB)
     language: Mapped[str] = mapped_column(String(10), default="en")
@@ -113,12 +115,8 @@ class User(db.Model, ModelMixin, UserMixin, LibraryMixin, EntityMixin):
     )
     cliques: Mapped[List["CliqueMixin"]] = relationship(back_populates="agents", cascade="all, delete-orphan")
     threads: Mapped[List["Thread"]] = relationship(back_populates="participants")
-
-    def __repr__(self):
-        return f"<User {self.username}>"
-
-    def to_dict(self):
-        pass
+    invited_events: Mapped[List["Event"]] = relationship("Event", foreign_keys="[Event.invited_by_id]", back_populates="invited_guests")
+    confirmed_events: Mapped[List["Event"]] = relationship("Event", foreign_keys="[Event.accepted_by_id]", back_populates="confirmed_guests")
 
     def set_password(self, password: str) -> None:
         """

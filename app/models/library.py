@@ -2,7 +2,7 @@ from uuid import uuid4
 from datetime import datetime
 from typing import List, Optional, TYPE_CHECKING
 
-from sqlalchemy import String, Boolean, ForeignKey, JSONB, Date, Integer, Float, Text, ARRAY, Numeric
+from sqlalchemy import String, Boolean, ForeignKey, JSONB, Date, Integer, Float, Text, ARRAY, Numeric, Enum as SQLAlchemyEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
@@ -10,6 +10,7 @@ from utils.config import FilmTypeEnum, RelationshipTypeEnum, SubmissionStatusEnu
 from associations import film_contributors, person_contributors
 
 from ..extensions import db
+from .utils.config import ExtensionTypeEnum, AlbumTypeEnum
 from .mixins import (
     EntityMixin, HiveMixin, LibraryMixin, ScrollItemMixin,
     ModelMixin, WatchListMixin, PartnerMixin, AwardMixin, AwardTypeMixin, PeriodMixin, ContributionMixin
@@ -23,8 +24,8 @@ if TYPE_CHECKING:
     from .community import Fandom
     from .calendar import Calendar, Ticket
     from .player import Bookmark, PlaybackSession
-    from .commerce import Listing, Order, Market, Discount, CustomToken
-    from .common import Genre, Language, Country, Keyword, Theme, Tag, Era, Anchor, WikiTemplate, DashboardTemplate
+    from .commerce import Listing, Order, Market, Discount, CustomToken, Fund
+    from .common import Genre, Language, Country, Keyword, Theme, Tag, Era, Anchor, Verification, Preferences, Notification
 
 
 def generate_uuid():
@@ -33,6 +34,7 @@ def generate_uuid():
 
 class Library(db.Model, ModelMixin, EntityMixin):
     __tablename__ = 'libraries'
+    local_libraries: Mapped[List["Library"]] = relationship("Library", backref="local_libraries", cascade="all, delete-orphan")
     owner: Mapped["LibraryMixin"] = relationship("LibraryMixin" ,back_populates="libraries", uselist=False)
     wallet: Mapped["Wallet"] = relationship(back_populates="library", uselist=False, cascade="all, delete-orphan")
     portfolio: Mapped["Portfolio"] = relationship(back_populates="library", uselist=False, cascade="all, delete-orphan")
@@ -41,6 +43,9 @@ class Library(db.Model, ModelMixin, EntityMixin):
     markets: Mapped[List["Market"]] = relationship(back_populates="library", cascade="all, delete-orphan")
     watch_history: Mapped[List["WatchHistory"]] = relationship(back_populates="library", cascade="all, delete-orphan")
     playback_sessions: Mapped[List["PlaybackSession"]] = relationship(back_populates="library", cascade="all, delete-orphan")
+    preferences: Mapped[List["Preferences"]] = relationship(back_populates="library", cascade="all, delete-orphan")
+    notifications: Mapped[List["Notification"]] = relationship(back_populates="recipient", cascade="all, delete-orphan")
+    sent_notifications: Mapped[List["Notification"]] = relationship(back_populates="sender", cascade="all, delete-orphan")
 
 
 class Collection(db.Model, ModelMixin):
@@ -75,6 +80,7 @@ class Portfolio(db.Model, ModelMixin):
     customtokens: Mapped[List["CustomToken"]] = relationship(back_populates="creator_portfolio")
     created_tickets: Mapped[List["Ticket"]] = relationship(back_populates="creator_portfolio")
     bought_tickets: Mapped[List["Ticket"]] = relationship(back_populates="buying_portfolios")
+    verifications: Mapped[List["Verification"]] = relationship(back_populates="verifiers")
 
 
 class WatchHistory(db.Model, ModelMixin):
@@ -175,10 +181,10 @@ class Film(db.Model, ModelMixin, EntityMixin, ContributionMixin, ScrollItemMixin
 class Album(db.Model, ModelMixin, WatchListMixin, EntityMixin):
     # __tablename__ = 'albums'
     #
-    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
+    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=generate_uuid)
     # title: Mapped[str] = mapped_column(String, nullable=False)
     # description: Mapped[Optional[str]] = mapped_column(Text)
-
+    album_type: Mapped[AlbumTypeEnum] = relationship(SQLAlchemyEnum(AlbumTypeEnum), nullable=False)
     # Relationships
     films: Mapped[List["Film"]] = relationship('Film', backref='albums')
 
@@ -194,7 +200,7 @@ class Person(db.Model, ModelMixin, EntityMixin, ContributionMixin):
     __tablename__ = 'people'
     __contribution_table__ = person_contributors
     __contribution_backref__ = "person_contributions"
-    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=generate_uuid)
+    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=generate_uuid)
     # first_name: Mapped[str] = mapped_column(String, nullable=False)
     # last_name: Mapped[str] = mapped_column(String, nullable=False)
     # full_name: Mapped[Optional[str]] = mapped_column(String)
@@ -244,7 +250,7 @@ class Person(db.Model, ModelMixin, EntityMixin, ContributionMixin):
 
 class Career(db.Model, ModelMixin, EntityMixin):
     # __tablename__ = "careers"
-    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid4)
     # person_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=False)
     # # Relationships
     # person: Mapped["Person"] = relationship("Person", back_populates="careers")
@@ -264,7 +270,7 @@ class Career(db.Model, ModelMixin, EntityMixin):
 
 class Gig(db.Model, ModelMixin):
     # __tablename__ = "gigs"
-    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid4)
     # film_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("films.id"), nullable=False)
     # career_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("careers.id"), nullable=False)
     # job_title: Mapped[str] = mapped_column(db.String(128), nullable=False)
@@ -297,7 +303,7 @@ class Gig(db.Model, ModelMixin):
 
 class Character(db.Model, ModelMixin, EntityMixin):
     # __tablename__ = "characters"
-    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid4)
     # name: Mapped[str] = mapped_column(db.String(128), nullable=False)
     # aliases: Mapped[list[str]] = mapped_column(ARRAY(db.String), default=list)
     # description: Mapped[str | None] = mapped_column(db.Text, nullable=True)
@@ -335,7 +341,7 @@ class Studio(db.Model, ModelMixin, EntityMixin):
 
 class Relationship(db.Model, ModelMixin):
     # __tablename__ = "relationships"
-    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid4)
     # person_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=False)
     # related_person_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=False)
     # relationship_type: Mapped[RelationshipType] = mapped_column(db.Enum(RelationshipType), nullable=False)
@@ -360,6 +366,52 @@ class Relationship(db.Model, ModelMixin):
         }
 
 
+class LocalLibrary(db.Model, ModelMixin):
+    __tablename__ = "local_libraries"
+    library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("libraries.id"))
+    library: Mapped["Library"] = relationship("Library", back_populates="local_libraries")
+    directories: Mapped[List["Directory"]] = relationship("Directory", back_populates="local_library")
+    path: Mapped[str] = mapped_column(String, nullable=False)
+
+
+class Directory(db.Model, ModelMixin):
+    __tablename__ = "directories"
+    local_library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("local_libraries.library_id"))
+    local_library: Mapped["Library"] = relationship("Library", back_populates="directories")
+    files: Mapped[List["File"]] = relationship("File", back_populates="directory")
+    path: Mapped[str] = mapped_column(String, nullable=False)
+
+
+class File(db.Model, ModelMixin):
+    __tablename__ = "files"
+    filepath: Mapped[str] = mapped_column(String, nullable=False)
+    filename: Mapped[str] = mapped_column(String, nullable=False)
+    file_title: Mapped[str] = mapped_column(String, nullable=False)
+    file_year: Mapped[Optional[int]] = mapped_column(Integer)
+    file_resolution: Mapped[Optional[str]] = mapped_column(String)
+    file_extension: Mapped[ExtensionTypeEnum] = mapped_column(SQLAlchemyEnum(ExtensionTypeEnum), nullable=False)
+    file_codec: Mapped[Optional[str]] = mapped_column(String)
+    file_bitrate: Mapped[Optional[int]] = mapped_column(Integer)
+    size: Mapped[int] = mapped_column(Integer, nullable=False)
+    directory_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("directories.id"))
+    file_tag_set_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("file_tag_sets.id"))
+    directory: Mapped["Directory"] = relationship("Directory", back_populates="files")
+    file_tag_set: Mapped["FileTagSet"] = relationship("FileTagSet", back_populates="file")
+
+
+class FileTagSet(db.Model, ModelMixin):
+    __tablename__ = "file_tag_sets"
+    file_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("files.id"))
+    film_directory_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("directories.id"))
+    file: Mapped["File"] = relationship("File", back_populates="file_tag_set")
+    film_directory: Mapped["Directory"] = relationship("Directory", foreign_keys=[film_directory_id])
+    root_tags: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
+    type_tags: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
+    cate_genres: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
+    album_tags: Mapped[Optional[List[Album]]] = relationship("Album")
+    studio_tags: Mapped[Optional[List[Studio]]] = relationship("Studio")
+
+
 class Shop(db.Model, ModelMixin, EntityMixin, HiveMixin):
     __tablename__ = "shops"
     merchandise: Mapped[List["Merchandise"]] = relationship("Merchandise", back_populates="shop")
@@ -368,27 +420,32 @@ class Shop(db.Model, ModelMixin, EntityMixin, HiveMixin):
 class Asset(db.Model, ModelMixin, EntityMixin):
     __tablename__ = "assets"
     portfolio_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("portfolios.id"), nullable=False)
-    token_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("tokens.id"), nullable=False)
+    token_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("customtokens.id"), nullable=False)
+    merchandise_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("merchandises.id"), nullable=False)
     amount: Mapped[float] = mapped_column(Numeric(20, 4), default=0.0)
-    token = relationship("Token")
-    portfolio = relationship("Portfolio", back_populates="assets")
+    customtoken: Mapped["CustomToken"] = relationship("CustomToken", back_populates="asset")
+    portfolio: Mapped["Portfolio"] = relationship("Portfolio", back_populates="assets")
+    merchandise: Mapped["Merchandise"] = relationship("Merchandise", back_populates="asset")
 
 
 class Merchandise(db.Model, ModelMixin, EntityMixin):
     __tablename__ = "merchandises"
+    asset_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("assets.id"), nullable=False)
     shop_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("shops.id"), nullable=False)
     price: Mapped[float] = mapped_column(Numeric(20, 4), default=0.0)
     inventory_count: Mapped[int] = mapped_column(Integer, default=0)
-    shop = relationship("Shop", back_populates="merchandise")
-    listings = relationship("Listing", back_populates="merchandise")
-    discounts = relationship("Discount", back_populates="merchandise")
+    inventory_limit: Mapped[int] = mapped_column(Integer, default=0)
+    asset: Mapped["Asset"] = relationship("Asset", back_populates="merchandise")
+    shop: Mapped["Shop"] = relationship("Shop", back_populates="merchandise")
+    listings: Mapped[List["Listing"]] = relationship("Listing", back_populates="merchandise")
+    discounts: Mapped[List["Discount"]] = relationship("Discount", back_populates="merchandise")
 
 
 class Wallet(db.Model, ModelMixin, EntityMixin):
     __tablename__ = "wallets"
     library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("libraries.id"), nullable=False)
     library: Mapped["Library"] = relationship(back_populates="wallet")
-    funds = relationship("Fund", back_populates="wallet")
+    funds: Mapped["Fund"] = relationship("Fund", back_populates="wallet")
 
 
 class Accolade(db.Model, ModelMixin):

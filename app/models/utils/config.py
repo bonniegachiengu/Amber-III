@@ -669,3 +669,192 @@ class ColumnStatusEnum(Enum):
     """
     ACTIVE = "active"
     ARCHIVED = "archived"
+
+
+# noinspection SpellCheckingInspection
+class ExtensionTypeEnum(Enum):
+    """
+    Represents an enumeration of various file extension types.
+
+    This class defines a set of common file extensions categorized under different types
+    such as audio, video, document, image, subtitle, and more. Each enumerator corresponds
+    to a specific file extension string value. The purpose is to provide a convenient
+    and centralized way to handle these file extensions in code.
+
+    :ivar MP3: Represents the file extension for MP3 audio files.
+    :ivar MP4: Represents the file extension for MP4 video files.
+    :ivar AVI: Represents the file extension for AVI video files.
+    :ivar WMV: Represents the file extension for WMV video files.
+    :ivar MOV: Represents the file extension for MOV video files.
+    :ivar FLV: Represents the file extension for FLV video files.
+    :ivar MKV: Represents the file extension for MKV video files.
+    :ivar WEBM: Represents the file extension for WEBM video files.
+    :ivar OGG: Represents the file extension for OGG audio files.
+    :ivar WMA: Represents the file extension for WMA audio files.
+    :ivar AAC: Represents the file extension for AAC audio files.
+    :ivar FLAC: Represents the file extension for FLAC audio files.
+    :ivar WAV: Represents the file extension for WAV audio files.
+    :ivar AIF: Represents the file extension for AIF audio files.
+    :ivar AIFC: Represents the file extension for AIFC audio files.
+    :ivar AIFF: Represents the file extension for AIFF audio files.
+    :ivar PCM: Represents the file extension for PCM audio files.
+    :ivar VORBIS: Represents the file extension for VORBIS audio files.
+    :ivar ALAC: Represents the file extension for ALAC audio files.
+    :ivar SRT: Represents the file extension for SRT subtitle files.
+    :ivar TXT: Represents the file extension for TXT text files.
+    :ivar HTML: Represents the file extension for HTML web files.
+    :ivar CSS: Represents the file extension for CSS style files.
+    :ivar JS: Represents the file extension for JavaScript files.
+    :ivar XSL: Represents the file extension for XSL stylesheets.
+    :ivar XSLT: Represents the file extension for XSLT files.
+    :ivar XML: Represents the file extension for XML files.
+    :ivar JSON: Represents the file extension for JSON files.
+    :ivar CSV: Represents the file extension for CSV spreadsheet files.
+    :ivar XLS: Represents the file extension for XLS Excel files.
+    :ivar XLSX: Represents the file extension for XLSX Excel files.
+    :ivar PPT: Represents the file extension for PPT PowerPoint files.
+    :ivar PPTX: Represents the file extension for PPTX PowerPoint files.
+    :ivar DOCX: Represents the file extension for DOCX Word document files.
+    :ivar RTF: Represents the file extension for RTF Word document files.
+    :ivar PDF: Represents the file extension for PDF files.
+    :ivar ZIP: Represents the file extension for ZIP archived files.
+    :ivar RAR: Represents the file extension for RAR archived files.
+    :ivar M4V: Represents the file extension for M4V video files.
+    :ivar VTT: Represents the file extension for VTT subtitle files.
+    :ivar IMG: Represents the file extension for IMG image files.
+    :ivar PNG: Represents the file extension for PNG image files.
+    :ivar JPG: Represents the file extension for JPG image files.
+    :ivar GIF: Represents the file extension for GIF image files.
+    :ivar BMP: Represents the file extension for BMP image files.
+    :ivar TIFF: Represents the file extension for TIFF image files.
+    :ivar SVG: Represents the file extension for SVG image files.
+    :ivar PSD: Represents the file extension for PSD design files.
+    :ivar PPTA: Represents the file extension for PPTA PowerPoint files.
+    :ivar PPTM: Represents the file extension for PPTM PowerPoint files.
+    :ivar PPS: Represents the file extension for PPS PowerPoint slide files.
+    :ivar PPSM: Represents the file extension for PPSM PowerPoint slide files.
+    :ivar PPSX: Represents the file extension for PPSX PowerPoint slide files.
+    :ivar PPSXM: Represents the file extension for PPSXM PowerPoint slide files.
+    :ivar DOCM: Represents the file extension for DOCM Word document files.
+    :ivar DOCMX: Represents the file extension for DOCMX Word document files.
+    :ivar DOCXM: Represents the file extension for DOCXM Word document files.
+    :ivar DOCXB: Represents the file extension for DOCXB Word document files.
+    :ivar MPEG: Represents the file extension for MPEG video files.
+    :ivar ASS: Represents the file extension for ASS subtitle files.
+    :ivar SSA: Represents the file extension for SSA subtitle files.
+    :ivar SUB: Represents the file extension for SUB subtitle files.
+    :ivar DTT: Represents the file extension for DTT data files.
+    :ivar DTTX: Represents the file extension for DTTX data files.
+    :ivar DTTM: Represents the file extension for DTTM data files.
+    :ivar IDX: Represents the file extension for IDX files associated with subtitles.
+    :ivar ITA: Represents the file extension for ITA data files.
+    :ivar JTA: Represents the file extension for JTA data files.
+    :ivar MTA: Represents the file extension for MTA data files.
+    :ivar OTHER: Represents the file extension for other file types.
+    """
+    MP3 = ".mp3"
+    MP4 = ".mp4"
+    AVI = ".avi"
+    WMV = ".wmv"
+    MOV = ".mov"
+    FLV = ".flv"
+    MKV = ".mkv"
+    WEBM = ".webm"
+    OGG = ".ogg"
+    WMA = ".wma"
+    AAC = ".aac"
+    FLAC = ".flac"
+    WAV = ".wav"
+    AIF = ".aif"
+    AIFC = ".aifc"
+    AIFF = ".aiff"
+    PCM = ".pcm"
+    VORBIS = ".vorbis"
+    ALAC = ".alac"
+    SRT = ".srt"
+    TXT = ".txt"
+    HTML = ".html"
+    CSS = ".css"
+    JS = ".js"
+    XSL = ".xsl"
+    XSLT = ".xslt"
+    XML = ".xml"
+    JSON = ".json"
+    CSV = ".csv"
+    XLS = ".xls"
+    XLSX = ".xlsx"
+    PPT = ".ppt"
+    PPTX = ".pptx"
+    DOCX = ".docx"
+    RTF = ".rtf"
+    PDF = ".pdf"
+    ZIP = ".zip"
+    RAR = ".rar"
+    M4V = ".m4v"
+    VTT = ".vtt"
+    IMG = ".img"
+    PNG = ".png"
+    JPG = ".jpg"
+    GIF = ".gif"
+    BMP = ".bmp"
+    TIFF = ".tiff"
+    SVG = ".svg"
+    PSD = ".psd"
+    PPTA = ".ppta"
+    PPTM = ".pptm"
+    PPS = ".pps"
+    PPSM = ".ppsm"
+    PPSX = ".ppsx"
+    PPSXM = ".ppsxm"
+    DOCM = ".docm"
+    DOCMX = ".docmx"
+    DOCXM = ".docxm"
+    DOCXB = ".docxb"
+    MPEG = ".mpeg"
+    ASS = ".ass"
+    SSA = ".ssa"
+    SUB = ".sub"
+    DTT = ".dtt"
+    DTTX = ".dttx"
+    DTTM = ".dttm"
+    IDX = ".idx"
+    ITA = ".ita"
+    JTA = ".jta"
+    MTA = ".mta"
+    OTHER = ""
+
+
+class AlbumTypeEnum(Enum):
+    """
+    Enumeration for different types of albums.
+
+    This class defines specific types of albums typically used in
+    categorizing groups or collections of works, such as casts,
+    crews, studios, franchises, or cinematic universes. These
+    categories help to organize and classify various albums or
+    collections based on their context.
+
+    The enumeration includes the following types:
+
+    - CAST: Represents an album for a cast member.
+    - CREW: Represents an album for a crew member.
+    - STUDIO: Represents an album for a studio group.
+    - FRANCHISE: Represents an album for a franchise group.
+    - CINEMATIC_UNIVERSE: Represents an album for a cinematic universe.
+
+    :ivar CAST: Represents 'cast'.
+    :type CAST: str
+    :ivar CREW: Represents 'crew'.
+    :type CREW: str
+    :ivar STUDIO: Represents 'studio'.
+    :type STUDIO: str
+    :ivar FRANCHISE: Represents 'franchise'.
+    :type FRANCHISE: str
+    :ivar CINEMATIC_UNIVERSE: Represents 'cinematic_universe'.
+    :type CINEMATIC_UNIVERSE: str
+    """
+    CAST = "cast"
+    CREW = "crew"
+    STUDIO = "studio"
+    FRANCHISE = "franchise"
+    CINEMATIC_UNIVERSE = "cinematic_universe"

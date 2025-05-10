@@ -16,7 +16,7 @@ from .associations import (
 )
 
 if TYPE_CHECKING:
-    from .library import Portfolio, Wallet, Merchandise
+    from .library import Portfolio, Wallet, Merchandise, Asset
 
 
 class Market(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin):
@@ -101,6 +101,8 @@ class CustomToken(db.Model, ModelMixin, Token, ContributionMixin):
     __contribution_table__ = customtoken_contributors
     __contribution_backref__ = "customtoken_contributions"
     creator_portfolio: Mapped["Portfolio"] = relationship("User", back_populates="customtokens")
+    asset_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("assets.id"), nullable=False)
+    asset: Mapped["Asset"] = relationship("Asset", back_populates="customtoken")
 
     __mapper_args__ = {
         "polymorphic_identity": "custom",

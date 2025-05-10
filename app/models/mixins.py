@@ -15,13 +15,16 @@ from utils.config import ContentTypeEnum, CliqueTypeEnum, VisibilityEnum, Articl
 if TYPE_CHECKING:
     from .user import User
     from .scrolls import Scroll, ScrollEntry
-    from .library import Library, Film, Album, Hitlist
+    from .library import Library, Film, Asset
     from .journal import Magazine, Article
     from .player import WatchHistory
     from .community import Message, Thread, Reaction, Tier, Posts, Updates, Issues, Pins, Clips
     from .commerce import Fund, Transaction, Ledger, Currency, AmberToken
-    from .common import WikiTemplate, DashboardTemplate, Tag, Keyword, Language, Country, Nationality, Era, Anchor
     from .calendar import Event, Calendar, Ticket
+    from .common import (
+        WikiTemplate, DashboardTemplate, Tag, Keyword, Language, Country, Nationality, Era, Anchor, Theme, Genre,
+        Field, Verification, Link, DataSet, Icon, Logo
+    )
 
 def generate_uuid():
     return str(uuid.uuid4())
@@ -33,22 +36,27 @@ class ModelMixin:
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now, onupdate=datetime.now)
     deleted_at: Mapped[Optional[datetime]] = mapped_column(default=None)
     deleted_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), default=None)
-    wiki: Mapped[Optional["WikiTemplate"]] = relationship(back_populates="user", uselist=False)
-    dashboard: Mapped[Optional["DashboardTemplate"]] = relationship(back_populates="user", uselist=False)
-    fields: Mapped[Optional[dict]] = mapped_column(JSONB)
+    wiki_templates: Mapped[Optional[List["WikiTemplate"]]] = relationship(back_populates="model")
+    dashboard_templates: Mapped[Optional[List["DashboardTemplate"]]] = relationship(back_populates="model")
+    fields: Mapped[Optional[List["Field"]]] = relationship("Field", back_populates="model")
+    media: Mapped[Optional[List["ModelMixin"]]] = relationship("ModelMixin", back_populates="use_cases")
+    links: Mapped[Optional[List[Link]]] = relationship("Link", back_populates="use_cases")
 
 
 class EntityMixin:
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[Optional[str]] = mapped_column(String(500))
-    icon: Mapped[Optional[str]] = mapped_column(String(255))
     slug: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     settings: Mapped[Optional[dict]] = mapped_column(JSONB, default={})
+    icon_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("icons.id"), default=None, nullable=False)
+    icon: Mapped["Icon"] = relationship(back_populates="entities", uselist=False)
     calendar_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("calendars.id"), default=None, nullable=False)
     calendar: Mapped["Calendar"] = relationship(back_populates="entities", uselist=False)
+    verification_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("verifications.id"), default=None, nullable=False)
+    verification: Mapped["Verification"] = relationship(back_populates="Entity", uselist=False)
 
 
 class ContributionMixin:
@@ -104,9 +112,11 @@ class MarkMixin:
     tags: Mapped[Optional[list["Tag"]]] = relationship("Tag", back_populates="marked")
     keywords: Mapped[Optional[list["Keyword"]]] = relationship("Keyword", back_populates="marked")
     languages: Mapped[Optional[list["Language"]]] = relationship("Language", back_populates="marked")
+    themes: Mapped[Optional[list["Theme"]]] = relationship("Theme", back_populates="marked")
+    genres: Mapped[Optional[list["Genre"]]] = relationship("Genre", back_populates="marked")
     countries: Mapped[Optional[list["Country"]]] = relationship("Country", back_populates="marked")
     nationalities: Mapped[Optional[list["Nationality"]]] = relationship("Nationality", back_populates="marked")
-    periods: Mapped[Optional[list["Era"]]] = relationship("Period", back_populates="marked")
+    eras: Mapped[Optional[list["Era"]]] = relationship("Period", back_populates="marked")
     anchors: Mapped[Optional[list["Anchor"]]] = relationship("Anchor", back_populates="marked")
 
 
@@ -116,6 +126,8 @@ class CliqueMixin:
 
 
 class HiveMixin(LibraryMixin):
+    logo_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("logos.id"), default=None, nullable=False)
+    logo: Mapped["Logo"] = relationship(back_populates="use_cases", uselist=False)
     boards: Mapped[List["BoardMixin"]] = relationship("BoardMixin", back_populates="hive")
     walls: Mapped[List["WallMixin"]] = relationship("WallMixin", back_populates="hive")
     join_rules: Mapped[Optional[dict]] = mapped_column(JSONB, default={})
@@ -168,6 +180,20 @@ class ScrollItemMixin:
     scroll_entries: Mapped[List["ScrollEntry"]] = relationship("ScrollEntry", back_populates="scroll_item")
 
 
+class MediaMixin:
+    keywords: Mapped[Optional[list["Keyword"]]] = relationship("Keyword", back_populates="marked")
+    anchors: Mapped[Optional[list["Anchor"]]] = relationship("Anchor", back_populates="marked")
+    url: Mapped[str] = mapped_column(String, nullable=False)
+    use_cases: Mapped[Optional[List[ModelMixin]]] = relationship("ModelMixin", back_populates="media")
+    alt_text: Mapped[Optional[str]] = mapped_column(String)
+    asset_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("assets.id"))
+    asset: Mapped[Optional["Asset"]] = relationship("Asset", back_populates="media")
+
+
+class ChartMixin:
+    data_sets: Mapped[List["DataSet"]] = relationship("DataSet", back_populates="graphs_charts")
+
+
 class CreatorMixin:
     pass
 
@@ -186,9 +212,6 @@ class ActionMixin:
     pass
 
 class PartnerMixin:
-    pass
-
-class MediaMixin:
     pass
 
 class ThumbnailMixin:
