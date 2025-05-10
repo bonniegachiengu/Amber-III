@@ -9,7 +9,9 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from ..extensions import db
 from .utils.config import OrderStatusEnum, TransactionStatusEnum, TransactionTypeEnum
-from .mixins import EntityMixin, HiveMixin, ModelMixin, ContributionMixin, PeriodMixin
+from .mixins import (
+    EntityMixin, HiveMixin, ModelMixin, ContributionMixin, PeriodMixin, FoundedMixin, CreatedMixin, AnalyzedMixin
+)
 from .associations import (
     market_contributors, customtoken_contributors, fund_contributors, listing_contributors, order_contributors,
     transaction_contributors, discount_contributors
@@ -19,7 +21,7 @@ if TYPE_CHECKING:
     from .library import Portfolio, Wallet, Merchandise, Asset
 
 
-class Market(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin):
+class Market(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin, FoundedMixin, CreatedMixin, AnalyzedMixin):
     """
     Represents a Market entity within the application.
 

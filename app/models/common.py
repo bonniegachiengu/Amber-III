@@ -9,7 +9,9 @@ from sqlalchemy import Enum as SQLAlchemyEnum
 
 from ..extensions import db
 from .utils.config import ContentTypeEnum
-from .mixins import ModelMixin, MediaMixin, ContentMixin, ContributionMixin, EntityMixin, ChartMixin
+from .mixins import (
+    ModelMixin, MediaMixin, ContentMixin, ContributionMixin, EntityMixin, ChartMixin, OwnedMixin, CreatedMixin
+)
 from .associations import (
     dashboard_template_contributors, wiki_template_contributors, tag_contributors, language_contributors,
     country_contributors, nationality_contributors, era_contributors, genre_contributors, theme_contributors,
@@ -549,7 +551,7 @@ class Logo(db.Model, ModelMixin, Image):
     use_cases: Mapped[Optional[List[ModelMixin]]] = relationship("ModelMixin", back_populates="logo")
 
 
-class Poster(db.Model, ModelMixin, MediaMixin):
+class Poster(db.Model, ModelMixin, MediaMixin, CreatedMixin, OwnedMixin, Image):
     """
     Represents a Poster within the system.
 

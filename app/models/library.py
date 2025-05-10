@@ -13,7 +13,7 @@ from ..extensions import db
 from .utils.config import ExtensionTypeEnum, AlbumTypeEnum
 from .mixins import (
     EntityMixin, HiveMixin, LibraryMixin, ScrollItemMixin,
-    ModelMixin, WatchListMixin, PartnerMixin, AwardMixin, AwardTypeMixin, PeriodMixin, ContributionMixin
+    ModelMixin, WatchListMixin, PeriodMixin, ContributionMixin
 )
 
 
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from .scrolls import Scroll
     from .user import User
     from .journal import Magazine, Article, Report, Column
-    from .community import Fandom
+    from .community import Fan, Member, Subscriber
     from .calendar import Calendar, Ticket
     from .player import Bookmark, PlaybackSession
     from .commerce import Listing, Order, Market, Discount, CustomToken, Fund
@@ -36,16 +36,19 @@ class Library(db.Model, ModelMixin, EntityMixin):
     __tablename__ = 'libraries'
     local_libraries: Mapped[List["Library"]] = relationship("Library", backref="local_libraries", cascade="all, delete-orphan")
     owner: Mapped["LibraryMixin"] = relationship("LibraryMixin" ,back_populates="libraries", uselist=False)
-    wallet: Mapped["Wallet"] = relationship(back_populates="library", uselist=False, cascade="all, delete-orphan")
-    portfolio: Mapped["Portfolio"] = relationship(back_populates="library", uselist=False, cascade="all, delete-orphan")
-    collections: Mapped[List["Collection"]] = relationship(back_populates="library", cascade="all, delete-orphan")
-    shops: Mapped[List["Shop"]] = relationship(back_populates="library", cascade="all, delete-orphan")
-    markets: Mapped[List["Market"]] = relationship(back_populates="library", cascade="all, delete-orphan")
-    watch_history: Mapped[List["WatchHistory"]] = relationship(back_populates="library", cascade="all, delete-orphan")
-    playback_sessions: Mapped[List["PlaybackSession"]] = relationship(back_populates="library", cascade="all, delete-orphan")
-    preferences: Mapped[List["Preferences"]] = relationship(back_populates="library", cascade="all, delete-orphan")
-    notifications: Mapped[List["Notification"]] = relationship(back_populates="recipient", cascade="all, delete-orphan")
-    sent_notifications: Mapped[List["Notification"]] = relationship(back_populates="sender", cascade="all, delete-orphan")
+    wallet: Mapped["Wallet"] = relationship("Wallet", back_populates="library", uselist=False, cascade="all, delete-orphan")
+    portfolio: Mapped["Portfolio"] = relationship("Portfolio", back_populates="library", uselist=False, cascade="all, delete-orphan")
+    collections: Mapped[List["Collection"]] = relationship("Collection", back_populates="library", cascade="all, delete-orphan")
+    shops: Mapped[List["Shop"]] = relationship("Shop", back_populates="library", cascade="all, delete-orphan")
+    markets: Mapped[List["Market"]] = relationship("Market", back_populates="library", cascade="all, delete-orphan")
+    watch_history: Mapped[List["WatchHistory"]] = relationship("WatchHistory", back_populates="library", cascade="all, delete-orphan")
+    playback_sessions: Mapped[List["PlaybackSession"]] = relationship("PlaybackSession", back_populates="library", cascade="all, delete-orphan")
+    preferences: Mapped[List["Preferences"]] = relationship("Preferences", back_populates="library", cascade="all, delete-orphan")
+    notifications: Mapped[List["Notification"]] = relationship("Notification", back_populates="recipient", cascade="all, delete-orphan")
+    sent_notifications: Mapped[List["Notification"]] = relationship("Notification", back_populates="sender", cascade="all, delete-orphan")
+    fandoms: Mapped[List["Fan"]] = relationship("Fan", back_populates="library", cascade="all, delete-orphan")
+    subscriptions: Mapped[List["Subscriber"]] = relationship("Subscriber", back_populates="library", cascade="all, delete-orphan")
+    memberships: Mapped[List["Member"]] = relationship("Member", back_populates="library", cascade="all, delete-orphan")
 
 
 class Collection(db.Model, ModelMixin):
@@ -417,7 +420,7 @@ class Shop(db.Model, ModelMixin, EntityMixin, HiveMixin):
     merchandise: Mapped[List["Merchandise"]] = relationship("Merchandise", back_populates="shop")
 
 
-class Asset(db.Model, ModelMixin, EntityMixin):
+class Asset(db.Model, ModelMixin, EntityMixin, CreatedMixin, OwnedMixin):
     __tablename__ = "assets"
     portfolio_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("portfolios.id"), nullable=False)
     token_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("customtokens.id"), nullable=False)

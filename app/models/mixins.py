@@ -16,9 +16,9 @@ if TYPE_CHECKING:
     from .user import User
     from .scrolls import Scroll, ScrollEntry
     from .library import Library, Film, Asset
-    from .journal import Magazine, Article
+    from .journal import Analyst
     from .player import WatchHistory
-    from .community import Message, Thread, Reaction, Tier, Posts, Updates, Issues, Pins, Clips
+    from .community import Thread, Tier, Creator, Founder, Owner
     from .commerce import Fund, Transaction, Ledger, Currency, AmberToken
     from .calendar import Event, Calendar, Ticket
     from .common import (
@@ -123,6 +123,7 @@ class MarkMixin:
 class CliqueMixin:
     agents: List["User"] = relationship("User", back_populates="cliques")
     clique_type: Mapped[CliqueTypeEnum] = mapped_column(SQLAlchemyEnum(CliqueTypeEnum), nullable=False)
+    roles: Mapped[dict] = mapped_column(JSONB, default={})
 
 
 class HiveMixin(LibraryMixin):
@@ -131,6 +132,7 @@ class HiveMixin(LibraryMixin):
     boards: Mapped[List["BoardMixin"]] = relationship("BoardMixin", back_populates="hive")
     walls: Mapped[List["WallMixin"]] = relationship("WallMixin", back_populates="hive")
     join_rules: Mapped[Optional[dict]] = mapped_column(JSONB, default={})
+    tiers: Mapped[List["Tier"]] = relationship("Tier", back_populates="hive")
 
 
 class ContentMixin:
@@ -194,31 +196,17 @@ class ChartMixin:
     data_sets: Mapped[List["DataSet"]] = relationship("DataSet", back_populates="graphs_charts")
 
 
-class CreatorMixin:
-    pass
+class CreatedMixin: # asset, poster
+    creators: Mapped[List["Creator"]] = relationship("Creator", back_populates="creations")
 
 
-class AuthorMixin:
-    pass
+class AnalyzedMixin:
+    analysts: Mapped[List["Analyst"]] = relationship("Analyst", back_populates="hives")
 
 
-class OwnerMixin:
-    pass
+class FoundedMixin:
+    founders: Mapped[List["Founder"]] = relationship("Founder", back_populates="foundlings")
 
-class ModeratorMixin:
-    pass
 
-class ActionMixin:
-    pass
-
-class PartnerMixin:
-    pass
-
-class ThumbnailMixin:
-    pass
-
-class AwardTypeMixin:
-    pass
-
-class AwardMixin:
-    pass
+class OwnedMixin:
+    owners: Mapped[List["Owner"]] = relationship("Owner", back_populates="holdings")

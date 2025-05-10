@@ -5,20 +5,20 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from ..extensions import db
-from .utils.config import EventRepeatEnum, ColumnStatusEnum
+from .utils.config import EventRepeatEnum, ColumnStatusEnum, VisibilityEnum
 from associations import magazine_contributors, column_contributors, article_contributors, report_contributors
 from .mixins import (
-    EntityMixin, HiveMixin, ModelMixin, ContentMixin, ContributionMixin, SharableMixin, AuthoredMixin,
-    CliqueMixin, ModeratorMixin, CreatorMixin, AuthorMixin, MarkMixin
+    EntityMixin, HiveMixin, ModelMixin, ContentMixin, ContributionMixin, SharableMixin, AuthoredMixin, FoundedMixin,
+    CliqueMixin, MarkMixin, OwnedMixin, AnalyzedMixin, CreatedMixin
 )
 
 if TYPE_CHECKING:
     from .library import Portfolio
-    from .community import Tier, Fan
+    from .community import Thread
     from .common import Image, ReportTemplate
 
 
-class Journal(db.Model, ModelMixin, EntityMixin, HiveMixin):
+class Journal(db.Model, ModelMixin, EntityMixin, HiveMixin, AnalyzedMixin):
     """
     Represents a journal entity in the database.
 
@@ -40,8 +40,6 @@ class Journal(db.Model, ModelMixin, EntityMixin, HiveMixin):
     :type front_pages: List[FrontPage]
     :ivar magazines: List of magazines related to the journal.
     :type magazines: List[Magazine]
-    :ivar tiers: List of tiers associated with the hive of the journal.
-    :type tiers: List[Tier]
     """
     __tablename__ = "journal"
     editor_in_chief: Mapped["EditorInChief"] = relationship("EditorInChief", back_populates="journal")
@@ -50,10 +48,11 @@ class Journal(db.Model, ModelMixin, EntityMixin, HiveMixin):
     chief_correspondents: Mapped[List["ChiefCorrespondent"]] = relationship("ChiefCorrespondent", back_populates="journal")
     front_pages: Mapped[List["FrontPage"]] = relationship("FrontPage", back_populates="journal")
     magazines: Mapped[List["Magazine"]] = relationship("Magazine", back_populates="journal")
-    tiers: Mapped[List["Tier"]] = relationship("Tier", back_populates="hive")
 
 
-class Magazine(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin):
+class Magazine(
+    db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin, CreatedMixin, OwnedMixin, AnalyzedMixin, FoundedMixin
+):
     """
     Represents a Magazine entity in the database.
 
@@ -83,8 +82,6 @@ class Magazine(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin):
     :type articles: List[Article]
     :ivar reports: A list of reports published in the magazine.
     :type reports: List[Report]
-    :ivar tiers: A list of tiers associated with the magazine's hive.
-    :type tiers: List[Tier]
     :ivar owners: A list of owners associated with the magazine.
     :type owners: List[Portfolio]
     :ivar founders: A list of founders who created the magazine.
@@ -97,8 +94,6 @@ class Magazine(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin):
     :type writers: List[Writer]
     :ivar analysts: A list of analysts related to the magazine's hive.
     :type analysts: List[Analyst]
-    :ivar fans: A list of fans associated with the magazine's hive.
-    :type fans: List[Fan]
     """
     __tablename__ = "magazines"
     __contribution_table__ = magazine_contributors
@@ -113,14 +108,9 @@ class Magazine(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin):
     columns: Mapped[List["Column"]] = relationship("Column", back_populates="magazine")
     articles: Mapped[List["Article"]] = relationship("Article", back_populates="publishing_magazine")
     reports: Mapped[List["Report"]] = relationship("Report", back_populates="publishing_magazine")
-    tiers: Mapped[List["Tier"]] = relationship("Tier", back_populates="hive")
-    owners: Mapped[List["Portfolio"]] = relationship("Owner", back_populates="owned_magazine")
-    founders: Mapped[List["Portfolio"]] = relationship("Founder", back_populates="created_magazines")
     editors: Mapped[List["Editor"]] = relationship("Editor", back_populates="magazine")
     correspondents: Mapped[List["Correspondent"]] = relationship("Correspondent", back_populates="magazine")
     writers: Mapped[List["Writer"]] = relationship("Writer", back_populates="magazine")
-    analysts: Mapped[List["Analyst"]] = relationship("Analyst", back_populates="hives")
-    fans: Mapped[List["Fan"]] = relationship("Fan", back_populates="hive")
 
 
 class FrontPage(db.Model, ModelMixin):
@@ -188,7 +178,10 @@ class Slot(db.Model, ModelMixin):
     report: Mapped["Report"] = relationship("Report", back_populates="slots")
 
 
-class Column(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin, MarkMixin):
+class Column(
+    db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin, MarkMixin, CreatedMixin, OwnedMixin, AnalyzedMixin,
+    FoundedMixin, SharableMixin
+):
     """
     Represents a column within a magazine, managing relationships with articles, reports,
     columnists, and tiering structures.
@@ -230,8 +223,6 @@ class Column(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin, Ma
     :type next_reports: List[Report]
     :ivar editors: A list of editors responsible for editing this column.
     :type editors: List[Editor]
-    :ivar tiers: A list of tiers associated with the hive structure of this column.
-    :type tiers: List[Tier]
     :ivar frequency: Represents the recurrence frequency of events related to this column.
     :type frequency: EventRepeatEnum
     :ivar status: The current operational status of the column.
@@ -243,9 +234,11 @@ class Column(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin, Ma
     magazine_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("magazines.id"))
     current_article_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("articles.id"))
     current_report_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("reports.id"))
+    thread_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("threads.id"))
     magazine: Mapped["Magazine"] = relationship("Magazine", back_populates="columns")
     current_article: Mapped["Article"] = relationship("Article", back_populates="current_columns")
     current_report: Mapped["Report"] = relationship("Report", back_populates="current_columns")
+    thread: Mapped["Thread"] = relationship("Thread", back_populates="topic")
     slots: Mapped[List["Slot"]] = relationship("Slot", back_populates="column")
     columnists: Mapped[List["Columnist"]] = relationship("Columnist", back_populates="columns")
     maintainers: Mapped[List["Portfolio"]] = relationship("Portfolio", back_populates="maintained_columns")
@@ -254,9 +247,9 @@ class Column(db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin, Ma
     next_articles: Mapped[List["Article"]] = relationship("Article", back_populates="next_columns")
     next_reports: Mapped[List["Report"]] = relationship("Report", back_populates="next_columns")
     editors: Mapped[List["Editor"]] = relationship("Editor", back_populates="edited_columns")
-    tiers: Mapped[List["Tier"]] = relationship("Tier", back_populates="hive")
     frequency: Mapped[EventRepeatEnum] = mapped_column(SQLAlchemyEnum(EventRepeatEnum), nullable=True)
     status: Mapped[ColumnStatusEnum] = mapped_column(SQLAlchemyEnum(ColumnStatusEnum), nullable=False)
+    visibility: Mapped[VisibilityEnum] = mapped_column(SQLAlchemyEnum, default=VisibilityEnum.PUBLIC)
 
 
 class Article(db.Model, ModelMixin, EntityMixin, ContentMixin, ContributionMixin, MarkMixin, SharableMixin, AuthoredMixin):
@@ -356,7 +349,7 @@ class Report(db.Model, ModelMixin, EntityMixin, ContentMixin, ContributionMixin,
     report_template: Mapped["ReportTemplate"] = relationship("ReportTemplate", back_populates="reports")
 
 
-class Writer(db.Model, ModelMixin, CliqueMixin, CreatorMixin, AuthorMixin):
+class Writer(db.Model, ModelMixin, CliqueMixin):
     """
     Represents a writer entity within the system.
 
@@ -374,13 +367,13 @@ class Writer(db.Model, ModelMixin, CliqueMixin, CreatorMixin, AuthorMixin):
     articles: Mapped[List["Article"]] = relationship("Article", back_populates="writers")
 
 
-class Columnist(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, Writer):
+class Columnist(db.Model, ModelMixin, CliqueMixin, Writer):
     """
     Represents a columnist associated with multiple columns.
 
     This class is part of the database model and defines the relationship
     between columnists and columns. It inherits behaviors and functionalities
-    from multiple mixins like ModelMixin, CliqueMixin, ModeratorMixin,
+    from multiple mixins like ModelMixin, CliqueMixin,
     and Writer. The purpose of this class is to handle and manage data
     related to columnists within the application, particularly their association
     with various columns.
@@ -392,7 +385,7 @@ class Columnist(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, Writer):
     columns: Mapped[List["Column"]] = relationship("Column", back_populates="columnists")
 
 
-class Analyst(db.Model, ModelMixin, CliqueMixin, CreatorMixin, AuthorMixin, Writer):
+class Analyst(db.Model, ModelMixin, CliqueMixin, Writer):
     """
     Represents an Analyst in the system, linking reports to various associated mixins.
 
@@ -409,7 +402,7 @@ class Analyst(db.Model, ModelMixin, CliqueMixin, CreatorMixin, AuthorMixin, Writ
     reports: Mapped[List["Report"]] = relationship("Report", back_populates="analysts")
 
 
-class Editor(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, CreatorMixin, AuthorMixin, Writer, Analyst):
+class Editor(db.Model, ModelMixin, CliqueMixin, Writer, Analyst):
     """
     Represents an editor in the system.
 
@@ -446,7 +439,7 @@ class Editor(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, CreatorMixin, Au
     edited_columns: Mapped[List["Column"]] = relationship("Column", back_populates="editors")
 
 
-class ChiefEditor(db.Model, ModelMixin, Editor, CreatorMixin, AuthorMixin):
+class ChiefEditor(db.Model, ModelMixin, Editor):
     """
     Represents the ChiefEditor model in the database.
 
@@ -466,7 +459,7 @@ class ChiefEditor(db.Model, ModelMixin, Editor, CreatorMixin, AuthorMixin):
     magazine: Mapped["Magazine"] = relationship("Magazine", back_populates="chief_editor")
 
 
-class ExecutiveEditor(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, CreatorMixin, AuthorMixin, Writer, Analyst, ChiefEditor):
+class ExecutiveEditor(db.Model, ModelMixin, CliqueMixin, Writer, Analyst, ChiefEditor):
     """
     Represents an Executive Editor entity in the database.
 
@@ -490,7 +483,7 @@ class ExecutiveEditor(db.Model, ModelMixin, CliqueMixin, ModeratorMixin, Creator
     journal: Mapped["Journal"] = relationship("Journal", back_populates="executive_editors")
 
 
-class ChiefAnalyst(db.Model, ModelMixin, CliqueMixin, CreatorMixin, AuthorMixin, Analyst, Editor):
+class ChiefAnalyst(db.Model, ModelMixin, CliqueMixin, Analyst, Editor):
     """
     Represents the Chief Analyst entity.
 
@@ -510,7 +503,7 @@ class ChiefAnalyst(db.Model, ModelMixin, CliqueMixin, CreatorMixin, AuthorMixin,
     journal: Mapped["Journal"] = relationship("Journal", back_populates="chief_analysts")
 
 
-class Correspondent(db.Model, ModelMixin, CliqueMixin, CreatorMixin, AuthorMixin, Writer):
+class Correspondent(db.Model, ModelMixin, CliqueMixin, Writer):
     """
     Represents a Correspondent entity in the database.
 
@@ -530,7 +523,7 @@ class Correspondent(db.Model, ModelMixin, CliqueMixin, CreatorMixin, AuthorMixin
     magazine: Mapped["Magazine"] = relationship("Magazine", back_populates="correspondents")
 
 
-class ChiefCorrespondent(db.Model, ModelMixin, CliqueMixin, CreatorMixin, AuthorMixin, Correspondent, Editor):
+class ChiefCorrespondent(db.Model, ModelMixin, CliqueMixin, Correspondent, Editor):
     """
     Represents a Chief Correspondent in the system.
 
@@ -552,13 +545,13 @@ class ChiefCorrespondent(db.Model, ModelMixin, CliqueMixin, CreatorMixin, Author
     journal: Mapped["Journal"] = relationship("Journal", back_populates="chief_correspondents")
 
 
-class EditorInChief(db.Model, ModelMixin, Editor, CreatorMixin, AuthorMixin, ExecutiveEditor, ChiefCorrespondent, ChiefAnalyst):
+class EditorInChief(db.Model, ModelMixin, Editor, ExecutiveEditor, ChiefCorrespondent, ChiefAnalyst):
     """
     Represents the Editor-in-Chief role in the system.
 
     The Editor-in-Chief class models an Editor-in-Chief responsible for overseeing
     the operations of a journal. This class consolidates multiple mixins and
-    inheritance from related classes such as Editor, CreatorMixin, AuthorMixin,
+    inheritance from related classes such as Editor,
     ExecutiveEditor, ChiefCorrespondent, and ChiefAnalyst to provide a comprehensive
     representation of an Editor-in-Chief. It also defines the relationship between
     the Editor-in-Chief and the journal they manage.
