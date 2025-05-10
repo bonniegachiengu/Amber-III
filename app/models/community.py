@@ -11,8 +11,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from ..extensions import db
 from .associations import fandom_contributors, club_contributors
 from .mixins import (
-    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, OwnerMixin, AuthorMixin,
-    ModelMixin, PerksMixin, BoardMixin, EntryMixin, WallMixin, PostMixin, ActionMixin, ContributionMixin
+    EntityMixin, HiveMixin, CliqueMixin, ModeratorMixin, CreatorMixin, ListMixin, ScrollItemMixin,
+    ModelMixin, PerksMixin, BoardMixin, WallMixin, ActionMixin, ContributionMixin
 )
 
 if TYPE_CHECKING:
@@ -88,7 +88,6 @@ class Member(db.Model, ModelMixin, CliqueMixin):
 class Subscriber(db.Model, ModelMixin, CliqueMixin):
     __tablename__ = "subscribers"
     hive_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
-
     hive: Mapped["HiveMixin"] = relationship(HiveMixin, back_populates="subscribers")
 
 
@@ -129,7 +128,7 @@ class Pins(db.Model, ModelMixin, BoardMixin):
     pass
 
 
-class Pin(db.Model, ModelMixin, EntryMixin):
+class Pin(db.Model, ModelMixin):
     __tablename__ = "pins"
 
 
@@ -137,15 +136,15 @@ class Updates(db.Model, ModelMixin, BoardMixin):
     pass
 
 
-class Update(db.Model, ModelMixin, EntryMixin):
+class Update(db.Model, ModelMixin):
     __tablename__ = "updates"
 
 
-class Issues(db.Model, ModelMixin, BoardMixin):
+class Issues(db.Model, ModelMixin, BoardMixin, ListMixin):
     pass
 
 
-class Issue(db.Model, ModelMixin, EntryMixin):
+class Issue(db.Model, ModelMixin, ScrollItemMixin):
     pass
 
 
@@ -153,7 +152,7 @@ class Posts(db.Model, ModelMixin, WallMixin):
     pass
 
 
-class Post(db.Model, ModelMixin, PostMixin):
+class Post(db.Model, ModelMixin):
     pass
 
 
@@ -161,23 +160,6 @@ class Clips(db.Model, ModelMixin, WallMixin):
     pass
 
 
-class Clip(db.Model, ModelMixin, PostMixin):
+class Clip(db.Model, ModelMixin):
     pass
 
-
-#---------------------------- Actions ------------------------------
-
-class Write(db.Model, ModelMixin, ActionMixin):
-    pass
-
-
-class Publish(db.Model, ModelMixin, ActionMixin):
-    pass
-
-
-class Review(db.Model, ModelMixin, ActionMixin):
-    pass
-
-
-class Follow(db.Model, ModelMixin, ActionMixin):
-    pass

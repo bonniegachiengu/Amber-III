@@ -11,8 +11,8 @@ from associations import film_contributors, person_contributors
 
 from ..extensions import db
 from .mixins import (
-    EntityMixin, HiveMixin, LibraryMixin,
-    ModelMixin, WatchListMixin, PartnerMixin, AwardMixin, AwardTypeMixin, EraMixin, ContributionMixin
+    EntityMixin, HiveMixin, LibraryMixin, ScrollItemMixin,
+    ModelMixin, WatchListMixin, PartnerMixin, AwardMixin, AwardTypeMixin, PeriodMixin, ContributionMixin
 )
 
 
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from .calendar import Calendar, Ticket
     from .player import Bookmark, PlaybackSession
     from .commerce import Listing, Order, Market, Discount, CustomToken
-    from .common import Genre, Language, Country, Keyword, Theme, Tag, Period, Anchor, WikiTemplate, DashboardTemplate
+    from .common import Genre, Language, Country, Keyword, Theme, Tag, Era, Anchor, WikiTemplate, DashboardTemplate
 
 
 def generate_uuid():
@@ -64,7 +64,6 @@ class Portfolio(db.Model, ModelMixin):
     authored_articles: Mapped[List["Article"]] = relationship(back_populates="authors") # writer
     authored_reports: Mapped[List["Report"]] = relationship(back_populates="authors") # analyst
     maintained_columns: Mapped[List["Column"]] = relationship(back_populates="maintainers")
-
     reviewed_scrolls: Mapped[List["Scroll"]] = relationship(back_populates="reviewer")
     created_people: Mapped[List["Person"]] = relationship(back_populates="creators")
     assets: Mapped[List["Asset"]] = relationship(back_populates="portfolio")
@@ -90,7 +89,7 @@ class WatchHistory(db.Model, ModelMixin):
     bookmarks: Mapped[List["Bookmark"]] = relationship(back_populates="watch_history")
 
 
-class Film(db.Model, ModelMixin, EntityMixin, ContributionMixin):
+class Film(db.Model, ModelMixin, EntityMixin, ContributionMixin, ScrollItemMixin):
     __tablename__ = "films"
     __contribution_table__ = film_contributors
     __contribution_backref__ = "film_contributions"
@@ -152,7 +151,7 @@ class Film(db.Model, ModelMixin, EntityMixin, ContributionMixin):
     studios: Mapped[List["Studio"]] = relationship('Studio', backref='films')
     languages: Mapped[List["Language"]] = relationship('Language', backref='films')
     countries: Mapped[List["Country"]] = relationship('Country', backref='films')
-    periods: Mapped[List["Period"]] = relationship('Period', backref='films')
+    periods: Mapped[List["Era"]] = relationship('Period', backref='films')
     careers: Mapped[List["Career"]] = relationship("Career", back_populates="film", cascade="all, delete-orphan")
     albums: Mapped[List["Album"]] = relationship('Album', backref='films')
     wins: Mapped[list["Win"]] = relationship('Win', backref='film')
@@ -402,7 +401,7 @@ class Condition(db.Model, ModelMixin):
     pass
 
 
-class Win(db.Model, ModelMixin, EntityMixin, EraMixin):
+class Win(db.Model, ModelMixin, EntityMixin, PeriodMixin):
     # TODO: Ensure all back_populates are created and match
     award_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("awards.id"), nullable=True)
     award: Mapped["Award"] = relationship(back_populates="wins")

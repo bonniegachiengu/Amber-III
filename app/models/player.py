@@ -5,14 +5,14 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from ..extensions import db
-from .mixins import ModelMixin, EraMixin, ContributionMixin
+from .mixins import ModelMixin, PeriodMixin, ContributionMixin
 from .associations import subtitle_contributors
 
 if TYPE_CHECKING:
     from .library import Library, WatchHistory, Film, Album, Hitlist
 
 
-class PlaybackSession(db.Model, ModelMixin, EraMixin):
+class PlaybackSession(db.Model, ModelMixin, PeriodMixin):
     """
     Represents a playback session for media content.
 

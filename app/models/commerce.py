@@ -9,7 +9,7 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from ..extensions import db
 from .utils.config import OrderStatusEnum, TransactionStatusEnum, TransactionTypeEnum
-from .mixins import EntityMixin, HiveMixin, ModelMixin, ContributionMixin, EraMixin
+from .mixins import EntityMixin, HiveMixin, ModelMixin, ContributionMixin, PeriodMixin
 from .associations import (
     market_contributors, customtoken_contributors, fund_contributors, listing_contributors, order_contributors,
     transaction_contributors, discount_contributors
@@ -407,7 +407,7 @@ class Transaction(db.Model, ModelMixin, EntityMixin, ContributionMixin):
     timestamp: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.now)
 
 
-class Discount(db.Model, ModelMixin, EntityMixin, EraMixin, ContributionMixin):
+class Discount(db.Model, ModelMixin, EntityMixin, PeriodMixin, ContributionMixin):
     """
     Represents the discount applied to a merchandise item.
 

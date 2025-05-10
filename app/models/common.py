@@ -14,7 +14,7 @@ from .utils.config import ContentTypeEnum
 from .mixins import ModelMixin, MediaMixin, ThumbnailMixin, ContentMixin, ContributionMixin
 from .associations import (
     dashboard_template_contributors, wiki_template_contributors, tag_contributors, language_contributors,
-    country_contributors, nationality_contributors, period_contributors, genre_contributors, theme_contributors,
+    country_contributors, nationality_contributors, era_contributors, genre_contributors, theme_contributors,
     keyword_contributors, report_template_contributors, verification_contributors
 )
 
@@ -99,10 +99,10 @@ class Nationality(db.Model, ModelMixin, ContributionMixin):
     __contribution_backref__ = "nationality_contributions"
 
 
-class Period(db.Model, ModelMixin, ContributionMixin):
-    __tablename__ = "periods"
-    __contribution_table__ = period_contributors
-    __contribution_backref__ = "period_contributions"
+class Era(db.Model, ModelMixin, ContributionMixin):
+    __tablename__ = "eras"
+    __contribution_table__ = era_contributors
+    __contribution_backref__ = "era_contributions"
 
 
 class Genre(db.Model, ModelMixin, ContributionMixin):

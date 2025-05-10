@@ -9,7 +9,7 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from ..extensions import db
 from .utils.config import EventRepeatEnum, EventStatusEnum, EventTypeEnum, VisibilityEnum, TicketTypeEnum, TicketStatusEnum
-from .mixins import EntityMixin, ModelMixin, MarkMixin, EraMixin, ContributionMixin
+from .mixins import EntityMixin, ModelMixin, MarkMixin, PeriodMixin, ContributionMixin
 from .associations import event_contributors, ticket_contributors
 
 
@@ -52,7 +52,7 @@ class Calendar(db.Model, ModelMixin):
     logs: Mapped[List["Log"]] = relationship("Log", backref="calendar")
 
 
-class Event(db.Model, ModelMixin, EntityMixin, MarkMixin, EraMixin, ContributionMixin):
+class Event(db.Model, ModelMixin, EntityMixin, MarkMixin, PeriodMixin, ContributionMixin):
     """
     Represents an event within a calendar application, allowing configuration
     of event-specific attributes and relationships with other entities.
@@ -155,7 +155,7 @@ class Reminder(db.Model, ModelMixin):
     event: Mapped["Event"] = relationship("Event", backref="reminders")
 
 
-class Ticket(db.Model, ModelMixin, EraMixin, ContributionMixin):
+class Ticket(db.Model, ModelMixin, PeriodMixin, ContributionMixin):
     """
     Represents a ticket for an event, including information about its associated entities
     and attributes such as type, quantity, and price.

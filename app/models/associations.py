@@ -147,6 +147,14 @@ scroll_contributors = Table(
     Column("contributor_id", ForeignKey("contributors.id"), primary_key=True),
 )
 
+# Association table for scroll_entries and contributors
+scroll_entry_contributors = Table(
+    "scroll_entry_contributors",
+    db.metadata,
+    Column("scroll_entry_id", ForeignKey("scroll_entries.id"), primary_key=True),
+    Column("contributor_id", ForeignKey("contributors.id"), primary_key=True),
+)
+
 # Association table for subtitles and contributors
 subtitle_contributors = Table(
     "subtitle_contributors",
@@ -203,11 +211,11 @@ nationality_contributors = Table(
     Column("contributor_id", ForeignKey("contributors.id"), primary_key=True),
 )
 
-# Association tables for periods and contributors
-period_contributors = Table(
-    "period_contributors",
+# Association tables for eras and contributors
+era_contributors = Table(
+    "era_contributors",
     db.metadata,
-    Column("period_id", ForeignKey("periods.id"), primary_key=True),
+    Column("era_id", ForeignKey("eras.id"), primary_key=True),
     Column("contributor_id", ForeignKey("contributors.id"), primary_key=True),
 )
 

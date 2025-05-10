@@ -14,13 +14,13 @@ from utils.config import ContentTypeEnum, CliqueTypeEnum, VisibilityEnum, Articl
 
 if TYPE_CHECKING:
     from .user import User
-    from .scrolls import Scroll
+    from .scrolls import Scroll, ScrollEntry
     from .library import Library, Film, Album, Hitlist
     from .journal import Magazine, Article
     from .player import WatchHistory
     from .community import Message, Thread, Reaction, Tier, Posts, Updates, Issues, Pins, Clips
     from .commerce import Fund, Transaction, Ledger, Currency, AmberToken
-    from .common import WikiTemplate, DashboardTemplate, Tag, Keyword, Language, Country, Nationality, Period, Anchor
+    from .common import WikiTemplate, DashboardTemplate, Tag, Keyword, Language, Country, Nationality, Era, Anchor
     from .calendar import Event, Calendar, Ticket
 
 def generate_uuid():
@@ -86,7 +86,7 @@ class ContributionMixin:
         )
 
 
-class EraMixin:
+class PeriodMixin:
     start_time: Mapped[datetime] = mapped_column(db.DateTime, nullable=False)
     end_time: Mapped[datetime] = mapped_column(db.DateTime, nullable=False)
 
@@ -97,8 +97,7 @@ class LibraryMixin:
 
 
 class ListMixin:
-    scroll_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("scrolls.id"), default=None, nullable=False)
-    scroll: Mapped["Scroll"] = relationship(back_populates="lists", uselist=False)
+    scrolls: Mapped[List["Scroll"]] = relationship("Scroll", back_populates="list")
 
 
 class MarkMixin:
@@ -107,7 +106,7 @@ class MarkMixin:
     languages: Mapped[Optional[list["Language"]]] = relationship("Language", back_populates="marked")
     countries: Mapped[Optional[list["Country"]]] = relationship("Country", back_populates="marked")
     nationalities: Mapped[Optional[list["Nationality"]]] = relationship("Nationality", back_populates="marked")
-    periods: Mapped[Optional[list["Period"]]] = relationship("Period", back_populates="marked")
+    periods: Mapped[Optional[list["Era"]]] = relationship("Period", back_populates="marked")
     anchors: Mapped[Optional[list["Anchor"]]] = relationship("Anchor", back_populates="marked")
 
 
@@ -149,8 +148,24 @@ class PerksMixin:
     tiers: Mapped[List["Tier"]] = relationship("Tier", back_populates="perks")
 
 
+class BoardMixin:
+    hive_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    hive: Mapped["HiveMixin"] = relationship(HiveMixin, foreign_keys=[hive_id], back_populates="boards")
+    hive_type: Mapped[HiveTypeEnum] = mapped_column(SQLAlchemyEnum(HiveTypeEnum), nullable=False)
+
+
+class WallMixin:
+    hive_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    hive: Mapped["HiveMixin"] = relationship(HiveMixin, foreign_keys=[hive_id], back_populates="walls")
+    hive_type: Mapped[HiveTypeEnum] = mapped_column(SQLAlchemyEnum(HiveTypeEnum), nullable=False)
+
+
 class WatchListMixin(ListMixin):
-    pass
+    films: Mapped[List["Film"]] = relationship("Film", back_populates="watchlists")
+
+
+class ScrollItemMixin:
+    scroll_entries: Mapped[List["ScrollEntry"]] = relationship("ScrollEntry", back_populates="scroll_item")
 
 
 class CreatorMixin:
@@ -166,16 +181,6 @@ class OwnerMixin:
 
 class ModeratorMixin:
     pass
-
-class BoardMixin:
-    hive_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
-    hive: Mapped["HiveMixin"] = relationship(HiveMixin, foreign_keys=[hive_id], back_populates="boards")
-    hive_type: Mapped[HiveTypeEnum] = mapped_column(SQLAlchemyEnum(HiveTypeEnum), nullable=False)
-
-class WallMixin:
-    hive_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
-    hive: Mapped["HiveMixin"] = relationship(HiveMixin, foreign_keys=[hive_id], back_populates="walls")
-    hive_type: Mapped[HiveTypeEnum] = mapped_column(SQLAlchemyEnum(HiveTypeEnum), nullable=False)
 
 class ActionMixin:
     pass
