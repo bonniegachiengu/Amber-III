@@ -10,7 +10,7 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 from ..extensions import db
 from .utils.config import OrderStatusEnum, TransactionStatusEnum, TransactionTypeEnum
 from .mixins import (
-    EntityMixin, HiveMixin, ModelMixin, ContributionMixin, PeriodMixin, FoundedMixin, CreatedMixin, AnalyzedMixin
+    EntityMixin, HiveMixin, ModelMixin, ContributionMixin, PeriodMixin, FoundedMixin, CreatedMixin, AnalyzedMixin,
 )
 from .associations import (
     market_contributors, customtoken_contributors, fund_contributors, listing_contributors, order_contributors,
@@ -126,6 +126,7 @@ class AmberToken(db.Model, ModelMixin, Token):
     """
     __tablename__ = "ambertokens"
     id: Mapped[UUID] = mapped_column(ForeignKey("tokens.id"), primary_key=True, default=uuid4)
+    contributions: Mapped[List["ContributionMixin"]] = relationship("ContributionMixin", back_populates="ambertokens_issued")
 
     __mapper_args__ = {
         "polymorphic_identity": "amber",

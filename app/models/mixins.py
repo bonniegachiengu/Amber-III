@@ -18,12 +18,12 @@ if TYPE_CHECKING:
     from .library import Library, Film, Asset
     from .journal import Analyst
     from .player import WatchHistory
-    from .community import Thread, Tier, Creator, Founder, Owner
+    from .community import Thread, Tier, Creator, Founder, Owner, Moderator, Fandom
     from .commerce import Fund, Transaction, Ledger, Currency, AmberToken
     from .calendar import Event, Calendar, Ticket
     from .common import (
         WikiTemplate, DashboardTemplate, Tag, Keyword, Language, Country, Nationality, Era, Anchor, Theme, Genre,
-        Field, Verification, Link, DataSet, Icon, Logo
+        Field, Verification, Link, DataSet, Icon, Logo, Image, Avatar, Poster, Video, Figure
     )
 
 def generate_uuid():
@@ -39,8 +39,8 @@ class ModelMixin:
     wiki_templates: Mapped[Optional[List["WikiTemplate"]]] = relationship(back_populates="model")
     dashboard_templates: Mapped[Optional[List["DashboardTemplate"]]] = relationship(back_populates="model")
     fields: Mapped[Optional[List["Field"]]] = relationship("Field", back_populates="model")
-    media: Mapped[Optional[List["ModelMixin"]]] = relationship("ModelMixin", back_populates="use_cases")
-    links: Mapped[Optional[List[Link]]] = relationship("Link", back_populates="use_cases")
+    confidence_score: Mapped[Optional[float]] = mapped_column(Float, default=0.0)
+    confidence_score_report: Mapped[dict] = mapped_column(JSONB, default={})
 
 
 class EntityMixin:
@@ -51,15 +51,23 @@ class EntityMixin:
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     settings: Mapped[Optional[dict]] = mapped_column(JSONB, default={})
-    icon_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("icons.id"), default=None, nullable=False)
-    icon: Mapped["Icon"] = relationship(back_populates="entities", uselist=False)
     calendar_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("calendars.id"), default=None, nullable=False)
     calendar: Mapped["Calendar"] = relationship(back_populates="entities", uselist=False)
     verification_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("verifications.id"), default=None, nullable=False)
     verification: Mapped["Verification"] = relationship(back_populates="Entity", uselist=False)
+    images: Mapped[Optional[List["Image"]]] = relationship("Image", back_populates="use_cases")
+    icons: Mapped[Optional[List["Icon"]]] = relationship("Icon", back_populates="use_cases")
+    avatars: Mapped[Optional[List["Avatar"]]] = relationship("Avatar", back_populates="use_cases")
+    posters: Mapped[Optional[List["Poster"]]] = relationship("Poster", back_populates="use_cases")
+    videos: Mapped[Optional[List["Video"]]] = relationship("Video", back_populates="use_cases")
+    figures: Mapped[Optional[List["Figure"]]] = relationship("Figure", back_populates="use_cases")
+    links: Mapped[Optional[List["Link"]]] = relationship("Link", back_populates="use_cases")
+    logos: Mapped[Optional[List["Logo"]]] = relationship("Logo", back_populates="use_cases")
+    backdrops: Mapped[Optional[List["Image"]]] = relationship("Image", back_populates="use_cases")
 
 
 class ContributionMixin:
+    ambertokens_issued: Mapped[List["AmberToken"]] = relationship("AmberToken", back_populates="contributions")
     # noinspection PyMethodParameters
     @declared_attr
     def contributors(cls):
@@ -100,8 +108,7 @@ class PeriodMixin:
 
 
 class LibraryMixin:
-    library_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("libraries.id"), default=None, nullable=False)
-    library: Mapped["Library"] = relationship(back_populates="owner", uselist=False)
+    libraries: Mapped[List["Library"]] = relationship("Library", back_populates="owner")
 
 
 class ListMixin:
@@ -135,6 +142,11 @@ class HiveMixin(LibraryMixin):
     tiers: Mapped[List["Tier"]] = relationship("Tier", back_populates="hive")
 
 
+class FanMixin:
+    fandom_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("fandoms.id"), default=None)
+    fandom: Mapped["Fandom"] = relationship("Fandom", back_populates="entity")
+
+
 class ContentMixin:
     content_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
     content_type: Mapped[ContentTypeEnum] = mapped_column(SQLAlchemyEnum(ContentTypeEnum), nullable=False)
@@ -166,20 +178,23 @@ class BoardMixin:
     hive_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
     hive: Mapped["HiveMixin"] = relationship(HiveMixin, foreign_keys=[hive_id], back_populates="boards")
     hive_type: Mapped[HiveTypeEnum] = mapped_column(SQLAlchemyEnum(HiveTypeEnum), nullable=False)
+    moderators: Mapped[List["Moderator"]] = relationship("Moderator", back_populates="boards")
 
 
 class WallMixin:
     hive_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
     hive: Mapped["HiveMixin"] = relationship(HiveMixin, foreign_keys=[hive_id], back_populates="walls")
     hive_type: Mapped[HiveTypeEnum] = mapped_column(SQLAlchemyEnum(HiveTypeEnum), nullable=False)
+    moderators: Mapped[List["Moderator"]] = relationship("Moderator", back_populates="walls")
 
 
-class WatchListMixin(ListMixin):
+class WatchListMixin(ListMixin, MarkMixin):
     films: Mapped[List["Film"]] = relationship("Film", back_populates="watchlists")
 
 
 class ScrollItemMixin:
     scroll_entries: Mapped[List["ScrollEntry"]] = relationship("ScrollEntry", back_populates="scroll_item")
+    scrollpoints: Mapped[int] = mapped_column(Integer, default=0)
 
 
 class MediaMixin:
@@ -210,3 +225,7 @@ class FoundedMixin:
 
 class OwnedMixin:
     owners: Mapped[List["Owner"]] = relationship("Owner", back_populates="holdings")
+
+
+class PartnerLinksMixin:
+    links: Mapped[Optional[List["Link"]]] = relationship("Link", back_populates="partner")

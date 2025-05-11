@@ -1,29 +1,22 @@
 import uuid
-from datetime import datetime
 from typing import List, Optional, TYPE_CHECKING
 
-from flask_login import UserMixin
-from sqlalchemy import String, Boolean, DateTime, ForeignKey, JSONB
+from sqlalchemy import String, ForeignKey, JSONB
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship, Mapped, mapped_column, relationships
-from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from ..extensions import db
 from .associations import fandom_contributors, club_contributors
 from .mixins import (
-    EntityMixin, HiveMixin, CliqueMixin, CreatedMixin, ListMixin, ScrollItemMixin, OwnedMixin,
+    EntityMixin, HiveMixin, CliqueMixin, CreatedMixin, ListMixin, ScrollItemMixin, OwnedMixin, ContentMixin, FanMixin,
     FoundedMixin, ModelMixin, PerksMixin, BoardMixin, WallMixin, MarkMixin, ContributionMixin, AnalyzedMixin
 )
 
 if TYPE_CHECKING:
     from user import User
-    from .scrolls import Scroll
-    from .library import Library, Shop
-    from .journal import Magazine, Article
-    from .player import WatchHistory
-    from .commerce import Fund, Transaction
-    from .common import WikiTemplate, DashboardTemplate
-    from .calendar import Event, Calendar
+    from .library import Library, Win
+    from .commerce import Fund
+    from .calendar import Event
 
 
 class Arena(db.Model, ModelMixin, EntityMixin, HiveMixin):
@@ -33,13 +26,11 @@ class Arena(db.Model, ModelMixin, EntityMixin, HiveMixin):
 
 class Club(
     db.Model, ModelMixin, EntityMixin, HiveMixin, ContributionMixin, MarkMixin, FoundedMixin, OwnedMixin,
-    AnalyzedMixin, CreatedMixin
+    AnalyzedMixin, CreatedMixin, FanMixin
 ):
     __tablename__ = "clubs"
     __contribution_table__ = club_contributors
     __contribution_backref__ = "club_contributions"
-    fandom_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("fandoms.id"), default=None, nullable=False)
-    fandom: Mapped["Fandom"] = relationship("Fandom", back_populates="club")
     moderators: Mapped[List["Moderator"]] = relationship("Moderator", back_populates="hive")
 
 
@@ -52,6 +43,8 @@ class Fandom(
     __contribution_backref__ = "fandom_contributions"
     fans: Mapped[Optional[List["Fan"]]] = relationship("Fan", back_populates="fandom")
     moderators: Mapped[List["Moderator"]] = relationship("Moderator", back_populates="hive")
+    entity_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    entity: Mapped["FanMixin"] = relationship("FanMixin", back_populates="fandom")
 
 
 class Fan(db.Model, ModelMixin, CliqueMixin):
@@ -109,7 +102,6 @@ class Contributor(db.Model, ModelMixin):
     __tablename__ = "contributors"
     contributor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("libraries.id"), primary_key=True)
     contributions_fund_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("funds.id"), primary_key=True)
-    contribution_type: Mapped[str] = mapped_column(String(100), primary_key=True)
     contributor: Mapped["Library"] = relationship(back_populates="contributions")
     contributions_fund: Mapped["Fund"] = relationship("Fund")
 
@@ -126,17 +118,22 @@ class Moderator(db.Model, ModelMixin, CliqueMixin):
     __tablename__ = "moderators"
     hive_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
     hive: Mapped["HiveMixin"] = relationship(HiveMixin, back_populates="moderators")
+    boards: Mapped[List["BoardMixin"]] = relationship("BoardMixin", back_populates="moderators")
+    walls: Mapped[List["WallMixin"]] = relationship("WallMixin", back_populates="moderators")
 
 
 class Creator(db.Model, ModelMixin, CliqueMixin):
+    __tablename__ = "creators"
     creations: Mapped[List["CreatedMixin"]] = relationship("CreatedMixin", back_populates="creators")
 
 
 class Owner(db.Model, ModelMixin, CliqueMixin):
+    __tablename__ = "owners"
     holdings: Mapped[List["OwnedMixin"]] = relationship("OwnedMixin", back_populates="owners")
 
 
 class Founder(db.Model, ModelMixin, CliqueMixin):
+    __tablename__ = "founders"
     foundlings: Mapped[List["FoundedMixin"]] = relationship("FoundedMixin", back_populates="founders")
 
 
@@ -150,68 +147,80 @@ class Tier(db.Model, ModelMixin):
 
 
 class Member(db.Model, ModelMixin, CliqueMixin):
+    __tablename__ = "members"
     tier_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tiers.hive_id"), primary_key=True)
     member_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("libraries.id"), primary_key=True)
     tier: Mapped["Tier"] = relationship("Tier", back_populates="members")
     member: Mapped["Library"] = relationship("Library", back_populates="memberships")
 
 
-class Watcher(db.Model, ModelMixin, CliqueMixin):
-    pass
-
-
-class Tracker(db.Model, ModelMixin, CliqueMixin):
-    pass
-
-
-class Collector(db.Model, ModelMixin, CliqueMixin):
-    pass
-
-
 class Organizer(db.Model, ModelMixin, CliqueMixin):
-    pass
+    __tablename__ = "organizers"
+    events: Mapped[List["Event"]] = relationship("Event", back_populates="organizers")
 
 
 class Reward(db.Model, ModelMixin, PerksMixin):
-    pass
+    __tablename__ = "rewards"
+    reward_data: Mapped[dict] = mapped_column(JSONB, default={})
+    wins: Mapped[List["Win"]] = relationship("Win", back_populates="reward")
 
 
 class Pins(db.Model, ModelMixin, BoardMixin):
-    pass
+    __tablename__ = "pin_boards"
+    pins: Mapped[List["Pin"]] = relationship("Pin", back_populates="board")
 
 
-class Pin(db.Model, ModelMixin):
+class Pin(db.Model, ModelMixin, ContentMixin, MarkMixin):
     __tablename__ = "pins"
+    board_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("pin_boards.id"), primary_key=True)
+    board: Mapped["Pins"] = relationship("Pins", back_populates="pins")
+    content: Mapped[dict] = mapped_column(JSONB, default={})
 
 
 class Updates(db.Model, ModelMixin, BoardMixin):
-    pass
+    __tablename__ = "update_boards"
+    updates: Mapped[List["Update"]] = relationship("Update", back_populates="board")
 
 
-class Update(db.Model, ModelMixin):
+class Update(db.Model, ModelMixin, ContentMixin, MarkMixin):
     __tablename__ = "updates"
+    board_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("update_boards.id"), primary_key=True)
+    board: Mapped["Updates"] = relationship("Updates", back_populates="updates")
+    content: Mapped[dict] = mapped_column(JSONB, default={})
 
 
 class Issues(db.Model, ModelMixin, BoardMixin, ListMixin):
-    pass
+    __tablename__ = "issue_boards"
+    issues: Mapped[List["Issue"]] = relationship("Issue", back_populates="board")
 
 
-class Issue(db.Model, ModelMixin, ScrollItemMixin):
-    pass
+class Issue(db.Model, ModelMixin, ScrollItemMixin, MarkMixin, ContentMixin):
+    __tablename__ = "issues"
+    board_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("issue_boards.id"), primary_key=True)
+    board: Mapped["Issues"] = relationship("Issues", back_populates="issues")
+    content: Mapped[dict] = mapped_column(JSONB, default={})
 
 
 class Posts(db.Model, ModelMixin, WallMixin):
-    pass
+    __tablename__ = "post_walls"
+    posts: Mapped[List["Post"]] = relationship("Post", back_populates="wall")
 
 
 class Post(db.Model, ModelMixin):
-    pass
+    __tablename__ = "posts"
+    wall_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("post_walls.id"), primary_key=True)
+    wall: Mapped["Posts"] = relationship("Posts", back_populates="posts")
+    content: Mapped[dict] = mapped_column(JSONB, default={})
 
 
 class Clips(db.Model, ModelMixin, WallMixin):
-    pass
+    __tablename__ = "clip_walls"
+    clips: Mapped[List["Clip"]] = relationship("Clip", back_populates="wall")
 
 
 class Clip(db.Model, ModelMixin):
-    pass
+    __tablename__ = "clips"
+    wall_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("clip_walls.id"), primary_key=True)
+    wall: Mapped["Clips"] = relationship("Clips", back_populates="clips")
+    content: Mapped[dict] = mapped_column(JSONB, default={})
 

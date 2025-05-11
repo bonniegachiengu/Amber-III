@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from .community import Thread
     from .common import Location, Avatar
     from .calendar import Event
+    from .library import Person
 
 
 class User(db.Model, ModelMixin, UserMixin, LibraryMixin, EntityMixin):
@@ -87,10 +88,14 @@ class User(db.Model, ModelMixin, UserMixin, LibraryMixin, EntityMixin):
     bio: Mapped[Optional[str]] = mapped_column(String(500))
     catchphrase: Mapped[Optional[str]] = mapped_column(String(100))
     avatar_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey("avatars.id"), default=None)
-    avatar: Mapped["Avatar"] = relationship(back_populates="user")
+
+    avatar: Mapped["Avatar"] = relationship("Person", back_populates="use_cases")
+
     location_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey("locations.id"), default=None)
     location: Mapped["Location"] = relationship(back_populates="users")
     portfolio_visibility: Mapped[VisibilityEnum] = mapped_column(SQLAlchemyEnum(VisibilityEnum, name="portfolio_visibility"), default=VisibilityEnum.PUBLIC)
+    claimed_person_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey("persons.id"), default=None)
+    claimed_person: Mapped["Person"] = relationship("Person", back_populates="claimed_by")
     # Preferences & Personalization Fields
     preferred_tags: Mapped[Optional[list]] = mapped_column(JSONB)
     language: Mapped[str] = mapped_column(String(10), default="en")

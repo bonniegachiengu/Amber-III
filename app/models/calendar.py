@@ -90,8 +90,6 @@ class Event(db.Model, ModelMixin, EntityMixin, MarkMixin, PeriodMixin, Contribut
     :type parent_calendar: Calendar
     :ivar venue: Optional relationship linking this event to the venue entity.
     :type venue: Venue
-    :ivar guests: List of users invited to attend the event.
-    :type guests: List[User]
     :ivar organizers: List of organizers associated with the event.
     :type organizers: List[Organizer]
     :ivar notifications: List of notifications associated with the event.

@@ -10,7 +10,8 @@ from sqlalchemy import Enum as SQLAlchemyEnum
 from ..extensions import db
 from .utils.config import ContentTypeEnum
 from .mixins import (
-    ModelMixin, MediaMixin, ContentMixin, ContributionMixin, EntityMixin, ChartMixin, OwnedMixin, CreatedMixin
+    ModelMixin, MediaMixin, ContentMixin, ContributionMixin, EntityMixin, ChartMixin, OwnedMixin, CreatedMixin,
+    PartnerLinksMixin
 )
 from .associations import (
     dashboard_template_contributors, wiki_template_contributors, tag_contributors, language_contributors,
@@ -442,167 +443,163 @@ class Verification(db.Model, ModelMixin, ContributionMixin):
 
 class Link(db.Model, ModelMixin):
     """
-    Represents a database model for links with associated anchors and use cases.
+    Represents a database model for a Link entity.
 
-    This class is a database representation of links, including their relationships
-    to anchors and use cases. It interacts with the database using SQLAlchemy and
-    enforces necessary constraints and mappings. Instances of this class are used
-    to manage link data, including their associated anchors and use cases.
+    This class defines the schema for the "links" table in the database and includes
+    relationships with other entities such as Anchor and EntityMixin. It acts as a
+    data representation of a link, including its associated anchors and use cases.
 
-    :ivar anchors: A relationship attribute linking to the Anchor class, identifying
-        the anchors associated with the link. Can be None if no anchors are associated.
-    :type anchors: Optional[list["Anchor"]]
-    :ivar url: A string attribute representing the URL of the link. Cannot be None.
+    :ivar anchors: List of associated Anchor objects. Represents the anchors
+        that are marked with this link.
+    :type anchors: Optional[list[Anchor]]
+    :ivar url: The URL represented by this Link. It is a required string.
     :type url: str
-    :ivar use_cases: A relationship attribute linking to instances of ModelMixin,
-        representing the use-cases associated with the link. Can be None if no
-        use-cases are linked.
-    :type use_cases: Optional[List[ModelMixin]]
+    :ivar use_cases: List of associated EntityMixin objects. Represents the
+        use cases where this link is utilized.
+    :type use_cases: Optional[List[EntityMixin]]
     """
     __tablename__ = "links"
     anchors: Mapped[Optional[list["Anchor"]]] = relationship("Anchor", back_populates="marked")
     url: Mapped[str] = mapped_column(String, nullable=False)
-    use_cases: Mapped[Optional[List[ModelMixin]]] = relationship("ModelMixin", back_populates="links")
+    partner_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    partner: Mapped['PartnerLinksMixin'] = relationship("PartnerLinksMixin", back_populates="links")
+    use_cases: Mapped[Optional[List[EntityMixin]]] = relationship("EntityMixin", back_populates="links")
 
 
 class Image(db.Model, ModelMixin, MediaMixin):
     """
-    Represents an image entity stored in the database.
+    Represents an image resource in the application.
 
-    This class is used to define an image record within the database. It includes
-    metadata and properties related to the image and inherits behavior from
-    `db.Model`, `ModelMixin`, and `MediaMixin` to provide database integration,
-    common model functionality, and media handling features.
+    This class is used to manage image-related data stored in the database,
+    including metadata such as the name, MIME type, size, and storage path of
+    the image. It also tracks the various use cases where the image is used
+    within the application.
 
-    :ivar id: Unique identifier for the image record.
-    :type id: int
-    :ivar name: Name of the image.
-    :type name: str
-    :ivar mime_type: MIME type of the image, describing its format (e.g., image/png).
-    :type mime_type: str
-    :ivar size: Size of the image file in bytes.
-    :type size: int
-    :ivar created_at: Timestamp specifying when the image was created.
-    :type created_at: datetime
-    :ivar updated_at: Timestamp specifying when the image was last updated.
-    :type updated_at: datetime
-    :ivar path: File system path or storage location where the image is stored.
-    :type path: str
+    :ivar name: The name of the image.
+    :ivar mime_type: The MIME type of the image, such as 'image/jpeg' or
+        'image/png'.
+    :ivar size: The size of the image in bytes.
+    :ivar path: The storage path where the image file is located.
+    :ivar use_cases: A list of entities where the image is used. It establishes
+        a relationship with other entities in the application.
     """
     __tablename__ = "images"
     name: Mapped[str] = mapped_column(String, nullable=False)
     mime_type: Mapped[str] = mapped_column(String, nullable=False)
     size: Mapped[int] = mapped_column(Integer, nullable=False)
     path: Mapped[str] = mapped_column(String, nullable=False)
-    use_cases: Mapped[Optional[List[ModelMixin]]] = relationship("ModelMixin", back_populates="images")
+    use_cases: Mapped[Optional[List[EntityMixin]]] = relationship("EntityMixin", back_populates="images")
 
 
 class Avatar(db.Model, ModelMixin, Image):
     """
-    Represents an Avatar entity for the application.
+    Represents an Avatar model within the database, containing relationships to
+    other entities and functionality for managing avatars.
 
-    Serves as a database model for storing information related to avatars, including associated
-    use cases. The class extends functionality from `db.Model` for database interaction,
-    `ModelMixin` for additional utility methods, and `Image` for image-specific functionality.
+    The Avatar class integrates with ModelMixin and Image functionalities and is mapped
+    using the SQLAlchemy ORM. It serves to connect various use cases to the avatar and
+    manage their associated relationships (e.g., storing references to other entities).
 
-    :ivar use_cases: A list of `ModelMixin` objects associated with this avatar, representing its
-        related use cases. Can be None if no use cases are associated.
-    :type use_cases: Optional[List[ModelMixin]]
+    :ivar use_cases: A list of related EntityMixin objects that the avatar is associated
+        with. This establishes a relationship where the avatar can belong to multiple
+        entities via the back_populates mechanism.
+    :type use_cases: Optional[List[EntityMixin]]
     """
     __tablename__ = "avatars"
-    use_cases: Mapped[Optional[List[ModelMixin]]] = relationship("ModelMixin", back_populates="avatar")
+    use_cases: Mapped[Optional[List[EntityMixin]]] = relationship("EntityMixin", back_populates="avatar")
 
 
 class Icon(db.Model, ModelMixin, Image):
     """
-    Represents an icon entity in the database.
+    Represents an icon entity within the database.
 
-    This class defines the schema for the 'icons' table in the database and manages
-    the ORM relationships associated with it. The primary purpose of this class is
-    to store details about icons and relate them to their corresponding use cases.
-    It inherits from the base database model, a custom mixin for additional
-    functionality, and an image-handling class.
+    This class defines the representation of an icon, its attributes, and any
+    relationships it may have with other entities. It is used to store and manage
+    icon-related data, while providing database integration and additional
+    functionalities via its inheritance.
 
-    :ivar use_cases: A list of use cases associated with the icon.
-    :type use_cases: Optional[List[ModelMixin]]
+    :ivar use_cases: Represents a relationship with `EntityMixin` objects where
+        the icon is associated with various use cases.
+    :type use_cases: Optional[List[EntityMixin]]
     """
     __tablename__ = "icons"
-    use_cases: Mapped[Optional[List[ModelMixin]]] = relationship("ModelMixin", back_populates="icon")
+    use_cases: Mapped[Optional[List[EntityMixin]]] = relationship("EntityMixin", back_populates="icon")
 
 
 class Logo(db.Model, ModelMixin, Image):
     """
-    Represents a Logo entity within the database.
+    Represents a logo entity within the application's database.
 
-    This class serves as an ORM representation of the "logos" table. It is used to
-    manage information about logos in the application and their associations with
-    various use cases. It extends database functionality by interacting with the
-    declarative base model `db.Model` while inheriting additional behavior from
-    `ModelMixin` and `Image`. The relationships between logos and their use cases
-    are defined for proper navigation and association management.
+    A `Logo` object is a database model that contains information about a specific
+    logo used in the system. It extends functionality from `db.Model`, `ModelMixin`,
+    and `Image` classes. This model is used for maintaining relationships with entities
+    that use the logo and managing other related characteristics.
 
-    :ivar use_cases: Represents a relationship to `ModelMixin` instances, enabling
-        the association of logos with different use cases. Supports an optional list
-        of `ModelMixin` objects with bidirectional navigation where the associated
-        `logo` property within `ModelMixin` is populated.
-    :type use_cases: Optional[List[ModelMixin]]
+    :ivar use_cases: A list of related entities that use this logo. Represents a
+        one-to-many relationship with `EntityMixin`.
+    :type use_cases: Optional[List[EntityMixin]]
     """
     __tablename__ = "logos"
-    use_cases: Mapped[Optional[List[ModelMixin]]] = relationship("ModelMixin", back_populates="logo")
+    use_cases: Mapped[Optional[List[EntityMixin]]] = relationship("EntityMixin", back_populates="logo")
 
 
 class Poster(db.Model, ModelMixin, MediaMixin, CreatedMixin, OwnedMixin, Image):
     """
-    Represents a Poster within the system.
+    Represents a Poster object, typically used for storing and managing data related to posters in
+    the database. Combines multiple mixins and `Image` class to extend functionality.
 
-    This class is used to define and manage the Poster model in the database. It
-    inherits properties and methods from db.Model, ModelMixin, and MediaMixin,
-    allowing it to perform operations relevant to these mixins and interact with
-    the database accordingly. It facilitates establishing relationships and managing
-    specific attributes associated with a Poster.
+    The Poster class is built upon SQLAlchemy's `db.Model` and utilizes the following mixins:
+    `ModelMixin`, `MediaMixin`, `CreatedMixin`, `OwnedMixin`. It also represents an image-like
+    entity and supports relationships with `EntityMixin`.
 
-    :ivar use_cases: List of ModelMixin entities associated with the Poster,
-        defining its usage context. This establishes a relationship with
-        "ModelMixin".
+    :ivar __tablename__: Table name in the database for this model.
+    :type __tablename__: str
+    :ivar use_cases: A relationship field linking to a list of `EntityMixin` objects, representing
+                     the entities associated with this poster.
+    :type use_cases: Optional[List[EntityMixin]]
     """
     __tablename__ = "posters"
-    use_cases: Mapped[Optional[List[ModelMixin]]] = relationship("ModelMixin", back_populates="posters")
+    use_cases: Mapped[Optional[List[EntityMixin]]] = relationship("EntityMixin", back_populates="posters")
 
 
 class Video(db.Model, ModelMixin, MediaMixin):
     """
-    Represents a Video model in the database.
+    Handles the representation and functionality associated with video entries in the database.
 
-    This class extends ``db.Model``, ``ModelMixin``, and ``MediaMixin`` and is associated
-    with the "videos" table in the database. It defines the relationships and attributes
-    needed to manage video-related entities. Use this class to interact with video data
-    stored in the database.
+    This class models a video object with its associated attributes and relationships as part of the ORM
+    (Object-Relational Mapping) configuration. It is configured to interact with the "videos" database table
+    and provides extensions for mixing in behavior and media-related utility. The relationships and properties
+    defined here render this class a suitable abstraction for managing video entities, aligning with ORM
+    practices in software development.
 
-    :ivar use_cases: A list of related ModelMixin instances representing the use cases
-                     associated with the video. This relationship is configured with
-                     a back reference to "videos".
-    :type use_cases: Optional[List[ModelMixin]]
+    :ivar __tablename__: Name of the database table for this model.
+    :type __tablename__: str
+    :ivar use_cases: A relationship attribute that links this video entity to a list of associated entities
+        of type EntityMixin. This represents the back-population of entities referencing this video.
+    :type use_cases: Optional[List[EntityMixin]]
     """
     __tablename__ = "videos"
-    use_cases: Mapped[Optional[List[ModelMixin]]] = relationship("ModelMixin", back_populates="videos")
+    use_cases: Mapped[Optional[List[EntityMixin]]] = relationship("EntityMixin", back_populates="videos")
 
 
 class Figure(db.Model, ModelMixin, ContentMixin, MediaMixin, ChartMixin):
     """
-    Represents a figure in the system.
+    Represents a figure entity within the database schema.
 
-    This class provides functionality to define, manage, and associate a figure
-    with various related models, including use cases. The class extends multiple
-    mixins to support additional behaviors such as data interaction, content
-    management, media handling, and chart-related functionalities.
+    The Figure class is used to define a database model for storing information
+    associated with a figure. This model inherits functionalities from various
+    mixins, enabling additional features such as content handling, media support,
+    and chart integration. It is designed for use in the database context.
 
-    :ivar use_cases: A list of associated instances of `ModelMixin` representing
-        the use cases linked with the figure. The relationship is established
-        with a back-reference to the `figures` attribute in `ModelMixin`.
-    :type use_cases: Optional[List[ModelMixin]]
+    :ivar __tablename__: The name of the database table associated with this model.
+    :type __tablename__: str
+    :ivar use_cases: Relationships to the `EntityMixin` instances associated with
+        this figure. These are bidirectional relationships that allow access to
+        related figures from `EntityMixin` objects.
+    :type use_cases: Optional[List[EntityMixin]]
     """
     __tablename__ = "figures"
-    use_cases: Mapped[Optional[List[ModelMixin]]] = relationship("ModelMixin", back_populates="figures")
+    use_cases: Mapped[Optional[List[EntityMixin]]] = relationship("EntityMixin", back_populates="figures")
 
 
 class Map(db.Model, ModelMixin):

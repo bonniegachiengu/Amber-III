@@ -9,7 +9,7 @@ if TYPE_CHECKING:
         ExecutiveEditor, EditorInChief, Magazine, Report, Article, Column, Journal
     )
     from ..community import (
-        Fan, Subscriber, Member, Organizer, Watcher, Tracker, Creator, Collector, Post, Clip, Fandom, Club, Arena
+        Fan, Subscriber, Member, Organizer, Creator, Post, Clip, Fandom, Club, Arena
     )
 
 
@@ -28,6 +28,7 @@ class FilmTypeEnum(Enum):
     """
     MOVIE = "Movie"
     TV_EPISODE = "TV Episode"
+    MINISERIES_EPISODE = "MiniSeries Episode"
     YOUTUBE_VIDEO = "YouTube Video"
     SHORT = "Short"
 
@@ -826,35 +827,151 @@ class ExtensionTypeEnum(Enum):
 
 class AlbumTypeEnum(Enum):
     """
-    Enumeration for different types of albums.
+    Represents enumeration of different album types.
 
-    This class defines specific types of albums typically used in
-    categorizing groups or collections of works, such as casts,
-    crews, studios, franchises, or cinematic universes. These
-    categories help to organize and classify various albums or
-    collections based on their context.
+    This class defines various album types typically used in
+    entertainment or media classification, such as cast albums,
+    crew albums, studio albums, etc. It provides a fixed set
+    of string values that can be used to categorize albums.
 
-    The enumeration includes the following types:
-
-    - CAST: Represents an album for a cast member.
-    - CREW: Represents an album for a crew member.
-    - STUDIO: Represents an album for a studio group.
-    - FRANCHISE: Represents an album for a franchise group.
-    - CINEMATIC_UNIVERSE: Represents an album for a cinematic universe.
-
-    :ivar CAST: Represents 'cast'.
+    :ivar CAST: Album type corresponding to cast-related albums.
     :type CAST: str
-    :ivar CREW: Represents 'crew'.
+    :ivar CREW: Album type corresponding to crew-related albums.
     :type CREW: str
-    :ivar STUDIO: Represents 'studio'.
+    :ivar STUDIO: Album type corresponding to studio-related albums.
     :type STUDIO: str
-    :ivar FRANCHISE: Represents 'franchise'.
+    :ivar FRANCHISE: Album type corresponding to franchise-related albums.
     :type FRANCHISE: str
-    :ivar CINEMATIC_UNIVERSE: Represents 'cinematic_universe'.
+    :ivar CINEMATIC_UNIVERSE: Album type corresponding to cinematic universe-related albums.
     :type CINEMATIC_UNIVERSE: str
+    :ivar TV_SHOW: Album type corresponding to TV show-related albums.
+    :type TV_SHOW: str
+    :ivar MINISERIES: Album type corresponding to miniseries-related albums.
+    :type MINISERIES: str
+    :ivar SEASON: Album type corresponding to season-related albums.
+    :type SEASON: str
     """
     CAST = "cast"
     CREW = "crew"
     STUDIO = "studio"
     FRANCHISE = "franchise"
     CINEMATIC_UNIVERSE = "cinematic_universe"
+    TV_SHOW = "tv-show"
+    MINISERIES = "miniseries"
+    SEASON = "season"
+
+
+class CrewTypeEnum(Enum):
+    """
+    An enumeration defining various crew roles in film production.
+
+    This class defines a set of constants representing different crew
+    roles across various departments in film production, such as direction,
+    writing, camera, art, costume, post-production, sound, stunts, casting,
+    and locations. Each constant is a string value denoting a specific role.
+
+    :ivar EXECUTIVE_PRODUCER: Represents the role of an executive producer.
+    :type EXECUTIVE_PRODUCER: str
+    :ivar PRODUCER: Represents the role of a producer.
+    :type PRODUCER: str
+    :ivar LINE_PRODUCER: Represents the role of a line producer.
+    :type LINE_PRODUCER: str
+    :ivar UNIT_PRODUCTION_MANAGER: Represents the role of a unit production manager.
+    :type UNIT_PRODUCTION_MANAGER: str
+    :ivar DIRECTOR: Represents the role of a director.
+    :type DIRECTOR: str
+    :ivar FIRST_ASSISTANT_DIRECTOR: Represents the role of a first assistant director.
+    :type FIRST_ASSISTANT_DIRECTOR: str
+    :ivar SECOND_ASSISTANT_DIRECTOR: Represents the role of a second assistant director.
+    :type SECOND_ASSISTANT_DIRECTOR: str
+    :ivar SCRIPT_SUPERVISOR: Represents the role of a script supervisor.
+    :type SCRIPT_SUPERVISOR: str
+    :ivar PRODUCTION_ASSISTANT: Represents the role of a production assistant.
+    :type PRODUCTION_ASSISTANT: str
+    :ivar WRITER: Represents the role of a writer.
+    :type WRITER: str
+    :ivar CINEMATOGRAPHER: Represents the role of a cinematographer (Director
+                          of Photography).
+    :type CINEMATOGRAPHER: str
+    :ivar GAFFER: Represents the role of a gaffer.
+    :type GAFFER: str
+    :ivar GRIP: Represents the role of a grip.
+    :type GRIP: str
+    :ivar BEST_BOY: Represents the role of a best boy.
+    :type BEST_BOY: str
+    :ivar PRODUCTION_DESIGNER: Represents the role of a production designer.
+    :type PRODUCTION_DESIGNER: str
+    :ivar ART_DIRECTOR: Represents the role of an art director.
+    :type ART_DIRECTOR: str
+    :ivar SET_DECORATOR: Represents the role of a set decorator.
+    :type SET_DECORATOR: str
+    :ivar PROP_MASTER: Represents the role of a prop master.
+    :type PROP_MASTER: str
+    :ivar COSTUME_DESIGNER: Represents the role of a costume designer.
+    :type COSTUME_DESIGNER: str
+    :ivar MAKEUP_ARTIST: Represents the role of a makeup artist.
+    :type MAKEUP_ARTIST: str
+    :ivar HAIR_STYLIST: Represents the role of a hair stylist.
+    :type HAIR_STYLIST: str
+    :ivar EDITOR: Represents the role of an editor.
+    :type EDITOR: str
+    :ivar VISUAL_EFFECTS_SUPERVISOR: Represents the role of a visual effects
+                                     supervisor.
+    :type VISUAL_EFFECTS_SUPERVISOR: str
+    :ivar SPECIAL_EFFECTS_COORDINATOR: Represents the role of a special effects
+                                       coordinator.
+    :type SPECIAL_EFFECTS_COORDINATOR: str
+    :ivar SOUND_DESIGNER: Represents the role of a sound designer.
+    :type SOUND_DESIGNER: str
+    :ivar COMPOSER: Represents the role of a composer.
+    :type COMPOSER: str
+    :ivar MUSIC_SUPERVISOR: Represents the role of a music supervisor.
+    :type MUSIC_SUPERVISOR: str
+    :ivar STUNT_COORDINATOR: Represents the role of a stunt coordinator.
+    :type STUNT_COORDINATOR: str
+    :ivar CASTING_DIRECTOR: Represents the role of a casting director.
+    :type CASTING_DIRECTOR: str
+    :ivar LOCATION_MANAGER: Represents the role of a location manager.
+    :type LOCATION_MANAGER: str
+    """
+    # Executives & Producers
+    EXECUTIVE_PRODUCER = "executive_producer"
+    PRODUCER = "producer"
+    LINE_PRODUCER = "line_producer"
+    UNIT_PRODUCTION_MANAGER = "unit_production_manager"
+    # Direction Department
+    DIRECTOR = "director"
+    FIRST_ASSISTANT_DIRECTOR = "first_assistant_director"
+    SECOND_ASSISTANT_DIRECTOR = "second_assistant_director"
+    SCRIPT_SUPERVISOR = "script_supervisor"
+    PRODUCTION_ASSISTANT = "production_assistant"
+    # Writing & Story
+    WRITER = "writer"
+    # Camera & Electrical
+    CINEMATOGRAPHER = "cinematographer"  # aka Director of Photography
+    GAFFER = "gaffer"
+    GRIP = "grip"
+    BEST_BOY = "best_boy"
+    # Art Department
+    PRODUCTION_DESIGNER = "production_designer"
+    ART_DIRECTOR = "art_director"
+    SET_DECORATOR = "set_decorator"
+    PROP_MASTER = "prop_master"
+    # Costume & Makeup
+    COSTUME_DESIGNER = "costume_designer"
+    MAKEUP_ARTIST = "makeup_artist"
+    HAIR_STYLIST = "hair_stylist"
+    # Post-Production
+    EDITOR = "editor"
+    VISUAL_EFFECTS_SUPERVISOR = "visual_effects_supervisor"
+    SPECIAL_EFFECTS_COORDINATOR = "special_effects_coordinator"
+    # Sound & Music
+    SOUND_DESIGNER = "sound_designer"
+    COMPOSER = "composer"
+    MUSIC_SUPERVISOR = "music_supervisor"
+    # Stunts
+    STUNT_COORDINATOR = "stunt_coordinator"
+    # Casting & Locations
+    CASTING_DIRECTOR = "casting_director"
+    LOCATION_MANAGER = "location_manager"
+

@@ -6,14 +6,14 @@ from sqlalchemy import String, Boolean, ForeignKey, JSONB, Date, Integer, Float,
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
-from utils.config import FilmTypeEnum, RelationshipTypeEnum, SubmissionStatusEnum
-from associations import film_contributors, person_contributors
-
+from associations import film_contributors, person_contributors, album_contributors, hitlist_contributors
 from ..extensions import db
-from .utils.config import ExtensionTypeEnum, AlbumTypeEnum
+from .utils.config import (
+    ExtensionTypeEnum, AlbumTypeEnum, FilmTypeEnum, RelationshipTypeEnum, SubmissionStatusEnum, CrewTypeEnum
+)
 from .mixins import (
-    EntityMixin, HiveMixin, LibraryMixin, ScrollItemMixin,
-    ModelMixin, WatchListMixin, PeriodMixin, ContributionMixin
+    EntityMixin, HiveMixin, LibraryMixin, ScrollItemMixin, FanMixin, MarkMixin, ModelMixin, WatchListMixin,
+    PeriodMixin, ContributionMixin, OwnedMixin, CreatedMixin, PartnerLinksMixin
 )
 
 
@@ -21,11 +21,11 @@ if TYPE_CHECKING:
     from .scrolls import Scroll
     from .user import User
     from .journal import Magazine, Article, Report, Column
-    from .community import Fan, Member, Subscriber
+    from .community import Fan, Member, Subscriber, Reward
     from .calendar import Calendar, Ticket
-    from .player import Bookmark, PlaybackSession
+    from .player import Bookmark, PlaybackSession, Subtitle
     from .commerce import Listing, Order, Market, Discount, CustomToken, Fund
-    from .common import Genre, Language, Country, Keyword, Theme, Tag, Era, Anchor, Verification, Preferences, Notification
+    from .common import Verification, Preferences, Notification, Link
 
 
 def generate_uuid():
@@ -34,8 +34,8 @@ def generate_uuid():
 
 class Library(db.Model, ModelMixin, EntityMixin):
     __tablename__ = 'libraries'
-    local_libraries: Mapped[List["Library"]] = relationship("Library", backref="local_libraries", cascade="all, delete-orphan")
-    owner: Mapped["LibraryMixin"] = relationship("LibraryMixin" ,back_populates="libraries", uselist=False)
+    local_libraries: Mapped[List["Library"]] = relationship("Library", back_populates="library", cascade="all, delete-orphan")
+    owner: Mapped["LibraryMixin"] = relationship("LibraryMixin", back_populates="libraries", uselist=False)
     wallet: Mapped["Wallet"] = relationship("Wallet", back_populates="library", uselist=False, cascade="all, delete-orphan")
     portfolio: Mapped["Portfolio"] = relationship("Portfolio", back_populates="library", uselist=False, cascade="all, delete-orphan")
     collections: Mapped[List["Collection"]] = relationship("Collection", back_populates="library", cascade="all, delete-orphan")
@@ -54,81 +54,88 @@ class Library(db.Model, ModelMixin, EntityMixin):
 class Collection(db.Model, ModelMixin):
     __tablename__ = 'collections'
     library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("libraries.id"), nullable=False)
-    library: Mapped["Library"] = relationship(back_populates="collections")
-    collected_albums: Mapped[List["Album"]] = relationship(backref="collectors")
-    tracked_albums: Mapped[List["Album"]] = relationship(back_populates="trackers")
-    collected_films: Mapped[List["Film"]] = relationship(back_populates="collectors")
-    tracked_films: Mapped[List["Film"]] = relationship(back_populates="trackers")
-    collected_hitlists: Mapped[List["Hitlist"]] = relationship(back_populates="collectors")
-    tracked_hitlists: Mapped[List["Hitlist"]] = relationship(back_populates="trackers")
-    distributed_films: Mapped[List["Film"]] = relationship(back_populates="distributors")
+    library: Mapped["Library"] = relationship("library", back_populates="collections")
+    collected_albums: Mapped[List["Album"]] = relationship("Album", back_populates="collectors")
+    tracked_albums: Mapped[List["Album"]] = relationship("Album", back_populates="trackers")
+    collected_films: Mapped[List["Film"]] = relationship("Film", back_populates="collectors")
+    tracked_films: Mapped[List["Film"]] = relationship("Film", back_populates="trackers")
+    collected_hitlists: Mapped[List["Hitlist"]] = relationship("Hitlist", back_populates="collectors")
+    tracked_hitlists: Mapped[List["Hitlist"]] = relationship("Hitlist", back_populates="trackers")
 
 
 class Portfolio(db.Model, ModelMixin):
     __tablename__ = "portfolios"
     library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("libraries.id"), nullable=False)
     library: Mapped["Library"] = relationship(back_populates="portfolio")
-    created_magazines: Mapped[List["Magazine"]] = relationship(back_populates="founders") # founder
-    authored_articles: Mapped[List["Article"]] = relationship(back_populates="authors") # writer
-    authored_reports: Mapped[List["Report"]] = relationship(back_populates="authors") # analyst
-    maintained_columns: Mapped[List["Column"]] = relationship(back_populates="maintainers")
-    reviewed_scrolls: Mapped[List["Scroll"]] = relationship(back_populates="reviewer")
-    created_people: Mapped[List["Person"]] = relationship(back_populates="creators")
-    assets: Mapped[List["Asset"]] = relationship(back_populates="portfolio")
-    owned_magazines: Mapped[List["Magazine"]] = relationship(back_populates="owners") # owner
-    owned_albums: Mapped[List["Album"]] = relationship(back_populates="studios")
-    owned_films: Mapped[List["Film"]] = relationship(back_populates="studios")
-    owned_hitlists: Mapped[List["Hitlist"]] = relationship(back_populates="creators")
-    orders: Mapped[List["Order"]] = relationship(back_populates="buyer_portfolio")
-    customtokens: Mapped[List["CustomToken"]] = relationship(back_populates="creator_portfolio")
-    created_tickets: Mapped[List["Ticket"]] = relationship(back_populates="creator_portfolio")
-    bought_tickets: Mapped[List["Ticket"]] = relationship(back_populates="buying_portfolios")
-    verifications: Mapped[List["Verification"]] = relationship(back_populates="verifiers")
+    created_magazines: Mapped[List["Magazine"]] = relationship("Magazine", back_populates="founders") # founder
+    authored_articles: Mapped[List["Article"]] = relationship("Article", back_populates="authors") # writer
+    authored_reports: Mapped[List["Report"]] = relationship("Report", back_populates="authors") # analyst
+    maintained_columns: Mapped[List["Column"]] = relationship("Column", back_populates="maintainers")
+    reviewed_scrolls: Mapped[List["Scroll"]] = relationship("Scroll", back_populates="reviewer")
+    distributed_albums: Mapped[List["Album"]] = relationship("Album", back_populates="distributors")
+    distributed_films: Mapped[List["Film"]] = relationship("Film", back_populates="distributors")
+    nominations: Mapped[List["Nomination"]] = relationship('Nomination', back_populates='nominees')
+    wins: Mapped[list["Win"]] = relationship('Win', back_populates='winners')
+
+    created_people: Mapped[List["Person"]] = relationship("Person", back_populates="creators")
+    assets: Mapped[List["Asset"]] = relationship("Asset", back_populates="portfolio")
+    owned_magazines: Mapped[List["Magazine"]] = relationship("Magazine", back_populates="owners") # owner
+    owned_albums: Mapped[List["Album"]] = relationship("Album", back_populates="studios")
+    owned_films: Mapped[List["Film"]] = relationship("Film", back_populates="studios")
+    owned_hitlists: Mapped[List["Hitlist"]] = relationship("Hitlist", back_populates="creators")
+    orders: Mapped[List["Order"]] = relationship("Order", back_populates="buyer_portfolio")
+    customtokens: Mapped[List["CustomToken"]] = relationship("CustomToken", back_populates="creator_portfolio")
+    created_tickets: Mapped[List["Ticket"]] = relationship("Ticket", back_populates="creator_portfolio")
+    bought_tickets: Mapped[List["Ticket"]] = relationship("Ticket", back_populates="buying_portfolios")
+    verifications: Mapped[List["Verification"]] = relationship("Verification", back_populates="verifiers")
+
 
 
 class WatchHistory(db.Model, ModelMixin):
     __tablename__ = "watch_histories"
     library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("libraries.id"), nullable=False)
-    film_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("films.id"), nullable=False)
     library: Mapped["Library"] = relationship(back_populates="watch_history")
-    film: Mapped["Film"] = relationship(back_populates="watch_history")
+    film_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("films.id"), nullable=False)
+    film: Mapped["Film"] = relationship("Film", back_populates="watch_histories")
     watch_count: Mapped[int] = mapped_column(Integer, default=0)
     current_position: Mapped[float] = mapped_column(Float, default=0.0) # seconds
     last_watched: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.now)
     bookmarks: Mapped[List["Bookmark"]] = relationship(back_populates="watch_history")
 
 
-class Film(db.Model, ModelMixin, EntityMixin, ContributionMixin, ScrollItemMixin):
+class Film(db.Model, ModelMixin, EntityMixin, ContributionMixin, ScrollItemMixin, MarkMixin, FanMixin):
     __tablename__ = "films"
     __contribution_table__ = film_contributors
-    __contribution_backref__ = "film_contributions"
+    __contribution_back_populates__ = "film_contributions"
+    # Amber Film aspects
     title: Mapped[str] = mapped_column(String, nullable=False)
     original_title: Mapped[Optional[str]] = mapped_column(String)
     release_date: Mapped[Optional[datetime]] = mapped_column(Date)
+    release_year: Mapped[Optional[int]] = mapped_column(Integer)
     runtime: Mapped[Optional[int]] = mapped_column(Integer)
+    tagline: Mapped[Optional[str]] = mapped_column(String)
     synopsis: Mapped[Optional[str]] = mapped_column(Text)
-    poster_url: Mapped[Optional[str]] = mapped_column(String)
-    backdrop_url: Mapped[Optional[str]] = mapped_column(String)
     available_locally: Mapped[bool] = mapped_column(Boolean, default=False)
-    streaming_links: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
-    trailer_url: Mapped[Optional[str]] = mapped_column(String)
-    local_file_url: Mapped[Optional[str]] = mapped_column(String)
-    total_watch_count: Mapped[int] = mapped_column(Integer, default=0)
-    watch_history: Mapped[Optional[list[UUID]]] = mapped_column(ARRAY(UUID(as_uuid=True)))
-    anchored: Mapped[List[Anchor]] = relationship("Anchor", backref="anchored_content", cascade="all, delete-orphan")
-    popularity_score: Mapped[float] = mapped_column(Float, default=0.0)
-    scroll_stats: Mapped[Optional[dict]] = mapped_column(JSONB, default={})
-    viewer_tags: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
-    subtitles: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
-
-    contributed_by_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey('users.id'))
-
-    confidence_score: Mapped[float] = mapped_column(Float, default=0.0)
-
-    contributor_amber_points: Mapped[float] = mapped_column(Float, default=0.0)
-
-    submission_status: Mapped[SubmissionStatusEnum] = mapped_column(db.Enum(SubmissionStatusEnum), default=SubmissionStatusEnum.PENDING)
-    edit_history: Mapped[Optional[list[UUID]]] = mapped_column(ARRAY(UUID(as_uuid=True)))
+    submission_status: Mapped[SubmissionStatusEnum] = mapped_column(SQLAlchemyEnum(SubmissionStatusEnum), default=SubmissionStatusEnum.PENDING)
+    # Relationships
+    subtitles: Mapped[Optional[List["Subtitle"]]] = relationship("Subtitle", back_populates="film")
+    watch_histories: Mapped[List["WatchHistory"]] = relationship("WatchHistory", back_populates="film")
+    files: Mapped[List["File"]] = relationship("File", back_populates="film")
+    streaming_links: Mapped[Optional[List[Link]]] = mapped_column("Link")
+    trailer_links: Mapped[Optional[List[Link]]] = mapped_column("Link")
+    nominations: Mapped[List["Nomination"]] = relationship('Nomination', back_populates='film')
+    wins: Mapped[List["Win"]] = relationship('Win', back_populates='film')
+    boxoffice: Mapped["BoxOffice"] = relationship("BoxOffice", back_populates="film")
+    production_companies: Mapped[List["ProductionCompany"]] = relationship("ProductionCompany", back_populates="films")
+    studios: Mapped[List["Studio"]] = relationship('Studio', back_populates='films')
+    albums: Mapped[List["Album"]] = relationship('Album', back_populates='films')
+    collectors: Mapped[List['Collection']] = relationship('Collection', back_populates='collected_films')
+    trackers: Mapped[List['Collection']] = relationship('Collection', back_populates='tracked_films')
+    distributors: Mapped[List['Portfolio']] = relationship('Portfolio', back_populates="distributed_films")
+    characters: Mapped[List["Character"]] = relationship("Character", back_populates="films")
+    gigs: Mapped[List["Gig"]] = relationship("Gig", back_populates="films")
+    inspirations: Mapped[List["Inspiration"]] = relationship("Inspiration", back_populates="films")
+    # External stats
     imdb_id: Mapped[Optional[str]] = mapped_column(String)
     tmdb_id: Mapped[Optional[int]] = mapped_column(Integer)
     imdb_rating: Mapped[Optional[float]] = mapped_column(Float)
@@ -138,285 +145,108 @@ class Film(db.Model, ModelMixin, EntityMixin, ContributionMixin, ScrollItemMixin
     rotten_tomatoes_rating: Mapped[Optional[float]] = mapped_column(Float)
     metascore: Mapped[Optional[int]] = mapped_column(Integer)
     awards_string: Mapped[Optional[str]] = mapped_column(String)
-
-    content_rating: Mapped[Optional[str]] = mapped_column(String)
-    budget: Mapped[Optional[int]] = mapped_column(Integer)
-    revenue: Mapped[Optional[int]] = mapped_column(Integer)
-    tagline: Mapped[Optional[str]] = mapped_column(String)
-    box_office: Mapped[Optional[str]] = mapped_column(String)
-    production_companies: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
-    spoken_languages: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
-    country_of_origin: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
+    # External data
     imdb_data: Mapped[Optional[dict]] = mapped_column(JSONB)
     tmdb_data: Mapped[Optional[dict]] = mapped_column(JSONB)
-    film_type: Mapped[FilmTypeEnum] = mapped_column(db.Enum(FilmTypeEnum), nullable=False)
-
-    # Relationships # TODO: Review the Backrefs after creating models
-    film_contributions: Mapped[list["Film"]] = relationship(secondary="film_contributors", backref="contributors")
-    tags: Mapped[List["Tag"]] = relationship('Tag', backref='films')
-    genres: Mapped[List["Genre"]] = relationship('Genre', backref='films')
-    themes: Mapped[List["Theme"]] = relationship('Theme', backref='films')
-    keywords: Mapped[List["Keyword"]] = relationship('Keyword', backref='films')
-    studios: Mapped[List["Studio"]] = relationship('Studio', backref='films')
-    languages: Mapped[List["Language"]] = relationship('Language', backref='films')
-    countries: Mapped[List["Country"]] = relationship('Country', backref='films')
-    periods: Mapped[List["Era"]] = relationship('Period', backref='films')
-    careers: Mapped[List["Career"]] = relationship("Career", back_populates="film", cascade="all, delete-orphan")
-    albums: Mapped[List["Album"]] = relationship('Album', backref='films')
-    wins: Mapped[list["Win"]] = relationship('Win', backref='film')
-
-    nominations: Mapped[List["Nomination"]] = relationship('Nomination', backref='film')
-
-
-    collectors: Mapped[List['Collection']] = relationship('Collection', backref='collected_films')
-    trackers: Mapped[List['Collection']] = relationship('Collection', backref='tracked_films')
-    distributors: Mapped[List['Collection']] = relationship('Collection', backref="distributed_films")
-
-    def __repr__(self):
-        return f"<Film {self.title} ({self.release_date})>"
-
-    def to_dict(self):
-        return {
-
-        }
+    omdb_data: Mapped[Optional[dict]] = mapped_column(JSONB)
+    # Amber aspects
+    contributor_amber_points: Mapped[float] = mapped_column(Float, default=0.0)
+    popularity_score: Mapped[float] = mapped_column(Float, default=0.0)
+    total_watch_count: Mapped[int] = mapped_column(Integer, default=0)
+    total_scroll_reviews: Mapped[int] = mapped_column(Integer, default=0)
+    scroll_stats: Mapped[Optional[dict]] = mapped_column(JSONB, default={})
+    film_type: Mapped[FilmTypeEnum] = mapped_column(SQLAlchemyEnum(FilmTypeEnum), nullable=False)
 
 
 class Album(db.Model, ModelMixin, WatchListMixin, EntityMixin):
-    # __tablename__ = 'albums'
-    #
-    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=generate_uuid)
-    # title: Mapped[str] = mapped_column(String, nullable=False)
-    # description: Mapped[Optional[str]] = mapped_column(Text)
+    __tablename__ = 'albums'
+    __contribution_table = album_contributors
+    __contribution_back_populates = "album_contributions"
     album_type: Mapped[AlbumTypeEnum] = relationship(SQLAlchemyEnum(AlbumTypeEnum), nullable=False)
-    # Relationships
-    films: Mapped[List["Film"]] = relationship('Film', backref='albums')
-
-    def __repr__(self):
-        return f"<Album {self.title}>"
+    films: Mapped[List["Film"]] = relationship('Film', back_populates='albums')
+    collectors: Mapped[List['Collection']] = relationship('Collection', back_populates='collected_albums')
+    trackers: Mapped[List['Collection']] = relationship('Collection', back_populates='tracked_albums')
+    distributors: Mapped[List['Portfolio']] = relationship('Portfolio', back_populates="distributed_albums")
+    boxoffice: Mapped[Optional["BoxOffice"]] = relationship("BoxOffice", back_populates="album")
+    studios: Mapped[List["Studio"]] = relationship('Studio', back_populates='albums')
+    inspirations: Mapped[List["Inspiration"]] = relationship("Inspiration", back_populates="albums")
 
 
 class Hitlist(db.Model, ModelMixin, WatchListMixin, EntityMixin):
-    pass
+    __tablename__ = 'hitlists'
+    __contribution_table = hitlist_contributors
+    __contribution_back_populates = "hitlist_contributions"
+    collectors: Mapped[List['Collection']] = relationship('Collection', back_populates='collected_hitlists')
+    trackers: Mapped[List['Collection']] = relationship('Collection', back_populates='tracked_hitlists')
+    films: Mapped[List["Film"]] = relationship('Film', back_populates='hitlists')
 
 
-class Person(db.Model, ModelMixin, EntityMixin, ContributionMixin):
+class Person(db.Model, ModelMixin, EntityMixin, ContributionMixin, FanMixin, MarkMixin):
     __tablename__ = 'people'
     __contribution_table__ = person_contributors
-    __contribution_backref__ = "person_contributions"
-    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=generate_uuid)
-    # first_name: Mapped[str] = mapped_column(String, nullable=False)
-    # last_name: Mapped[str] = mapped_column(String, nullable=False)
-    # full_name: Mapped[Optional[str]] = mapped_column(String)
-    # date_of_birth: Mapped[Optional[datetime]] = mapped_column(Date)
-    # date_of_death: Mapped[Optional[datetime]] = mapped_column(Date, default=None)
-    # avatar_url: Mapped[Optional[str]] = mapped_column(String)
-    # bio: Mapped[Optional[str]] = mapped_column(Text)
-    # nationality: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String))
-    # is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
-    # is_linked: Mapped[bool] = mapped_column(Boolean, default=False)
-    # confidence_score: Mapped[float] = mapped_column(Float, default=0.0)
-    # profession_summary: Mapped[Optional[str]] = mapped_column(String)
-    # # TODO: Review the Backrefs after creating models
-    # contributors: Mapped[List["User"]] = relationship('User', backref='contributions')
-    # careers: Mapped[List["Career"]] = relationship('Career', back_populates='person')
-    # relationships: Mapped[List["Relationship"]] = relationship('Relationship', back_populates='person')
-    # fandoms: Mapped[List["Fandom"]] = relationship('Fandom', back_populates='members')
-    # calendar: Mapped[Optional["Calendar"]] = relationship('Calendar', back_populates='person', uselist=False)
-    # wiki: Mapped[Optional["WikiTemplate"]] = relationship('Wiki', back_populates='person', uselist=False)
-    # dashboard: Mapped[Optional["DashboardTemplate"]] = relationship('Dashboard', back_populates='person', uselist=False)
-    # created_at: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.now)
-    # updated_at: Mapped[datetime] = mapped_column(db.DateTime, default=datetime.now, onupdate=datetime.now)
-    creators: Mapped[List["Portfolio"]] = relationship('Portfolio', backref='created_people')
-
-    def __repr__(self):
-        return f"<Person {self.full_name or f'{self.first_name} {self.last_name}'} {self.profession_summary}>"
-
-    def to_dict(self):
-        return {
-            "id": str(self.id),
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "full_name": self.full_name,
-            "date_of_birth": self.date_of_birth.isoformat() if self.date_of_birth else None,
-            "date_of_death": self.date_of_death.isoformat() if self.date_of_death else None,
-            "avatar_url": self.avatar_url,
-            "bio": self.bio,
-            "nationality": self.nationality,
-            "is_verified": self.is_verified,
-            "is_linked": self.is_linked,
-            "confidence_score": self.confidence_score,
-            "profession_summary": self.profession_summary,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
-        }
+    __contribution_back_populates__ = "person_contributions"
+    first_name: Mapped[str] = mapped_column(String, nullable=False)
+    last_name: Mapped[str] = mapped_column(String, nullable=False)
+    full_name: Mapped[Optional[str]] = mapped_column(String)
+    aliases: Mapped[Optional[list[str]]] = mapped_column(ARRAY(String))
+    date_of_birth: Mapped[Optional[datetime]] = mapped_column(Date)
+    date_of_death: Mapped[Optional[datetime]] = mapped_column(Date, default=None)
+    bio: Mapped[Optional[str]] = mapped_column(Text)
+    is_linked: Mapped[bool] = mapped_column(Boolean, default=False)
+    claimed_by_id: Mapped[Optional[UUID]] = mapped_column(ForeignKey('users.id'))
+    claimed_by: Mapped[Optional["User"]] = relationship('User', back_populates='claimed_person')
+    profession_summary: Mapped[Optional[str]] = mapped_column(String)
+    contributors: Mapped[List["User"]] = relationship('User', back_populates='contributions')
+    careers: Mapped[List["Career"]] = relationship('Career', back_populates='person')
+    relationships: Mapped[List["Relationship"]] = relationship('Relationship', back_populates='person')
+    creators: Mapped[List["Portfolio"]] = relationship('Portfolio', back_populates='created_people')
 
 
 class Career(db.Model, ModelMixin, EntityMixin):
-    # __tablename__ = "careers"
-    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid4)
-    # person_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=False)
-    # # Relationships
-    # person: Mapped["Person"] = relationship("Person", back_populates="careers")
-    # characters: Mapped[List["Character"]] = relationship("Character", back_populates="career", cascade="all, delete-orphan")
-    # gigs: Mapped[List["Gig"]] = relationship("Gig", back_populates="career", cascade="all, delete-orphan")
-    # wiki: Mapped[Optional["WikiTemplate"]] = relationship('Wiki', back_populates='career', uselist=False)
-    pass
+    __tablename__ = "careers"
+    person_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=False)
+    person: Mapped["Person"] = relationship("Person", back_populates="careers")
+    characters: Mapped[Optional[List["Character"]]] = relationship("Character", back_populates="career", cascade="all, delete-orphan")
+    gigs: Mapped[Optional[List["Gig"]]] = relationship("Gig", back_populates="career", cascade="all, delete-orphan")
 
 
-    def __repr__(self):
-        return f"<Career {self.id} for Person {self.person_id}>"
-
-    def to_dict(self):
-        return {
-        }
-
-
-class Gig(db.Model, ModelMixin):
-    # __tablename__ = "gigs"
-    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid4)
-    # film_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("films.id"), nullable=False)
-    # career_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("careers.id"), nullable=False)
-    # job_title: Mapped[str] = mapped_column(db.String(128), nullable=False)
-    # start_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
-    # end_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
-    # episodes: Mapped[int | None] = mapped_column(db.Integer, nullable=True)
-    # notes: Mapped[str | None] = mapped_column(db.Text, nullable=True)
-    # is_primary_credit: Mapped[bool] = mapped_column(db.Boolean, default=False)
-    # # TODO: Review these relationships
-    # career = relationship("Career", back_populates="gigs")
-    # film = relationship("Film", back_populates="gigs")
-    pass
-
-    def __repr__(self):
-        return f"<Gig {self.job_title} in Film {self.film_id} by Career {self.career_id}>"
-
-    def to_dict(self):
-        return {
-            "id": str(self.id),
-            "film_id": str(self.film_id),
-            "career_id": str(self.career_id),
-            "job_title": self.job_title,
-            "start_date": self.start_date.isoformat() if self.start_date else None,
-            "end_date": self.end_date.isoformat() if self.end_date else None,
-            "episodes": self.episodes,
-            "notes": self.notes,
-            "is_primary_credit": self.is_primary_credit
-        }
+class Gig(db.Model, ModelMixin, PeriodMixin):
+    __tablename__ = "gigs"
+    career_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("careers.id"), nullable=False)
+    crew_type: Mapped[CrewTypeEnum] = mapped_column(SQLAlchemyEnum(CrewTypeEnum), nullable=False)
+    episodes: Mapped[List["Film"] | None] = mapped_column(ARRAY(UUID(as_uuid=True)), default=list)
+    notes: Mapped[str | None] = mapped_column(db.Text, nullable=True)
+    is_primary_credit: Mapped[bool] = mapped_column(db.Boolean, default=False)
+    career: Mapped["Career"] = relationship("Career", back_populates="gigs")
+    films: Mapped["Film"] = relationship("Film", back_populates="gigs")
 
 
-class Character(db.Model, ModelMixin, EntityMixin):
-    # __tablename__ = "characters"
-    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid4)
-    # name: Mapped[str] = mapped_column(db.String(128), nullable=False)
-    # aliases: Mapped[list[str]] = mapped_column(ARRAY(db.String), default=list)
-    # description: Mapped[str | None] = mapped_column(db.Text, nullable=True)
-    # film_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("films.id"), nullable=False)
-    # career_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("careers.id"), nullable=False)
-    # start_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
-    # end_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
-    # episodes: Mapped[int | None] = mapped_column(db.Integer, nullable=True)
-    # notes: Mapped[str | None] = mapped_column(db.Text, nullable=True)
-    # # TODO: Review these relationships
-    # career = relationship("Career", back_populates="characters")
-    # film = relationship("Film", back_populates="characters")
-
-    def __repr__(self):
-        return f"<Character {self.name} in Film {self.film_id} by Career {self.career_id}>"
-
-    def to_dict(self):
-        return {
-            "id": str(self.id),
-            "name": self.name,
-            "aliases": self.aliases,
-            "description": self.description,
-            "film_id": str(self.film_id),
-            "career_id": str(self.career_id),
-            "start_date": self.start_date.isoformat() if self.start_date else None,
-            "end_date": self.end_date.isoformat() if self.end_date else None,
-            "episodes": self.episodes,
-            "notes": self.notes
-        }
-
-
-class Studio(db.Model, ModelMixin, EntityMixin):
-    pass
+class Character(db.Model, ModelMixin, EntityMixin, PeriodMixin):
+    __tablename__ = "characters"
+    aliases: Mapped[list[str]] = mapped_column(ARRAY(db.String), default=list)
+    career_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("careers.id"), nullable=False)
+    start_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
+    end_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
+    episodes: Mapped[List["Film"] | None] = mapped_column(ARRAY(UUID(as_uuid=True)), default=list)
+    notes: Mapped[str | None] = mapped_column(db.Text, nullable=True)
+    career: Mapped["Career"] = relationship("Career", back_populates="characters")
+    films: Mapped["Film"] = relationship("Film", back_populates="characters")
 
 
 class Relationship(db.Model, ModelMixin):
-    # __tablename__ = "relationships"
-    # id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), default=uuid4)
-    # person_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=False)
-    # related_person_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=False)
-    # relationship_type: Mapped[RelationshipType] = mapped_column(db.Enum(RelationshipType), nullable=False)
-    # start_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
-    # end_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
-    # # TODO: Review these relationships
-    # person = relationship("Person", foreign_keys=[person_id], back_populates="relationships")
-    # related_person = relationship("Person", foreign_keys=[related_person_id], back_populates="relationships")
-    pass
-
-    def __repr__(self):
-        return f"<Relationship {self.relationship_type.value} between {self.person_id} and {self.related_person_id}>"
-
-    def to_dict(self):
-        return {
-            "id": str(self.id),
-            "person_id": str(self.person_id),
-            "related_person_id": str(self.related_person_id),
-            "relationship_type": self.relationship_type.value,
-            "start_date": self.start_date.isoformat() if self.start_date else None,
-            "end_date": self.end_date.isoformat() if self.end_date else None
-        }
-
-
-class LocalLibrary(db.Model, ModelMixin):
-    __tablename__ = "local_libraries"
-    library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("libraries.id"))
-    library: Mapped["Library"] = relationship("Library", back_populates="local_libraries")
-    directories: Mapped[List["Directory"]] = relationship("Directory", back_populates="local_library")
-    path: Mapped[str] = mapped_column(String, nullable=False)
-
-
-class Directory(db.Model, ModelMixin):
-    __tablename__ = "directories"
-    local_library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("local_libraries.library_id"))
-    local_library: Mapped["Library"] = relationship("Library", back_populates="directories")
-    files: Mapped[List["File"]] = relationship("File", back_populates="directory")
-    path: Mapped[str] = mapped_column(String, nullable=False)
-
-
-class File(db.Model, ModelMixin):
-    __tablename__ = "files"
-    filepath: Mapped[str] = mapped_column(String, nullable=False)
-    filename: Mapped[str] = mapped_column(String, nullable=False)
-    file_title: Mapped[str] = mapped_column(String, nullable=False)
-    file_year: Mapped[Optional[int]] = mapped_column(Integer)
-    file_resolution: Mapped[Optional[str]] = mapped_column(String)
-    file_extension: Mapped[ExtensionTypeEnum] = mapped_column(SQLAlchemyEnum(ExtensionTypeEnum), nullable=False)
-    file_codec: Mapped[Optional[str]] = mapped_column(String)
-    file_bitrate: Mapped[Optional[int]] = mapped_column(Integer)
-    size: Mapped[int] = mapped_column(Integer, nullable=False)
-    directory_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("directories.id"))
-    file_tag_set_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("file_tag_sets.id"))
-    directory: Mapped["Directory"] = relationship("Directory", back_populates="files")
-    file_tag_set: Mapped["FileTagSet"] = relationship("FileTagSet", back_populates="file")
-
-
-class FileTagSet(db.Model, ModelMixin):
-    __tablename__ = "file_tag_sets"
-    file_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("files.id"))
-    film_directory_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("directories.id"))
-    file: Mapped["File"] = relationship("File", back_populates="file_tag_set")
-    film_directory: Mapped["Directory"] = relationship("Directory", foreign_keys=[film_directory_id])
-    root_tags: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
-    type_tags: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
-    cate_genres: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
-    album_tags: Mapped[Optional[List[Album]]] = relationship("Album")
-    studio_tags: Mapped[Optional[List[Studio]]] = relationship("Studio")
+    __tablename__ = "relationships"
+    person_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=False)
+    related_person_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=False)
+    relationship_type: Mapped[RelationshipTypeEnum] = mapped_column(SQLAlchemyEnum(RelationshipTypeEnum), nullable=False)
+    start_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
+    end_date: Mapped[datetime | None] = mapped_column(db.Date, nullable=True)
+    person = relationship("Person", foreign_keys=[person_id], back_populates="relationships")
+    related_person = relationship("Person", foreign_keys=[related_person_id], back_populates="relationships")
 
 
 class Shop(db.Model, ModelMixin, EntityMixin, HiveMixin):
     __tablename__ = "shops"
+    library: Mapped["Library"] = relationship("Library", back_populates="shops")
     merchandise: Mapped[List["Merchandise"]] = relationship("Merchandise", back_populates="shop")
 
 
@@ -452,91 +282,191 @@ class Wallet(db.Model, ModelMixin, EntityMixin):
 
 
 class Accolade(db.Model, ModelMixin):
+    __tablename__ = "accolades"
     title: Mapped[str] = mapped_column(String, nullable=False)
     calendar: Mapped["Calendar"] = relationship(back_populates="owner")
-    wins: Mapped[list["Win"]] = relationship('Win', backref='accolade')
+    wins: Mapped[list["Win"]] = relationship('Win', back_populates='accolade')
 
 
 class Condition(db.Model, ModelMixin):
-    pass
+    __tablename__ = "conditions"
 
 
-class Win(db.Model, ModelMixin, EntityMixin, PeriodMixin):
-    # TODO: Ensure all back_populates are created and match
-    award_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("awards.id"), nullable=True)
-    award: Mapped["Award"] = relationship(back_populates="wins")
-    accolade_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("accolades.id"), nullable=True)
-    accolade: Mapped["Accolade"] = relationship(back_populates="wins")
-    film_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("films.id"), nullable=True)
-    film: Mapped["Film"] = relationship(back_populates="wins")
-    album_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("albums.id"), nullable=True)
-    album: Mapped["Album"] = relationship(back_populates="wins")
-    hitlist_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("hitlists.id"), nullable=True)
-    hitlist: Mapped["Hitlist"] = relationship(back_populates="wins")
-    person_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=True)
-    person: Mapped["Person"] = relationship(back_populates="wins")
+class Partners(db.Model, ModelMixin):
+    __tablename__ = "partners"
+    streaming_platforms: Mapped[List["StreamingPlatform"]] = relationship("StreamingPlatform")
+    peers_platforms: Mapped[List["PeersPlatform"]] = relationship("PeersPlatform")
+    social_platforms: Mapped[List["SocialPlatform"]] = relationship("SocialPlatform")
+    websites: Mapped[List["Website"]] = relationship("Website")
+    distributors: Mapped[List["Distributor"]] = relationship("Distributor")
+    theatres: Mapped[List["Theatre"]] = relationship("Theatre")
+    the_box_office_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("theboxoffices.id"), nullable=True)
+    the_box_office: Mapped["TheBoxOffice"] = relationship("TheBoxOffice")
+    studios: Mapped[List["Studio"]] = relationship("Studio")
+    production_companies: Mapped[List["ProductionCompany"]] = relationship("ProductionCompany")
 
 
-class Timeline(db.Model, ModelMixin):
-    pass
+class ProductionCompany(db.Model, ModelMixin, EntityMixin, PartnerLinksMixin):
+    __tablename__ = "production_companies"
+    films: Mapped[List["Film"]] = relationship("Film", back_populates="production_companies")
 
 
-class Filmography(db.Model, ModelMixin):
-    pass
+class Studio(db.Model, ModelMixin, EntityMixin, PartnerLinksMixin):
+    __tablename__ = "studios"
+    films: Mapped[List["Film"]] = relationship("Film", back_populates="studios")
+    albums: Mapped[List["Album"]] = relationship("Album", back_populates="studios")
 
 
-class StreamingPlatform(db.Model, ModelMixin, EntityMixin, PartnerMixin):
-    pass
+class StreamingPlatform(db.Model, ModelMixin, EntityMixin, PartnerLinksMixin):
+    __tablename__ = "streaming_platforms"
 
 
-class PeersPlatform(db.Model, ModelMixin, EntityMixin, PartnerMixin):
-    pass
+class PeersPlatform(db.Model, ModelMixin, EntityMixin, PartnerLinksMixin):
+    __tablename__ = "peers_platforms"
 
 
-class SocialPlatform(db.Model, ModelMixin, EntityMixin, PartnerMixin):
-    pass
+class SocialPlatform(db.Model, ModelMixin, EntityMixin, PartnerLinksMixin):
+    __tablename__ = "social_platforms"
 
 
-class Website(db.Model, ModelMixin, EntityMixin, PartnerMixin):
-    pass
+class Website(db.Model, ModelMixin, EntityMixin, PartnerLinksMixin):
+    __tablename__ = "websites"
 
 
-class AwardType(db.Model, ModelMixin, EntityMixin, AwardTypeMixin):
-    pass
+class Distributor(db.Model, ModelMixin, EntityMixin, PartnerLinksMixin):
+    __tablename__ = "distributors"
 
 
-class Award(db.Model, ModelMixin, EntityMixin, AwardMixin):
-    pass
+class Theatre(db.Model, ModelMixin, EntityMixin, PartnerLinksMixin):
+    __tablename__ = "theatres"
 
 
-class Nomination(db.Model, ModelMixin, EntityMixin, AwardMixin):
-    pass
+class TheBoxOffice(db.Model, ModelMixin, EntityMixin, PartnerLinksMixin):
+    __tablename__ = "theboxoffices"
+    boxoffices: Mapped[List["BoxOffice"]] = relationship("BoxOffice", back_populates="theboxoffice")
 
 
 class BoxOffice(db.Model, ModelMixin, EntityMixin):
-    pass
+    __tablename__ = "boxoffices"
+    film_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("films.id"), nullable=False)
+    film: Mapped["Film"] = relationship("Film", back_populates="boxoffice")
+    album_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("albums.id"), nullable=False)
+    album: Mapped["Album"] = relationship("Album", back_populates="boxoffice")
+    budget: Mapped[float] = mapped_column(Numeric(20, 4), default=0.0)
+    revenue: Mapped[float] = mapped_column(Numeric(20, 4), default=0.0)
+    theboxoffice_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("theboxoffices.id"), nullable=False)
+    theboxoffice: Mapped["TheBoxOffice"] = relationship("TheBoxOffice", back_populates="boxoffices")
 
 
-class TheBoxOffice(db.Model, ModelMixin, EntityMixin, PartnerMixin):
-    pass
+class AwardType(db.Model, ModelMixin, EntityMixin, PartnerLinksMixin):
+    __tablename__ = "award_types"
 
 
-class Distributor(db.Model, ModelMixin, EntityMixin, PartnerMixin):
-    pass
+class Award(db.Model, ModelMixin, EntityMixin):
+    __tablename__ = "awards"
+
+
+class Win(db.Model, ModelMixin, EntityMixin, PeriodMixin):
+    __tablename__ = "wins"
+    reward_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("rewards.id"), nullable=True)
+    reward: Mapped["Reward"] = relationship("Reward", back_populates="wins")
+    award_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("awards.id"), nullable=True)
+    award: Mapped["Award"] = relationship("Award", back_populates="nominations")
+    accolade_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("accolades.id"), nullable=True)
+    accolade: Mapped["Accolade"] = relationship("Accolade", back_populates="wins")
+    film_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("films.id"), nullable=True)
+    film: Mapped["Film"] = relationship("Film", back_populates="wins")
+    album_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("albums.id"), nullable=True)
+    album: Mapped["Album"] = relationship("Album", back_populates="wins")
+    hitlist_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("hitlists.id"), nullable=True)
+    hitlist: Mapped["Hitlist"] = relationship("Hitlist", back_populates="wins")
+    person_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=True)
+    person: Mapped["Person"] = relationship("Person", back_populates="wins")
+    winners: Mapped[List["Portfolio"]] = relationship(back_populates="wins")
+
+
+class Nomination(db.Model, ModelMixin, EntityMixin):
+    __tablename__ = "nominations"
+    reward_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("rewards.id"), nullable=True)
+    reward: Mapped["Reward"] = relationship("Reward", back_populates="wins")
+    award_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("awards.id"), nullable=True)
+    award: Mapped["Award"] = relationship("Award", back_populates="nominations")
+    accolade_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("accolades.id"), nullable=True)
+    accolade: Mapped["Accolade"] = relationship("Accolade", back_populates="wins")
+    film_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("films.id"), nullable=True)
+    film: Mapped["Film"] = relationship("Film", back_populates="wins")
+    album_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("albums.id"), nullable=True)
+    album: Mapped["Album"] = relationship("Album", back_populates="wins")
+    hitlist_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("hitlists.id"), nullable=True)
+    hitlist: Mapped["Hitlist"] = relationship("Hitlist", back_populates="wins")
+    person_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("people.id"), nullable=True)
+    person: Mapped["Person"] = relationship("Person", back_populates="wins")
+    nominees: Mapped[List["Portfolio"]] = relationship(back_populates="nominations")
 
 
 class Inspiration(db.Model, ModelMixin, EntityMixin):
-    pass
+    __tablename__ = "inspirations"
+    films: Mapped[List["Film"]] = relationship("Film", back_populates="inspirations")
+    albums: Mapped[List["Album"]] = relationship("Album", back_populates="inspirations")
+    inspiration_source_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("inspiration_sources.id"), nullable=False)
+    inspiration_source: Mapped["InspirationSource"] = relationship("InspirationSource", back_populates="inspirations")
 
 
 class InspirationSource(db.Model, ModelMixin, EntityMixin):
-    pass
-
-
-class Theatre(db.Model, ModelMixin, EntityMixin, PartnerMixin):
-    pass
+    __tablename__ = "inspiration_sources"
+    inspirations: Mapped[List["Inspiration"]] = relationship("Inspiration", back_populates="inspiration_source")
 
 
 class Release(db.Model, ModelMixin, EntityMixin):
-    pass
+    __tablename__ = "releases"
 
+
+class LocalLibrary(db.Model, ModelMixin):
+    __tablename__ = "local_libraries"
+    library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("libraries.id"))
+    library: Mapped["Library"] = relationship("Library", back_populates="local_libraries")
+    directories: Mapped[List["Directory"]] = relationship("Directory", back_populates="local_library")
+    path: Mapped[str] = mapped_column(String, nullable=False)
+
+
+class Directory(db.Model, ModelMixin):
+    __tablename__ = "directories"
+    local_library_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("local_libraries.library_id"))
+    local_library: Mapped["Library"] = relationship("Library", back_populates="directories")
+    files: Mapped[List["File"]] = relationship("File", back_populates="directory")
+    path: Mapped[str] = mapped_column(String, nullable=False)
+
+
+class File(db.Model, ModelMixin):
+    __tablename__ = "files"
+    filepath: Mapped[str] = mapped_column(String, nullable=False)
+    filename: Mapped[str] = mapped_column(String, nullable=False)
+    file_title: Mapped[str] = mapped_column(String, nullable=False)
+    file_year: Mapped[Optional[int]] = mapped_column(Integer)
+    file_resolution: Mapped[Optional[str]] = mapped_column(String)
+    file_extension: Mapped[ExtensionTypeEnum] = mapped_column(SQLAlchemyEnum(ExtensionTypeEnum), nullable=False)
+    file_codec: Mapped[Optional[str]] = mapped_column(String)
+    file_bitrate: Mapped[Optional[int]] = mapped_column(Integer)
+    size: Mapped[int] = mapped_column(Integer, nullable=False)
+    directory_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("directories.id"))
+    file_tag_set_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("file_tag_sets.id"))
+    directory: Mapped["Directory"] = relationship("Directory", back_populates="files")
+    file_tag_set: Mapped["FileTagSet"] = relationship("FileTagSet", back_populates="file")
+    is_film: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_subtitle: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_media: Mapped[bool] = mapped_column(Boolean, default=False)
+    film_id: Mapped[Optional[UUID]] = mapped_column(UUID(as_uuid=True), db.ForeignKey("films.id"))
+    film: Mapped["Film"] = relationship("Film", back_populates="files")
+
+
+class FileTagSet(db.Model, ModelMixin):
+    __tablename__ = "file_tag_sets"
+    file_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("files.id"))
+    film_directory_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), db.ForeignKey("directories.id"))
+    file: Mapped["File"] = relationship("File", back_populates="file_tag_set")
+    film_directory: Mapped["Directory"] = relationship("Directory", foreign_keys=[film_directory_id])
+    root_tags: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
+    type_tags: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
+    cate_genres: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
+    album_tags: Mapped[Optional[List[Album]]] = relationship("Album")
+    studio_tags: Mapped[Optional[List[Studio]]] = relationship("Studio")

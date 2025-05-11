@@ -258,3 +258,19 @@ verification_contributors = Table(
     Column("verification_id", ForeignKey("verifications.id"), primary_key=True),
     Column("contributor_id", ForeignKey("contributors.id"), primary_key=True),
 )
+
+# Association tables for albums and contributors
+album_contributors = Table(
+    "album_contributors",
+    db.metadata,
+    Column("album_id", ForeignKey("albums.id"), primary_key=True),
+    Column("contributor_id", ForeignKey("contributors.id"), primary_key=True),
+)
+
+# Association tables for hitlists and contributors
+hitlist_contributors = Table(
+    "hitlist_contributors",
+    db.metadata,
+    Column("hitlist_id", ForeignKey("hitlists.id"), primary_key=True),
+    Column("contributor_id", ForeignKey("contributors.id"), primary_key=True),
+)
