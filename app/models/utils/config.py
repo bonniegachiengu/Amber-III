@@ -282,7 +282,7 @@ class EventStatusEnum(Enum):
     :type ONGOING: str
     :ivar COMPLETED: Status indicating the event has finished.
     :type COMPLETED: str
-    :ivar CANCELLED: Status indicating the event was cancelled and will not take place.
+    :ivar CANCELLED: Status indicating the event was canceled and will not take place.
     :type CANCELLED: str
     """
     UPCOMING = "upcoming"
@@ -331,7 +331,7 @@ class OrderStatusEnum(Enum):
     :type PENDING: str
     :ivar COMPLETED: Indicates that the order has been successfully completed.
     :type COMPLETED: str
-    :ivar CANCELLED: Indicates that the order has been cancelled and will not be
+    :ivar CANCELLED: Indicates that the order has been canceled and will not be
         processed further.
     :type CANCELLED: str
     """
@@ -350,7 +350,7 @@ class TransactionStatusEnum(Enum):
 
     :cvar SUCCESS: Represents a successfully completed transaction.
     :cvar FAILED: Indicates a transaction that has failed to process.
-    :cvar CANCELLED: Denotes a transaction cancelled by the user or provider.
+    :cvar CANCELLED: Denotes a transaction canceled by the user or provider.
     :cvar PENDING: Refers to a transaction still in progress or awaiting confirmation.
     :cvar REJECTED: Marks a transaction that has been explicitly rejected.
     :cvar EXPIRED: Represents a transaction not completed within allowable time limits.
@@ -463,7 +463,7 @@ class TicketStatusEnum(Enum):
 
     This class is an enumeration that defines a set of symbolic names for
     different ticket statuses such as availability, sold out, reserved, and
-    cancelled. It can be used to standardize the representation of these
+    canceled. It can be used to standardize the representation of these
     statuses across an application or program.
 
     :cvar AVAILABLE: Represents a ticket status indicating that the ticket
@@ -473,7 +473,7 @@ class TicketStatusEnum(Enum):
     :cvar RESERVED: Represents a ticket status indicating that the ticket
         has been reserved.
     :cvar CANCELLED: Represents a ticket status indicating that the ticket
-        has been cancelled.
+        has been canceled.
     """
     AVAILABLE = "available"
     SOLD_OUT = "sold_out"
@@ -589,17 +589,14 @@ class CliqueTypeEnum(Enum):
     Enumeration for different types within a clique.
 
     Provides a structured representation of various roles or designations
-    that can exist within a group or organization. Can be utilized to
+    that can exist within a group or organization. Can be used to
     categorize, differentiate, or apply specific logic based on these roles.
 
     :ivar FAN: A fan.
     :ivar SUBSCRIBER: A subscriber.
     :ivar MEMBER: A member.
     :ivar ORGANIZER: An organizer.
-    :ivar WATCHER: A watcher.
-    :ivar TRACKER: A tracker.
     :ivar CREATOR: A creator.
-    :ivar COLLECTOR: A collector.
     :ivar WRITER: A writer.
     :ivar ANALYST: An analyst.
     :ivar COLUMNIST: A columnist.
@@ -615,10 +612,7 @@ class CliqueTypeEnum(Enum):
     SUBSCRIBER = Subscriber
     MEMBER = Member
     ORGANIZER = Organizer
-    WATCHER = Watcher
-    TRACKER = Tracker
     CREATOR = Creator
-    COLLECTOR = Collector
     WRITER = Writer
     ANALYST = Analyst
     COLUMNIST = Columnist
@@ -897,7 +891,7 @@ class CrewTypeEnum(Enum):
     :type GAFFER: str
     :ivar GRIP: Represents the role of a grip.
     :type GRIP: str
-    :ivar BEST_BOY: Represents the role of a best boy.
+    :ivar BEST_BOY: Represents the role of the best boy.
     :type BEST_BOY: str
     :ivar PRODUCTION_DESIGNER: Represents the role of a production designer.
     :type PRODUCTION_DESIGNER: str

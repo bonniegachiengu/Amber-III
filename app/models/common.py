@@ -213,11 +213,11 @@ class ReportTemplate(db.Model, ModelMixin, ContentMixin, ContributionMixin):
     """
     Represents a template for generating reports.
 
-    This class is used to define and manage templates that can be utilized for
+    This class is used to define and manage templates that can be used for
     creating detailed reports. It integrates various mixins to handle database
     models, content management, and contributions. The class also establishes
     relationships with related entities, such as reports, and provides the
-    structure for managing content utilized in the templates.
+    structure for managing content used in the templates.
 
     :ivar content: Stores the content of the report template in a JSONB format.
     :type content: dict
@@ -399,7 +399,7 @@ class Keyword(db.Model, ModelMixin, ContributionMixin):
 
     The Keyword class is a part of the database schema and connects to the
     `keywords` table in the database. It inherits from multiple mixins to
-    utilize shared functionality pertaining to database models and contribution
+    use shared functionality pertaining to database models and contribution
     management. Keywords are associated with content items and store
     relationships useful in various application contexts.
 
@@ -455,7 +455,7 @@ class Link(db.Model, ModelMixin):
     :ivar url: The URL represented by this Link. It is a required string.
     :type url: str
     :ivar use_cases: List of associated EntityMixin objects. Represents the
-        use cases where this link is utilized.
+        use cases where this link is used.
     :type use_cases: Optional[List[EntityMixin]]
     """
     __tablename__ = "links"
@@ -515,7 +515,7 @@ class Icon(db.Model, ModelMixin, Image):
 
     This class defines the representation of an icon, its attributes, and any
     relationships it may have with other entities. It is used to store and manage
-    icon-related data, while providing database integration and additional
+    icon-related data while providing database integration and additional
     functionalities via its inheritance.
 
     :ivar use_cases: Represents a relationship with `EntityMixin` objects where
@@ -548,7 +548,7 @@ class Poster(db.Model, ModelMixin, MediaMixin, CreatedMixin, OwnedMixin, Image):
     Represents a Poster object, typically used for storing and managing data related to posters in
     the database. Combines multiple mixins and `Image` class to extend functionality.
 
-    The Poster class is built upon SQLAlchemy's `db.Model` and utilizes the following mixins:
+    The Poster class is built upon SQLAlchemy's `db.Model` and uses the following mixins:
     `ModelMixin`, `MediaMixin`, `CreatedMixin`, `OwnedMixin`. It also represents an image-like
     entity and supports relationships with `EntityMixin`.
 
@@ -568,7 +568,7 @@ class Video(db.Model, ModelMixin, MediaMixin):
 
     This class models a video object with its associated attributes and relationships as part of the ORM
     (Object-Relational Mapping) configuration. It is configured to interact with the "videos" database table
-    and provides extensions for mixing in behavior and media-related utility. The relationships and properties
+    and provides extensions for mixing in behavior and media-related utilities. The relationships and properties
     defined here render this class a suitable abstraction for managing video entities, aligning with ORM
     practices in software development.
 
